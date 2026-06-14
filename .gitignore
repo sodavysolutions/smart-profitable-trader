@@ -1,0 +1,11 @@
+node_modules
+.next
+.vercel
+.npm-cache
+.chrome-profile
+.env
+.env.local
+*.log
+.DS_Store
+homepage-render.png
+admin-render.png

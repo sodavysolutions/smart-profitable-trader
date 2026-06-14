@@ -1,0 +1,422 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleName {
+  SUPER_ADMIN
+  ADMIN
+  SUPPORT_CRM_STAFF
+  FINANCE_MANAGER
+  READ_ONLY_VIEWER
+}
+
+enum LeadStatus {
+  NEW_LEAD
+  CONTACTED
+  INTERESTED
+  FOLLOW_UP_NEEDED
+  PAYMENT_PENDING
+  CONVERTED_TO_CUSTOMER
+  NOT_INTERESTED
+  LOST
+}
+
+enum ServiceType {
+  COPY_TRADING
+  FUNDED_ACCOUNT
+  EVALUATION_ACCOUNT
+  PERSONAL_ACCOUNT
+  GENERAL_INQUIRY
+}
+
+enum CustomerStatus {
+  ACTIVE
+  PENDING_SETUP
+  SUSPENDED
+  PAUSED
+  COMPLETED
+  FUNDED
+  CANCELLED
+  LOST
+}
+
+enum Platform {
+  MT4
+  MT5
+  TRADELOCKER
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_PAID
+}
+
+enum ProfitShareStatus {
+  PENDING
+  PARTIALLY_PAID
+  PAID
+  DISPUTED
+  CANCELLED
+}
+
+enum CommunicationChannel {
+  EMAIL
+  WHATSAPP
+  SMS
+}
+
+enum MessageStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum BillingCycle {
+  ONE_TIME
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum ExpenseStatus {
+  PAID
+  UPCOMING
+  OVERDUE
+  CANCELLED
+}
+
+enum ActivityType {
+  NOTE_ADDED
+  CALL_MADE
+  WHATSAPP_SENT
+  EMAIL_SENT
+  SMS_SENT
+  STATUS_CHANGED
+  PAYMENT_RECORDED
+  ACCOUNT_PROGRESS_UPDATED
+  PROFIT_SHARE_CALCULATED
+  RENEWAL_REMINDER_SENT
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        RoleName @unique
+  description String?
+  users       User[]
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  passwordHash String
+  enabled      Boolean       @default(true)
+  roleId       String
+  role         Role          @relation(fields: [roleId], references: [id])
+  leads        Lead[]        @relation("AssignedLead")
+  customers    Customer[]    @relation("AssignedCustomer")
+  activities   ActivityLog[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Campaign {
+  id          String   @id @default(cuid())
+  name        String
+  source      String
+  medium      String?
+  leads       Lead[]
+  createdAt   DateTime @default(now())
+}
+
+model Lead {
+  id               String          @id @default(cuid())
+  fullName         String
+  email            String
+  phone            String?
+  whatsapp         String?
+  country          String?
+  city             String?
+  leadSource       String?
+  campaignName     String?
+  serviceInterest  ServiceType
+  status           LeadStatus      @default(NEW_LEAD)
+  assignedStaffId  String?
+  assignedStaff    User?           @relation("AssignedLead", fields: [assignedStaffId], references: [id])
+  campaignId       String?
+  campaign         Campaign?       @relation(fields: [campaignId], references: [id])
+  notes            String?
+  lastContactedAt  DateTime?
+  nextFollowUpAt   DateTime?
+  priority         String?
+  activities       ActivityLog[]
+  communications   CommunicationLog[]
+  formSubmissions  FormSubmission[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model Customer {
+  id                  String          @id @default(cuid())
+  fullName            String
+  email               String
+  phone               String?
+  whatsapp            String?
+  country             String?
+  customerType        ServiceType
+  platform            Platform?
+  brokerOrPropFirm    String?
+  accountLogin        String?
+  initialCapital      Decimal         @default(0)
+  currentBalance      Decimal         @default(0)
+  currentEquity       Decimal         @default(0)
+  status              CustomerStatus  @default(PENDING_SETUP)
+  startDate           DateTime?
+  renewalDate         DateTime?
+  profitShareTier     String          @default("NO_SETUP_FEE")
+  customCompanyShare  Decimal?
+  setupFeeStatus      PaymentStatus   @default(PENDING)
+  assignedManagerId   String?
+  assignedManager     User?           @relation("AssignedCustomer", fields: [assignedManagerId], references: [id])
+  notes               String?
+  accounts            Account[]
+  copyTradingAccount  CopyTradingAccount?
+  evaluationAccount   EvaluationAccount?
+  fundedAccount       FundedAccount?
+  personalAccount     PersonalTradingAccount?
+  payments            Payment[]
+  profitShares        ProfitShare[]
+  subscriptions       Subscription[]
+  activities          ActivityLog[]
+  communications      CommunicationLog[]
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+}
+
+model Service {
+  id          String      @id @default(cuid())
+  type        ServiceType @unique
+  name        String
+  description String
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+}
+
+model Account {
+  id             String      @id @default(cuid())
+  customerId     String
+  customer       Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  serviceType    ServiceType
+  platform       Platform?
+  brokerOrFirm   String?
+  login          String?
+  startingBalance Decimal    @default(0)
+  currentBalance  Decimal    @default(0)
+  currentEquity   Decimal    @default(0)
+  status         String
+  notes          String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model CopyTradingAccount {
+  id                 String   @id @default(cuid())
+  customerId          String   @unique
+  customer            Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  accountType         String?
+  broker              String?
+  login               String?
+  startingBalance     Decimal  @default(0)
+  currentBalance      Decimal  @default(0)
+  subscriptionPlan    String?
+  subscriptionAmount  Decimal  @default(0)
+  subscriptionStart   DateTime?
+  subscriptionExpiry  DateTime?
+  renewalStatus       String   @default("Active")
+  copierStatus        String   @default("Connected")
+  notes               String?
+}
+
+model EvaluationAccount {
+  id                 String   @id @default(cuid())
+  customerId          String   @unique
+  customer            Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  propFirmName        String
+  accountSize         Decimal
+  phase               String
+  startingBalance     Decimal  @default(0)
+  currentBalance      Decimal  @default(0)
+  currentEquity       Decimal  @default(0)
+  profitTargetAmount  Decimal  @default(0)
+  currentProfit       Decimal  @default(0)
+  drawdownLimit       Decimal  @default(0)
+  currentDrawdown     Decimal  @default(0)
+  dailyDrawdown       Decimal  @default(0)
+  maxDrawdown         Decimal  @default(0)
+  daysTraded          Int      @default(0)
+  minimumTradingDays  Int      @default(0)
+  status              String
+  notes               String?
+}
+
+model FundedAccount {
+  id                 String   @id @default(cuid())
+  customerId          String   @unique
+  customer            Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  propFirm            String
+  accountSize         Decimal
+  startingBalance     Decimal  @default(0)
+  currentBalance      Decimal  @default(0)
+  profitMade          Decimal  @default(0)
+  withdrawalAmount    Decimal  @default(0)
+  withdrawalDate      DateTime?
+  nextWithdrawalDate  DateTime?
+  status              String
+}
+
+model PersonalTradingAccount {
+  id              String   @id @default(cuid())
+  customerId       String   @unique
+  customer         Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  broker           String
+  login            String?
+  startingCapital  Decimal  @default(0)
+  currentBalance   Decimal  @default(0)
+  currentEquity    Decimal  @default(0)
+  profitLoss       Decimal  @default(0)
+  profitShareModel String?
+  notes            String?
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  customerId    String?
+  customer      Customer?     @relation(fields: [customerId], references: [id])
+  serviceType   ServiceType?
+  amount        Decimal
+  currency      String        @default("USD")
+  paymentDate   DateTime?
+  paymentMethod String?
+  status        PaymentStatus @default(PENDING)
+  invoiceRef    String?
+  notes         String?
+  createdAt     DateTime      @default(now())
+}
+
+model ProfitShare {
+  id             String            @id @default(cuid())
+  customerId      String
+  customer        Customer          @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  totalProfit     Decimal
+  clientSharePct  Decimal
+  companySharePct Decimal
+  clientShare     Decimal
+  companyShare    Decimal
+  amountPaid      Decimal           @default(0)
+  amountPending   Decimal
+  paymentDate     DateTime?
+  status          ProfitShareStatus @default(PENDING)
+  createdAt       DateTime          @default(now())
+}
+
+model Expense {
+  id            String        @id @default(cuid())
+  name          String
+  category      String
+  amount        Decimal
+  currency      String        @default("USD")
+  billingCycle  BillingCycle
+  dueDate       DateTime?
+  renewalDate   DateTime?
+  status        ExpenseStatus @default(UPCOMING)
+  paymentMethod String?
+  vendor        String?
+  notes         String?
+  createdAt     DateTime      @default(now())
+}
+
+model Subscription {
+  id              String       @id @default(cuid())
+  name            String
+  type            String
+  customerId      String?
+  customer        Customer?    @relation(fields: [customerId], references: [id])
+  vendor          String?
+  amount          Decimal
+  currency        String       @default("USD")
+  startDate       DateTime?
+  renewalDate     DateTime
+  billingCycle    BillingCycle
+  status          String
+  reminderEnabled Boolean      @default(true)
+  reminders       Reminder[]
+}
+
+model Reminder {
+  id             String        @id @default(cuid())
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  title          String
+  dueAt          DateTime
+  channel        String
+  status         MessageStatus @default(PENDING)
+  createdAt      DateTime      @default(now())
+}
+
+model CommunicationLog {
+  id         String               @id @default(cuid())
+  recipient  String
+  channel    CommunicationChannel
+  title      String
+  body       String
+  status     MessageStatus        @default(PENDING)
+  sentAt     DateTime?
+  leadId     String?
+  lead       Lead?                @relation(fields: [leadId], references: [id])
+  customerId String?
+  customer   Customer?            @relation(fields: [customerId], references: [id])
+  userId     String?
+  createdAt  DateTime             @default(now())
+}
+
+model ActivityLog {
+  id          String       @id @default(cuid())
+  userId      String?
+  user        User?        @relation(fields: [userId], references: [id])
+  leadId      String?
+  lead        Lead?        @relation(fields: [leadId], references: [id])
+  customerId  String?
+  customer    Customer?    @relation(fields: [customerId], references: [id])
+  type        ActivityType
+  description String
+  createdAt   DateTime     @default(now())
+}
+
+model FormSubmission {
+  id        String      @id @default(cuid())
+  leadId    String?
+  lead      Lead?       @relation(fields: [leadId], references: [id])
+  service   ServiceType
+  payload   Json
+  utmSource String?
+  utmCampaign String?
+  createdAt DateTime    @default(now())
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
