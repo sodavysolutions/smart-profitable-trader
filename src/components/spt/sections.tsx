@@ -10,7 +10,9 @@ import {
   Clock3,
   Copy,
   Eye,
+  FileCheck2,
   LineChart,
+  MessageCircle,
   Radar,
   RefreshCcw,
   ShieldCheck,
@@ -27,6 +29,11 @@ const sptLinks = [
   { href: "/spt/home#founder", label: "Founder" },
   { href: "/spt/home#faq", label: "FAQ" }
 ];
+
+const whatsappUrl = "https://wa.me/2347087970133";
+const evaluationWhatsappUrl = `${whatsappUrl}?text=${encodeURIComponent(
+  "Hello Smart Profitable Trader team, I'm interested in the Evaluation Prop Trading service. Please send me the recommended prop firms, account options, management process, risk guidelines, and how to get started."
+)}`;
 
 const offers: Array<{
   title: string;
@@ -82,6 +89,26 @@ const ecosystem = [
   ["Prop Trading", "Get support for instant funded and evaluation accounts.", Target]
 ] as const;
 
+const tradingPathCards = [
+  ["I want trading signals", "Best for newer or busy traders who want guided market alerts.", "VIP Signals", "/spt/vip-signals", Signal],
+  ["I want my account managed", "Best for clients who prefer copy trading or personal account support.", "Managed Account", "/spt/copy-trading", Copy],
+  ["I want prop firm support", "Best for funded accounts, instant funding, or evaluation challenges.", "Prop Firm Support", "/spt/evaluation", Target]
+] as const;
+
+const offerFitGuide = [
+  ["Beginner", "VIP Signals"],
+  ["Busy professional", "Copy Trading"],
+  ["Prop firm trader", "Evaluation or Instant Funded"],
+  ["Investor with account capital", "Personal Account Trading"]
+] as const;
+
+const afterApplyItems = [
+  ["Service recommendation", "We help match your goal to the best trading path."],
+  ["Risk review", "We check your account type, risk comfort, and key limits."],
+  ["Setup guidance", "You get clear next steps before any account setup or payment."],
+  ["WhatsApp onboarding", "Our team follows up with practical onboarding details."]
+] as const;
+
 const algoSteps = [
   ["Machine Learning Analysis", "The system studies price behavior, volatility, liquidity, trends, and historical market reactions.", Radar],
   ["Strategy Testing", "Multiple strategies are tested to identify stronger setups and weaker market conditions.", BarChart3],
@@ -109,6 +136,88 @@ const faqs = [
   ["How often is the algo optimized?", "Optimization reviews are carried out every weekend to help align the trading system with current market trends and conditions."]
 ];
 
+const evaluationSupportItems = [
+  "Prop firm selection guidance",
+  "Account size planning",
+  "Phase 1 progress tracking",
+  "Phase 2 progress tracking",
+  "Funded account transition support",
+  "Drawdown monitoring",
+  "Account rule awareness",
+  "Risk-managed trading operation",
+  "Profit target tracking",
+  "Updates and progress communication"
+];
+
+const evaluationAlgoPoints = [
+  "Market behavior analysis",
+  "Strategy testing",
+  "Live-market demo validation",
+  "Weekly optimization",
+  "Drawdown awareness",
+  "Risk-managed execution",
+  "Prop account rule sensitivity"
+];
+
+const evaluationBenefits = [
+  [
+    "Reduce Emotional Trading Pressure",
+    "Prop challenges can make traders emotional because every loss feels like a threat to the account. Our structured process helps reduce random decisions, revenge trading, and pressure-based execution.",
+    ShieldCheck
+  ],
+  [
+    "Track Phase Progress Professionally",
+    "We monitor account growth, target progress, daily drawdown, max drawdown, phase status, and account rules so the challenge is handled with more clarity.",
+    BarChart3
+  ],
+  [
+    "Use Algo-Supported Trade Selection",
+    "Our trading approach is supported by the Smart Profit Algo, weekly optimization, and live-market strategy validation to help create a more disciplined trading operation.",
+    Bot
+  ]
+] as const;
+
+const recommendedPropFirms = [
+  ["FundingPips", "https://app.fundingpips.com/register?referral_code=64d6c082"],
+  ["FTMO", "https://trader.ftmo.com/?affiliates=dDWEICNovYoncFqgzCop"],
+  ["FundedNext", "https://fundednext.com/?fpr=solomon79"],
+  ["E8 Markets", "https://e8markets.com/a/B16909D2"],
+  ["Blueberry Funded", "https://blueberryfunded.com/?utm_source=affiliate&ref=9026"],
+  ["Blue Guardian", "https://blueguardian.com/?afmc=1sql"],
+  ["Atlas Funded", "https://checkout.atlasfunded.com/ref/2186/"],
+  ["Tentrade", "https://cabinet.10tradefx.com/links/go/4596"]
+] as const;
+
+const evaluationFitItems = [
+  "You want to take a prop firm challenge but do not want to trade it blindly.",
+  "You have failed challenges before because of risk, emotions, or poor execution.",
+  "You want support for Phase 1, Phase 2, or funded account stages.",
+  "You want your account progress, drawdown, and target tracked professionally.",
+  "You want a structured trading process supported by algo-assisted analysis.",
+  "You understand that prop firm accounts have rules that must be respected.",
+  "You are willing to follow a disciplined, risk-managed approach.",
+  "You understand that results are not guaranteed and accounts can still fail."
+];
+
+const evaluationSteps = [
+  ["Apply", "Complete the application form so we can understand your preferred prop firm, account size, current phase, risk level, and goal."],
+  ["Account Review", "Our team reviews your account details, prop firm rules, drawdown limits, and target requirements."],
+  ["Setup and Onboarding", "If accepted, we guide you through the onboarding process, account access requirements, communication, and management terms."],
+  ["Evaluation Management Begins", "The account is managed using our structured trading process supported by Smart Profit Algo analysis, weekly optimization, and drawdown monitoring."],
+  ["Track Phase Progress", "We monitor progress through Phase 1, Phase 2, and funded account stages while updating you on account performance and key milestones."]
+];
+
+const evaluationRiskItems = [
+  "Controlled trade exposure",
+  "Daily drawdown awareness",
+  "Max drawdown monitoring",
+  "Profit target tracking",
+  "Prop firm rule awareness",
+  "No reckless lot sizing",
+  "No emotional overtrading",
+  "Weekly trading system optimization"
+];
+
 export function SPTNavbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur-xl">
@@ -133,6 +242,13 @@ export function SPTNavbar() {
           Apply Now
         </Link>
       </div>
+      <nav className="page-shell flex gap-2 overflow-x-auto pb-3 text-sm font-semibold text-slate-600 md:hidden" aria-label="Smart Profitable Trader mobile navigation">
+        {[...sptLinks, { href: "/spt/apply", label: "Apply" }].map((item) => (
+          <Link key={item.href} href={item.href} className="shrink-0 rounded-md border border-slate-200 bg-white px-3 py-2 hover:border-profit-500 hover:text-navy-950">
+            {item.label}
+          </Link>
+        ))}
+      </nav>
     </header>
   );
 }
@@ -144,22 +260,38 @@ export function SPTHeroSection() {
         <div className="relative overflow-hidden rounded-[28px] border border-white bg-white/72 px-4 py-12 shadow-[0_30px_90px_rgba(15,35,70,0.14)] backdrop-blur md:px-10 md:py-16 lg:px-16">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-4xl font-semibold leading-tight tracking-normal text-navy-950 sm:text-5xl lg:text-6xl">
-              Build Smarter Trading Income With an Algo-Powered Trading Ecosystem
+              Choose a More Structured Forex Trading Path
             </h1>
             <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-              Smart Profitable Trader helps you access structured trading opportunities through VIP signals, copy trading, personal account trading, instant funded prop trading, and evaluation account management, all powered by the Smart Profit Algo.
+              Smart Profitable Trader helps you choose between VIP signals, managed account support, and prop firm account guidance, all backed by a clearer trading process and risk-aware execution.
             </p>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-500">
-              Whether you want to trade with guidance, copy our execution, grow your personal account, or pursue prop firm funding, our ecosystem gives you a more professional way to participate in the markets.
+              Start with the path that fits your goal, then apply for a review so our team can recommend the best next step.
             </p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Link href="/spt/home#offers" className="inline-flex items-center justify-center gap-2 rounded-md bg-navy-950 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-navy-950/15 transition hover:-translate-y-0.5">
-                Explore Trading Solutions <ArrowRight size={16} />
+              <Link href="/spt/apply" className="inline-flex items-center justify-center gap-2 rounded-md bg-navy-950 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-navy-950/15 transition hover:-translate-y-0.5">
+                Find My Best Trading Path <ArrowRight size={16} />
               </Link>
-              <Link href="/spt/vip-signals" className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy-950 transition hover:-translate-y-0.5 hover:border-profit-500">
-                Join VIP Signals
+              <Link href="/spt/home#offers" className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy-950 transition hover:-translate-y-0.5 hover:border-profit-500">
+                Compare Services
               </Link>
             </div>
+          </div>
+
+          <div className="relative mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-3">
+            {tradingPathCards.map(([title, text, label, href, Icon]) => (
+              <Link key={title} href={href} className="group rounded-[18px] border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:border-profit-500 hover:shadow-[0_20px_55px_rgba(15,35,70,0.12)]">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="grid h-11 w-11 place-items-center rounded-2xl bg-navy-950 text-profit-500">
+                    <Icon size={21} />
+                  </div>
+                  <ArrowRight className="text-slate-300 transition group-hover:text-profit-600" size={18} />
+                </div>
+                <h2 className="mt-5 text-lg font-semibold text-navy-950">{title}</h2>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{text}</p>
+                <p className="mt-4 text-xs font-bold uppercase tracking-wide text-profit-600">{label}</p>
+              </Link>
+            ))}
           </div>
 
           <div className="relative mx-auto mt-12 max-w-4xl">
@@ -283,6 +415,14 @@ export function OfferCardsSection() {
         <p className="mt-4 leading-7 text-slate-600">
           Different people have different goals. Smart Profitable Trader gives you multiple ways to participate in a structured trading ecosystem.
         </p>
+      </div>
+      <div className="mt-8 grid gap-3 rounded-[22px] border border-slate-200 bg-slate-50 p-4 md:grid-cols-4">
+        {offerFitGuide.map(([person, path]) => (
+          <div key={person} className="rounded-2xl bg-white p-4 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-400">{person}</p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-navy-950">{path}</p>
+          </div>
+        ))}
       </div>
       <div className="mt-10 grid gap-5 lg:grid-cols-2">
         {offers.map((offer) => {
@@ -444,21 +584,38 @@ export function FAQSection() {
 export function FinalCTASection() {
   return (
     <section id="apply" className="page-shell grid gap-10 py-16 lg:grid-cols-[0.85fr_1.15fr]">
-      <div>
-        <h2 className="text-3xl font-semibold text-navy-950 sm:text-4xl">Ready to Join the Smart Profitable Trader Ecosystem?</h2>
+      <div className="min-w-0">
+        <h2 className="text-3xl font-semibold text-navy-950 sm:text-4xl">Not Sure Which Trading Path Fits You?</h2>
         <p className="mt-4 leading-7 text-slate-600">
-          Whether you want VIP signals, copy trading, personal account trading, or prop firm account support, Smart Profitable Trader gives you a structured path to participate in the markets with more clarity and support.
+          Apply and we will review your goal, experience, account type, and risk comfort so we can recommend the most practical Smart Profitable Trader option for you.
         </p>
+        <div className="mt-7 grid gap-3">
+          {afterApplyItems.map(([title, text], index) => (
+            <div key={title} className="flex gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-profit-500/15 text-xs font-bold text-profit-600">0{index + 1}</span>
+              <div>
+                <p className="font-semibold text-navy-950">{title}</p>
+                <p className="mt-1 text-sm leading-6 text-slate-600">{text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <Link href="/spt/home#offers" className="inline-flex items-center justify-center gap-2 rounded-md bg-navy-950 px-5 py-3 text-sm font-bold text-white">
             Explore Trading Solutions
           </Link>
-          <Link href="/spt/contact" className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy-950">
+          <Link href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy-950">
             Speak With Us
           </Link>
         </div>
       </div>
-      <ApplicationForm initialService="general" thankYouPath="/spt/thank-you" />
+      <div className="min-w-0">
+        <div className="mb-4 rounded-2xl border border-profit-500/30 bg-profit-500/10 p-4">
+          <p className="font-semibold text-navy-950">Takes about 2 minutes.</p>
+          <p className="mt-1 text-sm leading-6 text-slate-600">Share your details and our team will follow up with the clearest next step.</p>
+        </div>
+        <ApplicationForm initialService="general" thankYouPath="/spt/thank-you" />
+      </div>
     </section>
   );
 }
@@ -489,7 +646,7 @@ export function SPTFooter() {
 
 export function SPTPageShell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="funnel-page min-h-screen bg-white">
       <SPTNavbar />
       {children}
       <SPTFooter />
@@ -542,6 +699,10 @@ export const funnelPages = {
 } as const;
 
 export function SPTFunnelPage({ page }: { page: (typeof funnelPages)[keyof typeof funnelPages] }) {
+  if (page.service === "evaluation") {
+    return <EvaluationManagementFunnel />;
+  }
+
   return (
     <SPTPageShell>
       <section className="bg-[radial-gradient(circle_at_top_left,#dbeafe_0,#f8fbff_38%,#fff7f4_100%)] py-16">
@@ -557,7 +718,7 @@ export function SPTFunnelPage({ page }: { page: (typeof funnelPages)[keyof typeo
               <Link href={`/spt/apply?service=${page.service}`} className="inline-flex items-center justify-center gap-2 rounded-md bg-navy-950 px-5 py-3 text-sm font-bold text-white">
                 Apply Now <ArrowRight size={15} />
               </Link>
-              <Link href="/spt/contact" className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy-950">
+              <Link href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy-950">
                 Speak With Us
               </Link>
             </div>
@@ -587,6 +748,277 @@ export function SPTFunnelPage({ page }: { page: (typeof funnelPages)[keyof typeo
             </div>
           </div>
         </div>
+      </section>
+    </SPTPageShell>
+  );
+}
+
+function EvaluationCTAButtons({ className = "" }: { className?: string }) {
+  return (
+    <div className={`flex flex-col gap-3 sm:flex-row ${className}`}>
+      <Link href="/spt/apply?service=evaluation" className="funnel-primary inline-flex items-center justify-center gap-2 bg-navy-950 px-5 py-3 text-sm font-bold text-white">
+        Apply for Evaluation Management <ArrowRight size={15} />
+      </Link>
+      <Link href={evaluationWhatsappUrl} target="_blank" rel="noreferrer" className="funnel-secondary inline-flex items-center justify-center gap-2 border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy-950 hover:border-profit-500">
+        <MessageCircle size={16} />
+        Chat With Us on WhatsApp
+      </Link>
+    </div>
+  );
+}
+
+function EvaluationSectionHeader({ title, children }: { title: string; children?: React.ReactNode }) {
+  return (
+    <div className="mx-auto max-w-3xl text-center">
+      <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">{title}</h2>
+      {children ? <div className="mt-4 space-y-4 leading-7 text-slate-600">{children}</div> : null}
+    </div>
+  );
+}
+
+function EvaluationManagementFunnel() {
+  return (
+    <SPTPageShell>
+      <section className="overflow-hidden bg-[radial-gradient(circle_at_12%_8%,#dbeafe_0,#f7fbff_34%,#fff7f2_72%,#ffffff_100%)] py-8 sm:py-10">
+        <div className="funnel-hero-shell funnel-hero-grid">
+          <div className="funnel-hero-copy hero-slide-left">
+            <Link href="/spt/home" className="inline-flex items-center gap-2 text-sm font-bold text-navy-950">
+              Back to SPT homepage
+            </Link>
+            <h1 className="funnel-headline mt-8 text-4xl text-navy-950 sm:text-5xl lg:text-[4rem]">
+              Stop Failing Prop Firm Challenges Alone. Trade Your Evaluation With a More Structured System.
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-slate-600">
+              Smart Profitable Trader Evaluation Management helps traders and investors approach prop firm challenges with structured account management, risk control, phase tracking, and algo-supported trade selection powered by the <strong className="font-semibold text-navy-950">Smart Profit Algo</strong>.
+            </p>
+            <p className="mt-4 leading-7 text-slate-600">
+              Whether you are starting Phase 1, moving into Phase 2, or trying to protect a funded account, our goal is to help you trade with more discipline, less emotion, and a clearer process.
+            </p>
+            <p className="mt-4 leading-7 text-slate-600">
+              Prop firm challenges are not just about making profit. You must also protect drawdown, obey trading rules, manage risk, and stay consistent long enough to reach the target. That is where structure matters.
+            </p>
+            <EvaluationCTAButtons className="mt-8" />
+            <p className="mt-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">
+              Trading involves risk, and results are not guaranteed. Prop firm accounts can fail if targets are not reached, rules are broken, or drawdown limits are violated.
+            </p>
+          </div>
+          <div className="funnel-hero-visual hero-slide-right rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_24px_70px_rgba(15,35,70,0.1)]">
+            <div className="rounded-[18px] bg-gradient-to-br from-slate-50 to-blue-50 p-5">
+              <div className="flex items-center justify-between gap-5">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Evaluation console</p>
+                  <h2 className="mt-2 text-2xl font-semibold text-navy-950">Phase-by-phase control</h2>
+                </div>
+                <Target className="shrink-0 text-profit-600" size={30} />
+              </div>
+              <div className="mt-6 grid gap-3">
+                {["Phase 1 target", "Phase 2 target", "Daily drawdown", "Funded transition"].map((item, index) => (
+                  <div key={item} className="funnel-card rounded-xl border border-white bg-white/85 p-4 shadow-sm">
+                    <div className="flex items-center justify-between gap-4">
+                      <p className="text-sm font-semibold text-navy-950">{item}</p>
+                      <span className="text-xs font-bold text-profit-600">0{index + 1}</span>
+                    </div>
+                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+                      <div className="h-full rounded-full bg-profit-500" style={{ width: `${[58, 44, 72, 38][index]}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+                Built for rule awareness, drawdown control, and disciplined execution.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="page-shell py-16">
+        <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+          <div>
+            <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">
+              Most Traders Don't Fail Prop Challenges Because the Target Is Impossible. They Fail Because They Trade Under Pressure Without a System.
+            </h2>
+            <div className="mt-5 space-y-4 leading-7 text-slate-600">
+              <p>Prop firm evaluations look simple on paper: reach the profit target, protect the drawdown, follow the rules, pass Phase 1, pass Phase 2, and get funded.</p>
+              <p>But in real market conditions, many traders struggle. They overtrade because they want to pass quickly, increase lot size after a loss, break daily drawdown rules, hold losing trades too long, enter without a clear setup, and become emotional when the account is close to target.</p>
+              <p>The problem is not always lack of opportunity. The problem is lack of structure.</p>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {["Overtrading", "Revenge lot sizing", "Daily drawdown breaks", "Poor setup discipline", "Emotional target pressure", "Phase-to-phase inconsistency"].map((item) => (
+              <div key={item} className="funnel-card flex gap-3 rounded-md border border-slate-200 bg-white p-4 shadow-sm">
+                <ShieldCheck className="mt-0.5 shrink-0 text-profit-600" size={18} />
+                <span className="text-sm font-semibold text-slate-700">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-slate-50 py-16">
+        <div className="page-shell">
+          <EvaluationSectionHeader title="A More Professional Way to Approach Phase 1, Phase 2, and Funded Accounts">
+            <p>Smart Profitable Trader Evaluation Management is designed for clients who want support managing prop firm evaluation accounts.</p>
+            <p>Instead of treating the challenge like gambling, we treat it like a serious trading operation that requires patience, discipline, and proper risk control.</p>
+          </EvaluationSectionHeader>
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {evaluationSupportItems.map((item) => (
+              <div key={item} className="funnel-card rounded-md border border-slate-200 bg-white p-4 text-sm font-semibold leading-6 text-navy-950 shadow-sm">
+                {item}
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 flex justify-center">
+            <Link href="/spt/apply?service=evaluation" className="funnel-primary inline-flex items-center justify-center gap-2 bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950 hover:bg-profit-600 hover:text-white">
+              Apply for Evaluation Management <ArrowRight size={15} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="page-shell py-16">
+        <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.16em] text-profit-600">Powered by the Smart Profit Algo</p>
+            <h2 className="funnel-section-title mt-4 text-3xl font-semibold text-navy-950 sm:text-4xl">Analyze market behavior, validate setups, and support better trade selection.</h2>
+            <div className="mt-5 space-y-4 leading-7 text-slate-600">
+              <p>Our trading operation is supported by the Smart Profit Algo, a sophisticated algorithmic trading system designed to analyze market behavior, test multiple strategies, validate setups, and support better trade selection.</p>
+              <p>The system uses machine learning-driven analysis to test strategies under different market conditions. Stronger strategies are demo-tested on live market behavior before being considered for deployment.</p>
+              <p>Every weekend, we run optimization reviews to help align the trading system with current volatility, liquidity, trend behavior, and price action.</p>
+            </div>
+            <p className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+              The algo does not remove risk or guarantee passing. It helps support a more structured and disciplined trading process.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {evaluationAlgoPoints.map((item) => (
+              <div key={item} className="funnel-card flex gap-3 rounded-md border border-slate-200 bg-white p-4 shadow-sm">
+                <Bot className="mt-0.5 shrink-0 text-profit-600" size={18} />
+                <span className="text-sm font-semibold text-slate-700">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-gradient-to-b from-white to-slate-50 py-16">
+        <div className="page-shell">
+          <EvaluationSectionHeader title="Why Use Smart Profitable Trader for Your Evaluation Account?" />
+          <div className="mt-10 grid gap-4 lg:grid-cols-3">
+            {evaluationBenefits.map(([title, text, Icon]) => (
+              <div key={title} className="funnel-card rounded-md border border-slate-200 bg-white p-6 shadow-sm">
+                <Icon className="text-profit-600" />
+                <h3 className="mt-4 text-xl font-semibold text-navy-950">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="page-shell py-16">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">Recommended Prop Firms You Can Start With</h2>
+            <div className="mt-5 space-y-4 leading-7 text-slate-600">
+              <p>If you do not already have a prop firm account, you can start by choosing one of the prop firms we recommend.</p>
+              <p>Different prop firms have different rules, drawdown limits, account sizes, payout terms, and trading conditions. Before buying any challenge, make sure you understand the rules clearly.</p>
+            </div>
+            <p className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+              Some of these links may be affiliate or referral links. This does not change the importance of reviewing each firm's rules before purchasing an account.
+            </p>
+            <Link href={evaluationWhatsappUrl} target="_blank" rel="noreferrer" className="funnel-primary mt-6 inline-flex items-center justify-center gap-2 bg-navy-950 px-5 py-3 text-sm font-bold text-white">
+              <MessageCircle size={16} />
+              Chat With Us Before Choosing a Prop Firm
+            </Link>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {recommendedPropFirms.map(([name, href]) => (
+              <Link key={name} href={href} target="_blank" rel="noreferrer" className="funnel-card group rounded-md border border-slate-200 bg-white p-5 shadow-sm hover:border-profit-500">
+                <div className="flex items-center justify-between gap-4">
+                  <h3 className="font-semibold text-navy-950">{name}</h3>
+                  <ArrowRight className="text-slate-400 transition group-hover:text-profit-600" size={17} />
+                </div>
+                <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-slate-400">Open prop firm link</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-slate-50 py-16">
+        <div className="page-shell">
+          <EvaluationSectionHeader title="This Evaluation Management Service Is Best For You If..." />
+          <div className="mt-10 grid gap-3 md:grid-cols-2">
+            {evaluationFitItems.map((item) => (
+              <div key={item} className="funnel-card flex gap-3 rounded-md border border-slate-200 bg-white p-4 shadow-sm">
+                <CheckCircle2 className="mt-0.5 shrink-0 text-profit-600" size={18} />
+                <span className="text-sm leading-6 text-slate-700">{item}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 flex justify-center">
+            <Link href="/spt/apply?service=evaluation" className="funnel-primary inline-flex items-center justify-center gap-2 bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950 hover:bg-profit-600 hover:text-white">
+              Apply to See If You Qualify <ArrowRight size={15} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="page-shell py-16">
+        <EvaluationSectionHeader title="How to Get Started" />
+        <div className="mt-10 grid gap-4 lg:grid-cols-5">
+          {evaluationSteps.map(([title, text], index) => (
+            <div key={title} className="funnel-card rounded-md border border-slate-200 bg-white p-5 shadow-sm">
+              <span className="text-xs font-bold text-profit-600">STEP {index + 1}</span>
+              <h3 className="mt-3 font-semibold text-navy-950">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{text}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-8 flex justify-center">
+          <Link href="/spt/apply?service=evaluation" className="funnel-primary inline-flex items-center justify-center gap-2 bg-navy-950 px-5 py-3 text-sm font-bold text-white">
+            Start My Evaluation Application <ArrowRight size={15} />
+          </Link>
+        </div>
+      </section>
+
+      <section className="bg-gradient-to-b from-slate-50 to-white py-16">
+        <div className="page-shell grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">Built Around Drawdown Control, Rule Awareness, and Disciplined Execution</h2>
+            <div className="mt-5 space-y-4 leading-7 text-slate-600">
+              <p>Prop firm accounts must be managed carefully. One bad trading day can damage or fail an account if risk is not controlled.</p>
+              <p>We do not promise that every account will pass. We do not promise guaranteed funding. We do not promise guaranteed payouts.</p>
+              <p>Our goal is to give each evaluation account a more professional, structured, and risk-managed trading process.</p>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {evaluationRiskItems.map((item) => (
+              <div key={item} className="funnel-card flex gap-3 rounded-md border border-slate-200 bg-white p-4 shadow-sm">
+                <FileCheck2 className="mt-0.5 shrink-0 text-profit-600" size={18} />
+                <span className="text-sm font-semibold text-slate-700">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="apply" className="page-shell grid gap-10 py-16 lg:grid-cols-[0.85fr_1.15fr]">
+        <div>
+          <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">Ready to Approach Your Prop Firm Challenge With More Structure?</h2>
+          <p className="mt-5 leading-7 text-slate-600">
+            If you want to take a prop firm evaluation but do not want to trade it alone, Smart Profitable Trader Evaluation Management may be the right path for you.
+          </p>
+          <p className="mt-4 leading-7 text-slate-600">
+            Apply now and let us review your prop firm, account size, phase, and trading goal.
+          </p>
+          <EvaluationCTAButtons className="mt-8" />
+          <p className="mt-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">
+            Trading involves significant risk. Smart Profitable Trader does not guarantee passing evaluations, funded approval, withdrawals, fixed returns, or risk-free results. Prop firm accounts can fail if targets are not reached, rules are violated, or drawdown limits are exceeded. Only participate with funds you can afford to risk.
+          </p>
+        </div>
+        <ApplicationForm initialService="evaluation" thankYouPath="/spt/thank-you" />
       </section>
     </SPTPageShell>
   );

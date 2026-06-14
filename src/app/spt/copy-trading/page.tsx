@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { funnelPages, SPTFunnelPage } from "@/components/spt/sections";
+import { CopyTradingFunnelPage } from "@/components/spt/copy-trading-funnel";
 
 export const metadata: Metadata = {
-  title: "Copy Trading and Personal Account Trading | Smart Profitable Trader",
-  description: "Explore Smart Profitable Trader copy trading and personal account trading powered by structured, risk-managed trading operations."
+  title: "Smart Profitable Trader Copy Trading | Personal Account Trading by Laptop Lifestyle Income",
+  description:
+    "Join Smart Profitable Trader Copy Trading and allow your personal trading account to follow an algo-supported, risk-managed trading system powered by the Smart Profit Algo. Trading involves risk and results are not guaranteed."
 };
 
 export default function SPTCopyTradingPage() {
-  return <SPTFunnelPage page={funnelPages["copy-trading"]} />;
+  return <CopyTradingFunnelPage />;
 }

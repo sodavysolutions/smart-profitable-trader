@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { funnelPages, SPTFunnelPage } from "@/components/spt/sections";
+import { VipSignalsFunnelPage } from "@/components/spt/vip-signals-funnel";
 
 export const metadata: Metadata = {
-  title: "VIP Signal Service | Smart Profitable Trader",
-  description: "Join the Smart Profitable Trader VIP Signal Service for structured trading alerts supported by the Smart Profit Algo and weekly optimization reviews."
+  title: "Smart Profitable Trader VIP | Premium XAUUSD Trading Signals by Laptop Lifestyle Income",
+  description:
+    "Join Smart Profitable Trader VIP for premium XAUUSD trading signals powered by the Smart Profit Algo, weekly optimization, risk guidance, and structured trade direction. Trading involves risk and results are not guaranteed."
 };
 
 export default function SPTVipSignalsPage() {
-  return <SPTFunnelPage page={funnelPages["vip-signals"]} />;
+  return <VipSignalsFunnelPage />;
 }
