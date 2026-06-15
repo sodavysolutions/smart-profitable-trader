@@ -238,7 +238,7 @@ export function SPTNavbar() {
             </Link>
           ))}
         </nav>
-        <Link href="/spt/apply" className="rounded-md bg-profit-500 px-4 py-2.5 text-sm font-bold text-navy-950 shadow-[0_12px_30px_rgba(32,199,111,0.25)] transition hover:-translate-y-0.5 hover:bg-profit-600 hover:text-white">
+        <Link href="/spt/apply" className="funnel-header-cta rounded-md bg-profit-500 px-4 py-2.5 text-sm font-bold text-navy-950 shadow-[0_12px_30px_rgba(32,199,111,0.25)] hover:bg-profit-600 hover:text-white">
           Apply Now
         </Link>
       </div>
@@ -780,52 +780,61 @@ function EvaluationManagementFunnel() {
   return (
     <SPTPageShell>
       <section className="overflow-hidden bg-[radial-gradient(circle_at_12%_8%,#dbeafe_0,#f7fbff_34%,#fff7f2_72%,#ffffff_100%)] py-8 sm:py-10">
-        <div className="funnel-hero-shell funnel-hero-grid">
-          <div className="funnel-hero-copy hero-slide-left">
-            <Link href="/spt/home" className="inline-flex items-center gap-2 text-sm font-bold text-navy-950">
-              Back to SPT homepage
-            </Link>
-            <h1 className="funnel-headline mt-8 text-4xl text-navy-950 sm:text-5xl lg:text-[4rem]">
-              Stop Failing Prop Firm Challenges Alone. Trade Your Evaluation With a More Structured System.
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-slate-600">
-              Smart Profitable Trader Evaluation Management helps traders and investors approach prop firm challenges with structured account management, risk control, phase tracking, and algo-supported trade selection powered by the <strong className="font-semibold text-navy-950">Smart Profit Algo</strong>.
-            </p>
-            <p className="mt-4 leading-7 text-slate-600">
-              Whether you are starting Phase 1, moving into Phase 2, or trying to protect a funded account, our goal is to help you trade with more discipline, less emotion, and a clearer process.
-            </p>
-            <p className="mt-4 leading-7 text-slate-600">
-              Prop firm challenges are not just about making profit. You must also protect drawdown, obey trading rules, manage risk, and stay consistent long enough to reach the target. That is where structure matters.
-            </p>
-            <EvaluationCTAButtons className="mt-8" />
-            <p className="mt-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">
-              Trading involves risk, and results are not guaranteed. Prop firm accounts can fail if targets are not reached, rules are broken, or drawdown limits are violated.
-            </p>
-          </div>
-          <div className="funnel-hero-visual hero-slide-right rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_24px_70px_rgba(15,35,70,0.1)]">
-            <div className="rounded-[18px] bg-gradient-to-br from-slate-50 to-blue-50 p-5">
-              <div className="flex items-center justify-between gap-5">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Evaluation console</p>
-                  <h2 className="mt-2 text-2xl font-semibold text-navy-950">Phase-by-phase control</h2>
-                </div>
-                <Target className="shrink-0 text-profit-600" size={30} />
+        <div className="funnel-hero-shell">
+          <div className="funnel-hero-panel">
+            <div className="funnel-hero-grid">
+              <div className="funnel-hero-copy hero-slide-left">
+                <h1 className="funnel-headline text-4xl text-navy-950 sm:text-5xl lg:text-[4rem]">
+                  Stop Failing Prop Firm Challenges Alone. Trade Your Evaluation With a More Structured System.
+                </h1>
+                <p className="mt-6 text-lg leading-8 text-slate-600">
+                  Smart Profitable Trader Evaluation Management helps traders and investors approach prop firm challenges with structured account management, risk control, phase tracking, and algo-supported trade selection powered by the <strong className="font-semibold text-navy-950">Smart Profit Algo</strong>.
+                </p>
+                <p className="mt-4 leading-7 text-slate-600">
+                  Whether you are starting Phase 1, moving into Phase 2, or trying to protect a funded account, our goal is to help you trade with more discipline, less emotion, and a clearer process.
+                </p>
+                <p className="mt-4 leading-7 text-slate-600">
+                  Prop firm challenges are not just about making profit. You must also protect drawdown, obey trading rules, manage risk, and stay consistent long enough to reach the target. That is where structure matters.
+                </p>
+                <EvaluationCTAButtons className="mt-8" />
+                <p className="mt-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">
+                  Trading involves risk, and results are not guaranteed. Prop firm accounts can fail if targets are not reached, rules are broken, or drawdown limits are violated.
+                </p>
               </div>
-              <div className="mt-6 grid gap-3">
-                {["Phase 1 target", "Phase 2 target", "Daily drawdown", "Funded transition"].map((item, index) => (
-                  <div key={item} className="funnel-card rounded-xl border border-white bg-white/85 p-4 shadow-sm">
-                    <div className="flex items-center justify-between gap-4">
-                      <p className="text-sm font-semibold text-navy-950">{item}</p>
-                      <span className="text-xs font-bold text-profit-600">0{index + 1}</span>
+              <div className="funnel-hero-visual hero-slide-right relative">
+                <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-[0_24px_70px_rgba(15,35,70,0.12)]">
+                  <div className="rounded-[20px] bg-gradient-to-br from-slate-50 to-blue-50 p-5">
+                    <div className="flex items-center justify-between gap-5">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Evaluation console</p>
+                        <h2 className="mt-2 text-2xl font-semibold text-navy-950">Phase-by-phase control</h2>
+                      </div>
+                      <Target className="shrink-0 text-profit-600" size={30} />
                     </div>
-                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
-                      <div className="h-full rounded-full bg-profit-500" style={{ width: `${[58, 44, 72, 38][index]}%` }} />
+                    <div className="mt-6 grid gap-3">
+                      {["Phase 1 target", "Phase 2 target", "Daily drawdown", "Funded transition"].map((item, index) => (
+                        <div key={item} className="funnel-card rounded-xl border border-white bg-white/85 p-4 shadow-sm">
+                          <div className="flex items-center justify-between gap-4">
+                            <p className="text-sm font-semibold text-navy-950">{item}</p>
+                            <span className="text-xs font-bold text-profit-600">0{index + 1}</span>
+                          </div>
+                          <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+                            <div className="h-full rounded-full bg-profit-500" style={{ width: `${[58, 44, 72, 38][index]}%` }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
+                      Built for rule awareness, drawdown control, and disciplined execution.
                     </div>
                   </div>
-                ))}
-              </div>
-              <div className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-                Built for rule awareness, drawdown control, and disciplined execution.
+                </div>
+                <div className="funnel-float pointer-events-none absolute -left-4 top-8 hidden rotate-[-7deg] rounded-2xl bg-white p-4 text-sm font-bold text-navy-950 shadow-xl md:block" style={{ "--float-rotate": "-7deg" } as React.CSSProperties}>
+                  Drawdown first
+                </div>
+                <div className="funnel-float pointer-events-none absolute -right-5 bottom-10 hidden rotate-[6deg] rounded-2xl bg-white p-4 text-sm font-bold text-profit-600 shadow-xl md:block" style={{ "--float-rotate": "6deg" } as React.CSSProperties}>
+                  Phase tracking
+                </div>
               </div>
             </div>
           </div>
