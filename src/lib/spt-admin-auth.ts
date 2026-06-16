@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
+import { UserRole } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 const cookieName = "spt_admin_session";
@@ -30,6 +31,19 @@ function signPayload(payload: string) {
   return crypto.createHmac("sha256", getSecret()).update(payload).digest("base64url");
 }
 
+function getBootstrapAdminConfig() {
+  const email = process.env.ADMIN_EMAIL?.toLowerCase().trim();
+  const password = process.env.ADMIN_PASSWORD;
+
+  if (!email || !password) return null;
+
+  return {
+    email,
+    password,
+    name: "Super Admin"
+  };
+}
+
 export function createAdminToken(payload: Omit<SessionPayload, "exp">) {
   const body = base64Url(
     JSON.stringify({
@@ -55,6 +69,29 @@ export function verifyAdminToken(token?: string): SessionPayload | null {
   } catch {
     return null;
   }
+}
+
+export async function ensureBootstrapAdmin(candidateEmail?: string) {
+  const config = getBootstrapAdminConfig();
+  if (!config) return;
+  if (candidateEmail && candidateEmail.toLowerCase().trim() !== config.email) return;
+
+  const passwordHash = await bcrypt.hash(config.password, 12);
+
+  await prisma.user.upsert({
+    where: { email: config.email },
+    update: {
+      name: config.name,
+      passwordHash,
+      role: UserRole.SUPER_ADMIN
+    },
+    create: {
+      name: config.name,
+      email: config.email,
+      passwordHash,
+      role: UserRole.SUPER_ADMIN
+    }
+  });
 }
 
 export async function authenticateAdmin(email: string, password: string) {

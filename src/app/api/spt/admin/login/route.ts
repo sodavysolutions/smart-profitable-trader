@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { authenticateAdmin, createAdminToken, setAdminSession } from "@/lib/spt-admin-auth";
+import { authenticateAdmin, createAdminToken, ensureBootstrapAdmin, setAdminSession } from "@/lib/spt-admin-auth";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -14,6 +14,8 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "Enter a valid email and password." }, { status: 400 });
   }
+
+  await ensureBootstrapAdmin(parsed.data.email);
 
   const user = await authenticateAdmin(parsed.data.email, parsed.data.password);
   if (!user) {
