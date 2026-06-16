@@ -11,7 +11,7 @@ export default function ReportsPage() {
         <SectionHeader title="Report filters" text="Filter by date range, service type, customer, staff, and status. Export the current report to CSV." action={<Link href="/api/reports/export" className="rounded-md bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950">Export CSV</Link>} />
         <div className="grid gap-3 md:grid-cols-5">
           {["Date range", "Service type", "Customer", "Staff", "Status"].map((filter) => (
-            <select key={filter} className="rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-600">
+            <select key={filter} aria-label={filter} className="rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-600">
               <option>{filter}</option>
             </select>
           ))}

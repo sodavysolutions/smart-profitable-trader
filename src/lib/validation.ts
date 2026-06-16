@@ -19,5 +19,6 @@ export const applicationSchema = z.object({
   startDate: z.string().optional(),
   fundedStatus: z.string().optional(),
   withdrawalTarget: z.string().optional(),
+  tradingExperience: z.string().optional(),
   riskPreference: z.string().optional()
 });

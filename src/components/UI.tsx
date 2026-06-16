@@ -28,10 +28,10 @@ export function StatusBadge({ value }: { value: string }) {
   return <span className={clsx("inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1", tone)}>{value}</span>;
 }
 
-export function ProgressBar({ value, danger = false }: { value: number; danger?: boolean }) {
+export function ProgressBar({ value, danger = false, label = "Progress" }: { value: number; danger?: boolean; label?: string }) {
   const width = Math.max(0, Math.min(100, value));
   return (
-    <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
+    <div role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(width)} className="h-2.5 overflow-hidden rounded-full bg-slate-100">
       <div className={clsx("h-full rounded-full", danger ? "bg-red-500" : "bg-profit-500")} style={{ width: `${width}%` }} />
     </div>
   );
@@ -39,33 +39,44 @@ export function ProgressBar({ value, danger = false }: { value: number; danger?:
 
 export function DataTable({
   columns,
-  rows
+  rows,
+  caption = "Data table"
 }: {
   columns: string[];
   rows: Array<Array<React.ReactNode>>;
+  caption?: string;
 }) {
   return (
     <div className="overflow-x-auto rounded-md border border-slate-200">
       <table className="min-w-full divide-y divide-slate-200 text-sm">
+        <caption className="sr-only">{caption}</caption>
         <thead className="bg-slate-50">
           <tr>
             {columns.map((column) => (
-              <th key={column} className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <th key={column} scope="col" className="whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                 {column}
               </th>
             ))}
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100 bg-white">
-          {rows.map((row, index) => (
-            <tr key={index} className="hover:bg-slate-50">
-              {row.map((cell, cellIndex) => (
-                <td key={cellIndex} className="whitespace-nowrap px-4 py-3 text-slate-700">
-                  {cell}
-                </td>
-              ))}
+          {rows.length ? (
+            rows.map((row, index) => (
+              <tr key={index} className="hover:bg-slate-50">
+                {row.map((cell, cellIndex) => (
+                  <td key={cellIndex} className="whitespace-nowrap px-4 py-3 text-slate-700">
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={columns.length} className="px-4 py-8 text-center text-sm text-slate-500">
+                No records to display.
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

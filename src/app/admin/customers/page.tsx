@@ -8,6 +8,7 @@ export default function CustomersPage() {
       <Card>
         <SectionHeader title="Customers" text="Manage customer category, platform, broker or prop firm, capital, balance, renewal, payment history, profit share, communications, and notes." />
         <DataTable
+          caption="Customer management records"
           columns={["Customer", "Type", "Platform", "Broker/Prop firm", "Balance", "Growth", "Status", "Renewal"]}
           rows={customers.map((customer) => [
             <span key={customer.id} className="font-semibold text-navy-950">{customer.name}</span>,
@@ -15,7 +16,7 @@ export default function CustomersPage() {
             customer.platform,
             customer.firm,
             currency(customer.currentBalance),
-            <div key={customer.id} className="w-32"><ProgressBar value={Math.max(5, Math.min(100, growth(customer.initialCapital, customer.currentBalance) * 10))} danger={customer.status.includes("Drawdown")} /></div>,
+            <div key={customer.id} className="w-32"><ProgressBar label={`${customer.name} growth`} value={Math.max(5, Math.min(100, growth(customer.initialCapital, customer.currentBalance) * 10))} danger={customer.status.includes("Drawdown")} /></div>,
             <StatusBadge key={customer.id} value={customer.status} />,
             customer.renewal
           ])}

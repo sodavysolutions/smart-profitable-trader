@@ -18,35 +18,48 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
   const router = useRouter();
   const [service, setService] = useState(serviceMap[initialService] ?? "General Inquiry");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const current = useMemo(() => services.find((item) => item.title === service), [service]);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setError("");
     setSubmitting(true);
-    const formData = new FormData(event.currentTarget);
-    const response = await fetch("/api/applications", {
-      method: "POST",
-      body: JSON.stringify(Object.fromEntries(formData.entries())),
-      headers: { "Content-Type": "application/json" }
-    });
-    setSubmitting(false);
-    if (response.ok) router.push(thankYouPath);
+    try {
+      const formData = new FormData(event.currentTarget);
+      const response = await fetch("/api/applications", {
+        method: "POST",
+        body: JSON.stringify(Object.fromEntries(formData.entries())),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      if (response.ok) {
+        router.push(thankYouPath);
+        return;
+      }
+
+      setError("Please check your details and try submitting again.");
+    } catch {
+      setError("We could not submit your application. Please check your connection and try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
-    <form onSubmit={submit} className="grid gap-4 rounded-md border border-slate-200 bg-white p-5 shadow-soft">
+    <form onSubmit={submit} aria-busy={submitting} noValidate className="grid gap-4 rounded-md border border-slate-200 bg-white p-5 shadow-soft">
       <div className="grid gap-4 md:grid-cols-2">
-        <Field name="fullName" label="Full name" required />
-        <Field name="email" label="Email" type="email" required />
-        <Field name="phone" label="Phone number" />
-        <Field name="whatsapp" label="WhatsApp number" />
-        <Field name="country" label="Country" />
-        <Field name="city" label="State/city" />
+        <Field name="fullName" label="Full name" autoComplete="name" required />
+        <Field name="email" label="Email" type="email" autoComplete="email" required />
+        <Field name="phone" label="Phone number" type="tel" autoComplete="tel" />
+        <Field name="whatsapp" label="WhatsApp number" type="tel" autoComplete="tel" />
+        <Field name="country" label="Country" autoComplete="country-name" />
+        <Field name="city" label="State/city" autoComplete="address-level2" />
       </div>
-      <label className="grid gap-1 text-sm font-medium text-slate-700">
+      <label htmlFor="application-service" className="grid gap-1 text-sm font-medium text-slate-700">
         Service interested in
-        <select name="service" value={service} onChange={(event) => setService(event.target.value)} className="rounded-md border border-slate-200 px-3 py-2">
+        <select id="application-service" name="service" value={service} onChange={(event) => setService(event.target.value)} className="rounded-md border border-slate-200 px-3 py-2">
           {[...services.map((item) => item.title), "General Inquiry"].map((item) => (
             <option key={item}>{item}</option>
           ))}
@@ -58,7 +71,7 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
           <>
             <Field name="broker" label="Broker" />
             <Field name="platform" label="MT4/MT5 account type" />
-            <Field name="accountBalance" label="Account balance" />
+            <Field name="accountBalance" label="Account balance" inputMode="decimal" />
             <Field name="existingAccount" label="Already have a trading account?" />
           </>
         )}
@@ -81,29 +94,50 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
         {service.includes("Personal") && (
           <>
             <Field name="broker" label="Broker" />
-            <Field name="accountBalance" label="Account capital" />
+            <Field name="accountBalance" label="Account capital" inputMode="decimal" />
             <Field name="platform" label="MT4/MT5 login platform" />
             <Field name="riskPreference" label="Risk preference" />
           </>
         )}
       </div>
-      <label className="grid gap-1 text-sm font-medium text-slate-700">
+      <label htmlFor="application-message" className="grid gap-1 text-sm font-medium text-slate-700">
         Message/notes
-        <textarea name="message" rows={4} className="rounded-md border border-slate-200 px-3 py-2" />
+        <textarea id="application-message" name="message" rows={4} className="rounded-md border border-slate-200 px-3 py-2" />
       </label>
       {current && <p className="rounded-md bg-slate-50 p-3 text-sm text-slate-600">{current.requirements}</p>}
-      <button disabled={submitting} className="rounded-md bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950 disabled:opacity-60">
+      {error && (
+        <p role="alert" className="rounded-md border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-700">
+          {error}
+        </p>
+      )}
+      <button type="submit" disabled={submitting} className="rounded-md bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950 disabled:cursor-not-allowed disabled:opacity-60">
         {submitting ? "Submitting..." : "Submit Application"}
       </button>
     </form>
   );
 }
 
-function Field({ name, label, type = "text", required = false }: { name: string; label: string; type?: string; required?: boolean }) {
+function Field({
+  name,
+  label,
+  type = "text",
+  required = false,
+  autoComplete,
+  inputMode
+}: {
+  name: string;
+  label: string;
+  type?: string;
+  required?: boolean;
+  autoComplete?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+}) {
+  const id = `application-${name}`;
+
   return (
-    <label className="grid gap-1 text-sm font-medium text-slate-700">
+    <label htmlFor={id} className="grid gap-1 text-sm font-medium text-slate-700">
       {label}
-      <input name={name} type={type} required={required} className="rounded-md border border-slate-200 px-3 py-2" />
+      <input id={id} name={name} type={type} required={required} autoComplete={autoComplete} inputMode={inputMode} className="rounded-md border border-slate-200 px-3 py-2" />
     </label>
   );
 }

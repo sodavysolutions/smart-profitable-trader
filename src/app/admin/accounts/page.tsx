@@ -22,6 +22,7 @@ function AccountSection({ title, rows, evaluation = false }: { title: string; ro
     <Card className="mb-6">
       <SectionHeader title={title} text={evaluation ? "Phase target, overall progress, daily drawdown, max drawdown, and manual update fields are represented for evaluation workflows." : undefined} />
       <DataTable
+        caption={`${title} account tracking`}
         columns={["Client", "Firm/Broker", "Login", "Start", "Current", "Growth", "Status", evaluation ? "Drawdown usage" : "Next date"]}
         rows={rows.map((customer) => [
           customer.name,
@@ -29,9 +30,9 @@ function AccountSection({ title, rows, evaluation = false }: { title: string; ro
           customer.accountLogin,
           currency(customer.initialCapital),
           currency(customer.currentBalance),
-          <div key={customer.id} className="w-36"><ProgressBar value={Math.max(5, Math.min(100, growth(customer.initialCapital, customer.currentBalance) * 10))} /></div>,
+          <div key={customer.id} className="w-36"><ProgressBar label={`${customer.name} account growth`} value={Math.max(5, Math.min(100, growth(customer.initialCapital, customer.currentBalance) * 10))} /></div>,
           <StatusBadge key={customer.id} value={customer.status} />,
-          evaluation ? <div key={customer.id} className="w-28"><ProgressBar value={customer.status.includes("Drawdown") ? 78 : 24} danger /></div> : customer.renewal
+          evaluation ? <div key={customer.id} className="w-28"><ProgressBar label={`${customer.name} drawdown usage`} value={customer.status.includes("Drawdown") ? 78 : 24} danger /></div> : customer.renewal
         ])}
       />
     </Card>

@@ -39,6 +39,7 @@ export default function AdminDashboard() {
         <Card>
           <SectionHeader title="Recent lead activity" />
           <DataTable
+            caption="Recent lead activity"
             columns={["Lead", "Service", "Status", "Priority", "Next follow-up"]}
             rows={leads.slice(0, 6).map((lead) => [lead.name, lead.service, <StatusBadge key={lead.id} value={lead.status} />, lead.priority, lead.followUp])}
           />
@@ -57,7 +58,7 @@ export default function AdminDashboard() {
                     </div>
                     <StatusBadge value={customer.status} />
                   </div>
-                  <ProgressBar value={Math.max(8, Math.min(100, pct * 10))} danger={customer.status.includes("Drawdown")} />
+                  <ProgressBar label={`${customer.name} target progress`} value={Math.max(8, Math.min(100, pct * 10))} danger={customer.status.includes("Drawdown")} />
                   <div className="mt-2 flex justify-between text-xs text-slate-500">
                     <span>{currency(customer.initialCapital)}</span>
                     <span>{currency(customer.currentBalance)}</span>
@@ -70,7 +71,7 @@ export default function AdminDashboard() {
       </div>
       <Card className="mt-6">
         <SectionHeader title="Upcoming renewals and follow-ups" />
-        <DataTable columns={["Name", "Type", "Related", "Amount", "Renewal", "Rule"]} rows={reminders.map((item) => [item.name, item.type, item.related, currency(Number(item.amount)), item.renewal, item.rule])} />
+        <DataTable caption="Upcoming renewals and follow-ups" columns={["Name", "Type", "Related", "Amount", "Renewal", "Rule"]} rows={reminders.map((item) => [item.name, item.type, item.related, currency(Number(item.amount)), item.renewal, item.rule])} />
       </Card>
     </AdminShell>
   );

@@ -7,10 +7,10 @@ export function AdminShell({ children, title = "Dashboard" }: { children: React.
   return (
     <main className="min-h-screen bg-slate-100 text-slate-900">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 bg-navy-950 p-5 text-white lg:block">
-        <Link href="/admin" className="mb-8 block">
+        <Link href="/admin" aria-label="Smart Profitable Trader admin dashboard" className="mb-8 block">
           <Brand />
         </Link>
-        <nav className="space-y-1">
+        <nav aria-label="Admin navigation" className="space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -30,7 +30,7 @@ export function AdminShell({ children, title = "Dashboard" }: { children: React.
           <p className="mt-1 leading-5">Trading outcomes are never guaranteed. Track exposure before scaling.</p>
         </div>
       </aside>
-      <section className="lg:pl-72">
+      <section className="lg:ml-72">
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
           <div className="flex min-h-20 flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
             <div>
@@ -42,7 +42,7 @@ export function AdminShell({ children, title = "Dashboard" }: { children: React.
                 <Search size={17} className="text-slate-400" />
                 <span className="text-sm text-slate-500">Search leads, customers, accounts</span>
               </div>
-              <button className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white text-slate-600">
+              <button type="button" aria-label="View notifications" className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white text-slate-600">
                 <Bell size={18} />
               </button>
               <div className="rounded-md bg-navy-950 px-3 py-2 text-sm font-semibold text-white">Admin</div>

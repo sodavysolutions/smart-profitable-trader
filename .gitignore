@@ -9,3 +9,4 @@ node_modules
 .DS_Store
 homepage-render.png
 admin-render.png
+.env*
