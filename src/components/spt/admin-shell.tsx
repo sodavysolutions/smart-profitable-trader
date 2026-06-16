@@ -1,6 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Bell, LayoutDashboard, LogOut, Search, Settings, Users, UserRoundCheck, ClipboardList, Megaphone } from "lucide-react";
+import {
+  BadgeDollarSign,
+  Bell,
+  ChartNoAxesCombined,
+  ClipboardList,
+  CreditCard,
+  LayoutDashboard,
+  LineChart,
+  LogOut,
+  Megaphone,
+  MessageSquare,
+  Receipt,
+  Search,
+  Settings,
+  Users,
+  UserRoundCheck
+} from "lucide-react";
 import type { UserRole } from "@prisma/client";
 
 const navItems = [
@@ -8,6 +24,13 @@ const navItems = [
   { href: "/spt/admin/leads", label: "Leads", icon: Megaphone },
   { href: "/spt/admin/customers", label: "Customers", icon: Users },
   { href: "/spt/admin/applications", label: "Applications", icon: ClipboardList },
+  { href: "/spt/admin/accounts", label: "Account Tracking", icon: LineChart },
+  { href: "/spt/admin/profit-share", label: "Profit Share", icon: BadgeDollarSign },
+  { href: "/spt/admin/payments", label: "Payments", icon: CreditCard },
+  { href: "/spt/admin/expenses", label: "Expenses", icon: Receipt },
+  { href: "/spt/admin/reminders", label: "Reminders", icon: Bell },
+  { href: "/spt/admin/communications", label: "Communications", icon: MessageSquare },
+  { href: "/spt/admin/reports", label: "Reports", icon: ChartNoAxesCombined },
   { href: "/spt/admin/settings", label: "Settings", icon: Settings }
 ];
 
