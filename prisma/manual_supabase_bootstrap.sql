@@ -9,49 +9,49 @@ DO $$ BEGIN
   CREATE TYPE "UserRole" AS ENUM ('SUPER_ADMIN', 'ADMIN', 'STAFF', 'VIEWER');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
-END $$;
+END $$ LANGUAGE plpgsql;
 
 DO $$ BEGIN
   CREATE TYPE "LeadStatus" AS ENUM ('NEW', 'CONTACTED', 'INTERESTED', 'FOLLOW_UP', 'PAYMENT_PENDING', 'CONVERTED', 'NOT_INTERESTED', 'LOST');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
-END $$;
+END $$ LANGUAGE plpgsql;
 
 DO $$ BEGIN
   CREATE TYPE "CustomerType" AS ENUM ('VIP_SIGNALS', 'COPY_TRADING', 'INSTANT_FUNDED', 'EVALUATION', 'PERSONAL_ACCOUNT');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
-END $$;
+END $$ LANGUAGE plpgsql;
 
 DO $$ BEGIN
   CREATE TYPE "CustomerStatus" AS ENUM ('ACTIVE', 'PENDING_SETUP', 'SUSPENDED', 'PAUSED', 'COMPLETED', 'FUNDED', 'CANCELLED', 'LOST');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
-END $$;
+END $$ LANGUAGE plpgsql;
 
 DO $$ BEGIN
   CREATE TYPE "AccountPlatform" AS ENUM ('MT4', 'MT5', 'TRADELOCKER', 'OTHER');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
-END $$;
+END $$ LANGUAGE plpgsql;
 
 DO $$ BEGIN
   CREATE TYPE "ApplicationStatus" AS ENUM ('NEW', 'REVIEWING', 'APPROVED', 'REJECTED', 'CONVERTED');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
-END $$;
+END $$ LANGUAGE plpgsql;
 
 DO $$ BEGIN
   CREATE TYPE "CommunicationChannel" AS ENUM ('EMAIL', 'WHATSAPP', 'SMS');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
-END $$;
+END $$ LANGUAGE plpgsql;
 
 DO $$ BEGIN
   CREATE TYPE "CommunicationStatus" AS ENUM ('PENDING', 'SENT', 'FAILED');
 EXCEPTION
   WHEN duplicate_object THEN NULL;
-END $$;
+END $$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS "User" (
   "id" TEXT NOT NULL,
