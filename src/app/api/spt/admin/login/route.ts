@@ -8,26 +8,34 @@ const loginSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const parsed = loginSchema.safeParse(body);
+  try {
+    const body = await request.json();
+    const parsed = loginSchema.safeParse(body);
 
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Enter a valid email and password." }, { status: 400 });
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Enter a valid email and password." }, { status: 400 });
+    }
+
+    await ensureBootstrapAdmin(parsed.data.email);
+
+    const user = await authenticateAdmin(parsed.data.email, parsed.data.password);
+    if (!user) {
+      return NextResponse.json({ error: "Invalid admin login." }, { status: 401 });
+    }
+
+    const token = createAdminToken({
+      userId: user.id,
+      email: user.email,
+      role: user.role
+    });
+    await setAdminSession(token);
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("SPT admin login failed:", error);
+    return NextResponse.json(
+      { error: "We could not reach the CRM database. Check the live database connection settings and try again." },
+      { status: 500 }
+    );
   }
-
-  await ensureBootstrapAdmin(parsed.data.email);
-
-  const user = await authenticateAdmin(parsed.data.email, parsed.data.password);
-  if (!user) {
-    return NextResponse.json({ error: "Invalid admin login." }, { status: 401 });
-  }
-
-  const token = createAdminToken({
-    userId: user.id,
-    email: user.email,
-    role: user.role
-  });
-  await setAdminSession(token);
-
-  return NextResponse.json({ ok: true });
 }

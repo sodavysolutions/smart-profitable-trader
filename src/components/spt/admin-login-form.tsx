@@ -20,6 +20,8 @@ export function AdminLoginForm() {
       body: JSON.stringify(Object.fromEntries(formData.entries()))
     });
 
+    const payload = await response.json().catch(() => null);
+
     setSubmitting(false);
     if (response.ok) {
       router.push("/spt/admin/dashboard");
@@ -27,7 +29,7 @@ export function AdminLoginForm() {
       return;
     }
 
-    setError("Invalid admin email or password.");
+    setError(payload?.error ?? "We could not sign you in right now.");
   }
 
   return (
