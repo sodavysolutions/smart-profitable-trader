@@ -4,7 +4,7 @@ import { SPTPageShell } from "@/components/spt/sections";
 
 export const metadata: Metadata = {
   title: "Contact | Smart Profitable Trader",
-  description: "Contact Smart Profitable Trader by Laptop Lifestyle Income for VIP signals, copy trading, prop trading, and evaluation account support."
+  description: "Contact Smart Profitable Trader for VIP signals, copy trading, prop trading, and evaluation account support."
 };
 
 export default function SPTContactPage() {

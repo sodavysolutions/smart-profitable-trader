@@ -22,13 +22,7 @@ import {
   WalletCards
 } from "lucide-react";
 import { ApplicationForm } from "@/components/ApplicationForm";
-
-const sptLinks = [
-  { href: "/spt/home#algo", label: "Algo" },
-  { href: "/spt/home#offers", label: "Offers" },
-  { href: "/spt/home#founder", label: "Founder" },
-  { href: "/spt/home#faq", label: "FAQ" }
-];
+import { SPTNavbar } from "@/components/spt/spt-navbar";
 
 const whatsappUrl = "https://wa.me/2347087970133";
 const evaluationWhatsappUrl = `${whatsappUrl}?text=${encodeURIComponent(
@@ -218,41 +212,6 @@ const evaluationRiskItems = [
   "Weekly trading system optimization"
 ];
 
-export function SPTNavbar() {
-  return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur-xl">
-      <div className="page-shell flex h-20 items-center justify-between gap-4">
-        <Link href="/spt/home" className="flex items-center gap-3">
-          <span className="grid h-14 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-white px-2 shadow-soft">
-            <Image src="/brand/spt-logo.png" alt="Smart Profitable Trader logo" width={220} height={90} className="h-12 w-auto object-contain" priority />
-          </span>
-          <span className="hidden leading-tight sm:block">
-            <span className="block font-semibold text-navy-950">Smart Profitable Trader</span>
-            <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-profit-600">by Laptop Lifestyle Income</span>
-          </span>
-        </Link>
-        <nav className="hidden items-center gap-7 text-sm font-semibold text-slate-600 md:flex">
-          {sptLinks.map((item) => (
-            <Link key={item.href} href={item.href} className="hover:text-navy-950">
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <Link href="/spt/apply" className="funnel-header-cta rounded-md bg-profit-500 px-4 py-2.5 text-sm font-bold text-navy-950 shadow-[0_12px_30px_rgba(32,199,111,0.25)] hover:bg-profit-600 hover:text-white">
-          Apply Now
-        </Link>
-      </div>
-      <nav className="page-shell flex gap-2 overflow-x-auto pb-3 text-sm font-semibold text-slate-600 md:hidden" aria-label="Smart Profitable Trader mobile navigation">
-        {[...sptLinks, { href: "/spt/apply", label: "Apply" }].map((item) => (
-          <Link key={item.href} href={item.href} className="shrink-0 rounded-md border border-slate-200 bg-white px-3 py-2 hover:border-profit-500 hover:text-navy-950">
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-    </header>
-  );
-}
-
 export function SPTHeroSection() {
   return (
     <section className="overflow-hidden bg-[radial-gradient(circle_at_12%_8%,#dbeafe_0,#f7fbff_34%,#fff7f2_72%,#ffffff_100%)]">
@@ -272,7 +231,7 @@ export function SPTHeroSection() {
               <Link href="/spt/apply" className="inline-flex items-center justify-center gap-2 rounded-md bg-navy-950 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-navy-950/15 transition hover:-translate-y-0.5">
                 Find My Best Trading Path <ArrowRight size={16} />
               </Link>
-              <Link href="/spt/home#offers" className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy-950 transition hover:-translate-y-0.5 hover:border-profit-500">
+              <Link href="/spt/home#trading-solutions" className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy-950 transition hover:-translate-y-0.5 hover:border-profit-500">
                 Compare Services
               </Link>
             </div>
@@ -373,7 +332,7 @@ export function SPTEcosystemSection() {
 
 export function SmartProfitAlgoSection() {
   return (
-    <section id="algo" className="bg-gradient-to-b from-slate-50 to-white py-16">
+    <section id="smart-profit-algo" className="bg-gradient-to-b from-slate-50 to-white py-16">
       <div className="page-shell">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
@@ -409,7 +368,7 @@ export function SmartProfitAlgoSection() {
 
 export function OfferCardsSection() {
   return (
-    <section id="offers" className="page-shell py-16">
+    <section id="trading-solutions" className="page-shell py-16">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-semibold text-navy-950 sm:text-4xl">Choose the Trading Path That Fits You</h2>
         <p className="mt-4 leading-7 text-slate-600">
@@ -505,7 +464,7 @@ export function AboutFounderSection() {
 
 export function HowItWorksSection() {
   return (
-    <section className="bg-slate-50 py-16">
+    <section id="how-it-works" className="bg-slate-50 py-16">
       <div className="page-shell">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-semibold text-navy-950 sm:text-4xl">How the Smart Profitable Trader Ecosystem Works</h2>
@@ -601,7 +560,7 @@ export function FinalCTASection() {
           ))}
         </div>
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          <Link href="/spt/home#offers" className="inline-flex items-center justify-center gap-2 rounded-md bg-navy-950 px-5 py-3 text-sm font-bold text-white">
+          <Link href="/spt/home#trading-solutions" className="inline-flex items-center justify-center gap-2 rounded-md bg-navy-950 px-5 py-3 text-sm font-bold text-white">
             Explore Trading Solutions
           </Link>
           <Link href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy-950">

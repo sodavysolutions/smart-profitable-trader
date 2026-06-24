@@ -12,8 +12,8 @@ export function Brand({ compact = false }: { compact?: boolean }) {
       />
       {!compact && (
         <div className="hidden leading-tight sm:block">
-          <div className="font-semibold text-white">Smart Profits</div>
-          <div className="text-xs font-medium uppercase tracking-[0.16em] text-profit-500">Trader</div>
+          <div className="font-semibold text-white">Smart Profitable Trader</div>
+          <div className="text-xs font-medium uppercase tracking-[0.16em] text-profit-500">Trading Systems</div>
         </div>
       )}
     </div>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { funnelPages, SPTFunnelPage } from "@/components/spt/sections";
 
 export const metadata: Metadata = {
-  title: "Evaluation Account Management | Smart Profitable Trader",
+  title: "Smart Profitable Trader Evaluation Management | Prop Firm Challenge Support",
   description: "Apply for Smart Profitable Trader evaluation account management for Phase 1, Phase 2, and funded prop firm account support."
 };
 
