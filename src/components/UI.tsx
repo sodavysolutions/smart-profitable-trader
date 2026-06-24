@@ -22,6 +22,30 @@ export function EmptyState({
   );
 }
 
+export function InlineNotice({
+  title,
+  text,
+  tone = "warning"
+}: {
+  title: string;
+  text: string;
+  tone?: "warning" | "danger" | "info";
+}) {
+  const styles =
+    tone === "danger"
+      ? "border-red-200 bg-red-50 text-red-900"
+      : tone === "info"
+        ? "border-blue-200 bg-blue-50 text-blue-900"
+        : "border-amber-200 bg-amber-50 text-amber-900";
+
+  return (
+    <div className={clsx("rounded-md border px-4 py-3", styles)}>
+      <p className="text-sm font-semibold">{title}</p>
+      <p className="mt-1 text-sm leading-6 opacity-90">{text}</p>
+    </div>
+  );
+}
+
 export function SectionHeader({ title, text, action }: { title: string; text?: string; action?: React.ReactNode }) {
   return (
     <div className="mb-5 flex flex-wrap items-end justify-between gap-4">

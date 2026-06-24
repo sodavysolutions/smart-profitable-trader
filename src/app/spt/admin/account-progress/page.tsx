@@ -1,14 +1,22 @@
 import { CustomerType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { Card, DataTable, EmptyState, ProgressBar, SectionHeader, StatusBadge } from "@/components/UI";
+import { Card, DataTable, EmptyState, InlineNotice, ProgressBar, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
 import { prisma } from "@/lib/prisma";
 import { money, readableEnum } from "@/lib/spt-admin-format";
 import { normalizeText } from "@/lib/spt-admin-helpers";
 import { requireAdmin } from "@/lib/spt-admin-auth";
+import { getSchemaMismatchMessage, isSchemaMismatchError } from "@/lib/spt-admin-schema";
 import { accountProgressSchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
+
+async function getProgressRows() {
+  return prisma.accountProgress.findMany({
+    include: { customer: true },
+    orderBy: { updatedAt: "desc" }
+  });
+}
 
 async function createAccountProgress(formData: FormData) {
   "use server";
@@ -80,19 +88,29 @@ async function createAccountProgress(formData: FormData) {
 
 export default async function SPTAdminAccountProgressPage() {
   const session = await requireAdmin();
-  const [customers, progressRows] = await Promise.all([
-    prisma.customer.findMany({ orderBy: { fullName: "asc" } }),
-    prisma.accountProgress.findMany({
-      include: { customer: true },
-      orderBy: { updatedAt: "desc" }
-    })
-  ]);
+  let customers = [] as Awaited<ReturnType<typeof prisma.customer.findMany>>;
+  let progressRows = [] as Awaited<ReturnType<typeof getProgressRows>>;
+  let schemaNotice: string | null = null;
+
+  try {
+    [customers, progressRows] = await Promise.all([
+      prisma.customer.findMany({ orderBy: { fullName: "asc" } }),
+      getProgressRows()
+    ]);
+  } catch (error) {
+    if (isSchemaMismatchError(error)) {
+      schemaNotice = getSchemaMismatchMessage("Account progress");
+    } else {
+      throw error;
+    }
+  }
 
   return (
     <SPTAdminShell title="Account Progress" role={session.role}>
       <Card>
         <SectionHeader title="Account progress tracker" text="Capture prop firm phases, copy trading balance changes, drawdown usage, and personal account updates from one place." />
-        <form action={createAccountProgress} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Account progress is in setup mode" text={schemaNotice} /></div>}
+        {!schemaNotice && <form action={createAccountProgress} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Customer
             <select name="customerId" required className="rounded-md border border-slate-200 px-3 py-2">
@@ -140,13 +158,13 @@ export default async function SPTAdminAccountProgressPage() {
           <div className="xl:col-span-4">
             <button className="rounded-md bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950">Save Account Progress</button>
           </div>
-        </form>
+        </form>}
       </Card>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
         <Card>
           <SectionHeader title="Live account overview" />
-          {progressRows.length ? (
+          {!schemaNotice && progressRows.length ? (
             <DataTable
               columns={["Customer", "Service", "Phase", "Balance", "Profit", "Status", "Updated"]}
               rows={progressRows.map((row) => [
@@ -167,7 +185,7 @@ export default async function SPTAdminAccountProgressPage() {
         <Card>
           <SectionHeader title="Target and drawdown view" text="Use these bars for a quick operational read on how close each account is to target and how much drawdown is being used." />
           <div className="space-y-4">
-            {progressRows.length ? (
+            {!schemaNotice && progressRows.length ? (
               progressRows.slice(0, 8).map((row) => {
                 const targetProgress = row.profitTarget.gt(0)
                   ? Math.max(0, Math.min(100, (Number(row.currentProfit) / Number(row.profitTarget)) * 100))

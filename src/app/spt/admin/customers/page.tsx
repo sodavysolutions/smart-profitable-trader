@@ -1,10 +1,11 @@
 import { revalidatePath } from "next/cache";
-import { Card, DataTable, EmptyState, SectionHeader, StatusBadge } from "@/components/UI";
+import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
 import { prisma } from "@/lib/prisma";
 import { normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
 import { money, readableEnum } from "@/lib/spt-admin-format";
 import { requireAdmin } from "@/lib/spt-admin-auth";
+import { getSchemaMismatchMessage, isSchemaMismatchError } from "@/lib/spt-admin-schema";
 import { customerCreateSchema, customerUpdateSchema } from "@/lib/validation";
 import type { AccountPlatform, CustomerStatus, CustomerType } from "@prisma/client";
 
@@ -90,20 +91,32 @@ async function updateCustomer(formData: FormData) {
 export default async function SPTAdminCustomersPage({ searchParams }: { searchParams: Promise<{ q?: string; type?: CustomerType; status?: CustomerStatus }> }) {
   const session = await requireAdmin();
   const { q, type, status } = await searchParams;
-  const customers = await prisma.customer.findMany({
-    where: {
-      ...(q ? { OR: [{ fullName: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }] } : {}),
-      ...(type ? { customerType: type } : {}),
-      ...(status ? { status } : {})
-    },
-    orderBy: { createdAt: "desc" }
-  });
+  let customers = [] as Awaited<ReturnType<typeof prisma.customer.findMany>>;
+  let schemaNotice: string | null = null;
+
+  try {
+    customers = await prisma.customer.findMany({
+      where: {
+        ...(q ? { OR: [{ fullName: { contains: q, mode: "insensitive" } }, { email: { contains: q, mode: "insensitive" } }] } : {}),
+        ...(type ? { customerType: type } : {}),
+        ...(status ? { status } : {})
+      },
+      orderBy: { createdAt: "desc" }
+    });
+  } catch (error) {
+    if (isSchemaMismatchError(error)) {
+      schemaNotice = getSchemaMismatchMessage("Customer management");
+    } else {
+      throw error;
+    }
+  }
 
   return (
     <SPTAdminShell title="Customers" role={session.role}>
       <Card>
         <SectionHeader title="Customer management" text="Search, filter, add notes, and update balance, equity, customer status, and birthdays for automation." />
-        <details className="mb-5 rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Customer records are in setup mode" text={schemaNotice} /></div>}
+        {!schemaNotice && <details className="mb-5 rounded-xl border border-slate-200 bg-slate-50/60 p-4">
           <summary className="cursor-pointer list-none text-sm font-bold text-navy-950">Add customer</summary>
           <form action={createCustomer} className="mt-4 grid gap-3 md:grid-cols-2">
             <input name="fullName" placeholder="Full name" className="rounded-md border border-slate-200 px-3 py-2 text-sm" />
@@ -146,7 +159,7 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
               <button className="rounded-md bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950">Create customer</button>
             </div>
           </form>
-        </details>
+        </details>}
         <form className="mb-4 grid gap-3 md:grid-cols-4">
           <input name="q" defaultValue={q} placeholder="Search name or email" className="rounded-md border border-slate-200 px-3 py-2 text-sm" />
           <select name="type" defaultValue={type ?? ""} className="rounded-md border border-slate-200 px-3 py-2 text-sm">
@@ -165,7 +178,7 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
         />
       </Card>
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
-        {customers.length ? (
+        {!schemaNotice && customers.length ? (
           customers.slice(0, 10).map((customer) => (
             <Card key={customer.id}>
               <SectionHeader title={customer.fullName} text={`${readableEnum(customer.customerType)} · ${customer.email}`} />
@@ -193,6 +206,10 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
               </form>
             </Card>
           ))
+        ) : schemaNotice ? (
+          <div className="lg:col-span-2">
+            <EmptyState title="Customer records are not ready yet" text="Once the live database repair finishes, customer search, birthdays, and balance tracking will appear here automatically." />
+          </div>
         ) : (
           <div className="lg:col-span-2">
             <EmptyState title="No customers yet" text="Converted leads, approved applications, and manually created client records will show up here once your operations begin." />

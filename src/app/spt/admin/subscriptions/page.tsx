@@ -1,11 +1,12 @@
 import { BillingCycle, SubscriptionStatus, SubscriptionType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { Card, DataTable, EmptyState, SectionHeader, StatusBadge } from "@/components/UI";
+import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
 import { prisma } from "@/lib/prisma";
 import { money, readableEnum } from "@/lib/spt-admin-format";
 import { normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
 import { requireAdmin } from "@/lib/spt-admin-auth";
+import { getSchemaMismatchMessage, isSchemaMismatchError } from "@/lib/spt-admin-schema";
 import { subscriptionSchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
@@ -13,6 +14,13 @@ export const dynamic = "force-dynamic";
 const billingCycles = Object.values(BillingCycle);
 const subscriptionStatuses = Object.values(SubscriptionStatus);
 const subscriptionTypes = Object.values(SubscriptionType);
+
+async function getSubscriptionRows() {
+  return prisma.subscription.findMany({
+    include: { customer: true, expense: true },
+    orderBy: { renewalDate: "asc" }
+  });
+}
 
 async function createSubscription(formData: FormData) {
   "use server";
@@ -56,20 +64,31 @@ async function createSubscription(formData: FormData) {
 
 export default async function SPTAdminSubscriptionsPage() {
   const session = await requireAdmin();
-  const [subscriptions, customers, expenses] = await Promise.all([
-    prisma.subscription.findMany({
-      include: { customer: true, expense: true },
-      orderBy: { renewalDate: "asc" }
-    }),
-    prisma.customer.findMany({ orderBy: { fullName: "asc" } }),
-    prisma.expense.findMany({ orderBy: { name: "asc" } })
-  ]);
+  let subscriptions = [] as Awaited<ReturnType<typeof getSubscriptionRows>>;
+  let customers = [] as Awaited<ReturnType<typeof prisma.customer.findMany>>;
+  let expenses = [] as Awaited<ReturnType<typeof prisma.expense.findMany>>;
+  let schemaNotice: string | null = null;
+
+  try {
+    [subscriptions, customers, expenses] = await Promise.all([
+      getSubscriptionRows(),
+      prisma.customer.findMany({ orderBy: { fullName: "asc" } }),
+      prisma.expense.findMany({ orderBy: { name: "asc" } })
+    ]);
+  } catch (error) {
+    if (isSchemaMismatchError(error)) {
+      schemaNotice = getSchemaMismatchMessage("Subscriptions");
+    } else {
+      throw error;
+    }
+  }
 
   return (
     <SPTAdminShell title="Subscriptions" role={session.role}>
       <Card>
         <SectionHeader title="Subscription management" text="Track customer renewals and recurring business expenses in one place. Reminder flags, billing cycle, and renewal dates are stored here." />
-        <form action={createSubscription} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Subscriptions are in setup mode" text={schemaNotice} /></div>}
+        {!schemaNotice && <form action={createSubscription} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Subscription name
             <input name="name" required className="rounded-md border border-slate-200 px-3 py-2" />
@@ -137,12 +156,12 @@ export default async function SPTAdminSubscriptionsPage() {
           <div className="xl:col-span-4">
             <button className="rounded-md bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950">Save Subscription</button>
           </div>
-        </form>
+        </form>}
       </Card>
 
       <Card className="mt-6">
         <SectionHeader title="Current subscriptions" text="The list below powers renewal reminders and gives you one place to monitor recurring revenue and operating commitments." />
-        {subscriptions.length ? (
+        {!schemaNotice && subscriptions.length ? (
           <DataTable
             columns={["Name", "Type", "Related", "Amount", "Cycle", "Renewal", "Status", "Reminder"]}
             rows={subscriptions.map((subscription) => [
@@ -156,6 +175,8 @@ export default async function SPTAdminSubscriptionsPage() {
               subscription.reminderEnabled ? "Enabled" : "Off"
             ])}
           />
+        ) : schemaNotice ? (
+          <EmptyState title="Subscriptions are not live yet" text="This section will start working as soon as the missing subscription and expense tables are present in the production database." />
         ) : (
           <EmptyState title="No subscriptions yet" text="Add your first customer plan or recurring business bill here so renewals and reminders have a reliable source of truth." />
         )}

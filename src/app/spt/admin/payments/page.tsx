@@ -1,15 +1,23 @@
 import { PaymentStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { Card, DataTable, EmptyState, SectionHeader, StatusBadge } from "@/components/UI";
+import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
 import { sendPaymentAcknowledgement } from "@/lib/message-workflows";
 import { prisma } from "@/lib/prisma";
 import { money, readableEnum } from "@/lib/spt-admin-format";
 import { normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
 import { requireAdmin } from "@/lib/spt-admin-auth";
+import { getSchemaMismatchMessage, isSchemaMismatchError } from "@/lib/spt-admin-schema";
 import { paymentSchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
+
+async function getPaymentRows() {
+  return prisma.payment.findMany({
+    include: { customer: true },
+    orderBy: [{ paymentDate: "desc" }, { createdAt: "desc" }]
+  });
+}
 
 async function createPayment(formData: FormData) {
   "use server";
@@ -50,19 +58,29 @@ async function createPayment(formData: FormData) {
 
 export default async function SPTAdminPaymentsPage() {
   const session = await requireAdmin();
-  const [payments, customers] = await Promise.all([
-    prisma.payment.findMany({
-      include: { customer: true },
-      orderBy: [{ paymentDate: "desc" }, { createdAt: "desc" }]
-    }),
-    prisma.customer.findMany({ orderBy: { fullName: "asc" } })
-  ]);
+  let payments = [] as Awaited<ReturnType<typeof getPaymentRows>>;
+  let customers = [] as Awaited<ReturnType<typeof prisma.customer.findMany>>;
+  let schemaNotice: string | null = null;
+
+  try {
+    [payments, customers] = await Promise.all([
+      getPaymentRows(),
+      prisma.customer.findMany({ orderBy: { fullName: "asc" } })
+    ]);
+  } catch (error) {
+    if (isSchemaMismatchError(error)) {
+      schemaNotice = getSchemaMismatchMessage("Payments");
+    } else {
+      throw error;
+    }
+  }
 
   return (
     <SPTAdminShell title="Payments" role={session.role}>
       <Card>
         <SectionHeader title="Revenue records" text="Record setup fees, subscriptions, management fees, funded payouts, and any manual adjustments in one place." />
-        <form action={createPayment} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Payments are in setup mode" text={schemaNotice} /></div>}
+        {!schemaNotice && <form action={createPayment} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Customer
             <select name="customerId" defaultValue="" className="rounded-md border border-slate-200 px-3 py-2">
@@ -107,12 +125,12 @@ export default async function SPTAdminPaymentsPage() {
           <div className="xl:col-span-4">
             <button className="rounded-md bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950">Save Payment</button>
           </div>
-        </form>
+        </form>}
       </Card>
 
       <Card className="mt-6">
         <SectionHeader title="Payment history" text="This table becomes your first source of truth for customer charges, payment acknowledgements, and revenue checks." />
-        {payments.length ? (
+        {!schemaNotice && payments.length ? (
           <DataTable
             columns={["Customer", "Service", "Amount", "Method", "Status", "Reference", "Date"]}
             rows={payments.map((payment) => [
@@ -125,6 +143,8 @@ export default async function SPTAdminPaymentsPage() {
               payment.paymentDate ? payment.paymentDate.toLocaleDateString() : "Not set"
             ])}
           />
+        ) : schemaNotice ? (
+          <EmptyState title="Payments are not ready yet" text="Once the live payments table is available, this page will show payment records and acknowledgement flows automatically." />
         ) : (
           <EmptyState title="No payments yet" text="Once you begin recording subscription fees, setup fees, and client payments, they will appear here." />
         )}

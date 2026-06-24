@@ -1,11 +1,12 @@
 import { BillingCycle, ExpensePaymentStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { Card, DataTable, EmptyState, SectionHeader, StatusBadge } from "@/components/UI";
+import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
 import { prisma } from "@/lib/prisma";
 import { money, readableEnum } from "@/lib/spt-admin-format";
 import { normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
 import { requireAdmin } from "@/lib/spt-admin-auth";
+import { getSchemaMismatchMessage, isSchemaMismatchError } from "@/lib/spt-admin-schema";
 import { expenseSchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
@@ -47,13 +48,25 @@ async function createExpense(formData: FormData) {
 
 export default async function SPTAdminExpensesPage() {
   const session = await requireAdmin();
-  const expenses = await prisma.expense.findMany({ orderBy: [{ renewalDate: "asc" }, { createdAt: "desc" }] });
+  let expenses = [] as Awaited<ReturnType<typeof prisma.expense.findMany>>;
+  let schemaNotice: string | null = null;
+
+  try {
+    expenses = await prisma.expense.findMany({ orderBy: [{ renewalDate: "asc" }, { createdAt: "desc" }] });
+  } catch (error) {
+    if (isSchemaMismatchError(error)) {
+      schemaNotice = getSchemaMismatchMessage("Expenses");
+    } else {
+      throw error;
+    }
+  }
 
   return (
     <SPTAdminShell title="Expenses" role={session.role}>
       <Card>
         <SectionHeader title="Business expenses" text="Store recurring and one-off operational costs so cash flow, renewals, and vendor payments stay visible." />
-        <form action={createExpense} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Expenses are in setup mode" text={schemaNotice} /></div>}
+        {!schemaNotice && <form action={createExpense} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Expense name
             <input name="name" required className="rounded-md border border-slate-200 px-3 py-2" />
@@ -105,12 +118,12 @@ export default async function SPTAdminExpensesPage() {
           <div className="xl:col-span-4">
             <button className="rounded-md bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950">Save Expense</button>
           </div>
-        </form>
+        </form>}
       </Card>
 
       <Card className="mt-6">
         <SectionHeader title="Expense history" text="Use this view to monitor upcoming renewals, overdue bills, and the operating costs that affect profitability." />
-        {expenses.length ? (
+        {!schemaNotice && expenses.length ? (
           <DataTable
             columns={["Expense", "Category", "Amount", "Cycle", "Status", "Due", "Renewal", "Vendor"]}
             rows={expenses.map((expense) => [
@@ -124,6 +137,8 @@ export default async function SPTAdminExpensesPage() {
               expense.vendor ?? "-"
             ])}
           />
+        ) : schemaNotice ? (
+          <EmptyState title="Expenses are not ready yet" text="This page will come alive as soon as the live expense table is present in production." />
         ) : (
           <EmptyState title="No expenses yet" text="Record your first business expense here to start tracking recurring software, VPS, data, and operational costs." />
         )}
