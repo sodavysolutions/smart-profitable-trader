@@ -1,14 +1,22 @@
 import { ProfitShareStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { Card, DataTable, EmptyState, SectionHeader, StatusBadge } from "@/components/UI";
+import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
 import { prisma } from "@/lib/prisma";
 import { calculateProfitShareValues, normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
 import { money, readableEnum } from "@/lib/spt-admin-format";
 import { requireAdmin } from "@/lib/spt-admin-auth";
+import { getSchemaMismatchMessage, isSchemaMismatchError } from "@/lib/spt-admin-schema";
 import { profitShareSchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
+
+async function getProfitShareRows() {
+  return prisma.profitShare.findMany({
+    include: { customer: true },
+    orderBy: [{ paymentDate: "desc" }, { createdAt: "desc" }]
+  });
+}
 
 async function createProfitShare(formData: FormData) {
   "use server";
@@ -53,19 +61,29 @@ async function createProfitShare(formData: FormData) {
 
 export default async function SPTAdminProfitSharePage() {
   const session = await requireAdmin();
-  const [profitShares, customers] = await Promise.all([
-    prisma.profitShare.findMany({
-      include: { customer: true },
-      orderBy: [{ paymentDate: "desc" }, { createdAt: "desc" }]
-    }),
-    prisma.customer.findMany({ orderBy: { fullName: "asc" } })
-  ]);
+  let profitShares = [] as Awaited<ReturnType<typeof getProfitShareRows>>;
+  let customers = [] as Awaited<ReturnType<typeof prisma.customer.findMany>>;
+  let schemaNotice: string | null = null;
+
+  try {
+    [profitShares, customers] = await Promise.all([
+      getProfitShareRows(),
+      prisma.customer.findMany({ orderBy: { fullName: "asc" } })
+    ]);
+  } catch (error) {
+    if (isSchemaMismatchError(error)) {
+      schemaNotice = getSchemaMismatchMessage("Profit share");
+    } else {
+      throw error;
+    }
+  }
 
   return (
     <SPTAdminShell title="Profit Share" role={session.role}>
       <Card>
         <SectionHeader title="Profit-share records" text="Use 65/35 for setup-fee clients and 50/50 for no-setup-fee clients, with override support whenever a custom agreement applies." />
-        <form action={createProfitShare} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Profit-share records are in setup mode" text={schemaNotice} /></div>}
+        {!schemaNotice && <form action={createProfitShare} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Customer
             <select name="customerId" required className="rounded-md border border-slate-200 px-3 py-2">
@@ -110,12 +128,12 @@ export default async function SPTAdminProfitSharePage() {
           <div className="xl:col-span-4">
             <button className="rounded-md bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950">Save Profit Share</button>
           </div>
-        </form>
+        </form>}
       </Card>
 
       <Card className="mt-6">
         <SectionHeader title="Profit-share history" text="This section tracks what is owed to the client, what belongs to the business, and what has already been paid out." />
-        {profitShares.length ? (
+        {!schemaNotice && profitShares.length ? (
           <DataTable
             columns={["Customer", "Profit", "Client %", "Company %", "Client share", "Company share", "Paid", "Pending", "Status"]}
             rows={profitShares.map((item) => [
@@ -130,6 +148,8 @@ export default async function SPTAdminProfitSharePage() {
               <StatusBadge key={item.id} value={readableEnum(item.status)} />
             ])}
           />
+        ) : schemaNotice ? (
+          <EmptyState title="Profit-share tracking is not ready yet" text="This section will become available once the live profit-share tables and related customer links are fully present in production." />
         ) : (
           <EmptyState title="No profit-share records yet" text="Create the first record here once a funded, evaluation, copy trading, or personal account client becomes eligible for a split." />
         )}

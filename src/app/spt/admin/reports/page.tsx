@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { addMonths, endOfMonth, format, startOfMonth, subMonths } from "date-fns";
-import { Card, DataTable, EmptyState, SectionHeader } from "@/components/UI";
+import { Card, DataTable, EmptyState, InlineNotice, SectionHeader } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
 import { prisma } from "@/lib/prisma";
 import { money, readableEnum } from "@/lib/spt-admin-format";
 import { requireAdmin } from "@/lib/spt-admin-auth";
+import { getSchemaMismatchMessage, isSchemaMismatchError } from "@/lib/spt-admin-schema";
 
 export const dynamic = "force-dynamic";
 
-export default async function SPTAdminReportsPage() {
-  const session = await requireAdmin();
+async function getReportData() {
   const now = new Date();
   const monthStarts = Array.from({ length: 6 }).map((_, index) => startOfMonth(subMonths(now, 5 - index)));
 
@@ -32,6 +32,46 @@ export default async function SPTAdminReportsPage() {
         orderBy: { updatedAt: "desc" }
       })
     ]);
+
+  return {
+    now,
+    monthStarts,
+    payments,
+    expenses,
+    subscriptions,
+    leads,
+    customers,
+    profitShares,
+    evaluationProgress,
+    fundedProgress
+  };
+}
+
+export default async function SPTAdminReportsPage() {
+  const session = await requireAdmin();
+  let schemaNotice: string | null = null;
+  let reportData: Awaited<ReturnType<typeof getReportData>> | null = null;
+
+  try {
+    reportData = await getReportData();
+  } catch (error) {
+    if (isSchemaMismatchError(error)) {
+      schemaNotice = getSchemaMismatchMessage("Reports");
+    } else {
+      throw error;
+    }
+  }
+
+  const now = reportData?.now ?? new Date();
+  const monthStarts = reportData?.monthStarts ?? Array.from({ length: 6 }).map((_, index) => startOfMonth(subMonths(now, 5 - index)));
+  const payments = reportData?.payments ?? [];
+  const expenses = reportData?.expenses ?? [];
+  const subscriptions = reportData?.subscriptions ?? [];
+  const leads = reportData?.leads ?? [];
+  const customers = reportData?.customers ?? [];
+  const profitShares = reportData?.profitShares ?? [];
+  const evaluationProgress = reportData?.evaluationProgress ?? [];
+  const fundedProgress = reportData?.fundedProgress ?? [];
 
   const monthlyPerformance = monthStarts.map((monthStart) => {
     const monthEnd = endOfMonth(monthStart);
@@ -78,6 +118,7 @@ export default async function SPTAdminReportsPage() {
             </Link>
           }
         />
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Reports are in setup mode" text={schemaNotice} /></div>}
         <div className="grid gap-3 md:grid-cols-5">
           {["Date range", "Service type", "Customer", "Staff", "Status"].map((filter) => (
             <select key={filter} aria-label={filter} className="rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-600">
@@ -89,7 +130,7 @@ export default async function SPTAdminReportsPage() {
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
         <Card>
           <SectionHeader title="Monthly revenue vs expenses" text="A quick visual of recorded revenue, operating costs, and net outcome by month." />
-          <div className="space-y-4">
+          {!schemaNotice ? <div className="space-y-4">
             {monthlyPerformance.map((month) => (
               <div key={month.label}>
                 <div className="mb-2 flex items-center justify-between text-sm">
@@ -108,7 +149,7 @@ export default async function SPTAdminReportsPage() {
                 </div>
               </div>
             ))}
-          </div>
+          </div> : <EmptyState title="Reports are not ready yet" text="This reporting area will automatically come alive once the missing business tables are fully available in the live database." />}
         </Card>
         <Card>
           <SectionHeader title="Operational snapshot" text="Use this as a quick business-read panel before drilling deeper into the tables below." />
@@ -131,8 +172,10 @@ export default async function SPTAdminReportsPage() {
       </div>
       <Card className="mt-6">
         <SectionHeader title="Leads by campaign" text="This helps you spot which traffic sources and campaign names are currently producing demand." />
-        {leadsByCampaign.length ? (
+        {!schemaNotice && leadsByCampaign.length ? (
           <DataTable columns={["Campaign", "Lead count"]} rows={leadsByCampaign.map(([campaign, count]) => [campaign, count])} />
+        ) : schemaNotice ? (
+          <EmptyState title="Campaign reporting is not ready yet" text="As soon as the reporting schema is fully in place, campaign summaries and exports will appear here." />
         ) : (
           <EmptyState title="No lead campaigns yet" text="Campaign data will appear here once leads arrive with campaign attribution." />
         )}
@@ -140,7 +183,7 @@ export default async function SPTAdminReportsPage() {
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
         <Card>
           <SectionHeader title="Evaluation account progress" text="Latest live evaluation account performance pulled from account progress records." />
-          {evaluationProgress.length ? (
+          {!schemaNotice && evaluationProgress.length ? (
             <DataTable
               columns={["Customer", "Phase", "Balance", "Profit target", "Current profit", "Status"]}
               rows={evaluationProgress.slice(0, 8).map((row) => [
@@ -152,13 +195,15 @@ export default async function SPTAdminReportsPage() {
                 readableEnum(row.status)
               ])}
             />
+          ) : schemaNotice ? (
+            <EmptyState title="Evaluation reports are not ready yet" text="Evaluation account reporting will appear here once the missing reporting tables and columns are fully live." />
           ) : (
             <EmptyState title="No evaluation progress yet" text="Evaluation records will appear here once account progress data starts flowing in." />
           )}
         </Card>
         <Card>
           <SectionHeader title="Instant funded account progress" text="Track live funded account balances, growth, and status in one operational view." />
-          {fundedProgress.length ? (
+          {!schemaNotice && fundedProgress.length ? (
             <DataTable
               columns={["Customer", "Phase", "Balance", "Current profit", "Growth %", "Status"]}
               rows={fundedProgress.slice(0, 8).map((row) => [
@@ -170,6 +215,8 @@ export default async function SPTAdminReportsPage() {
                 readableEnum(row.status)
               ])}
             />
+          ) : schemaNotice ? (
+            <EmptyState title="Funded account reports are not ready yet" text="This section will turn on automatically once the funded-account reporting schema is fully available in production." />
           ) : (
             <EmptyState title="No funded account progress yet" text="Funded account performance will show here as soon as those records are added." />
           )}
