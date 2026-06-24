@@ -24,7 +24,8 @@ const navItems = [
   { href: "/spt/admin/leads", label: "Leads", icon: Megaphone },
   { href: "/spt/admin/customers", label: "Customers", icon: Users },
   { href: "/spt/admin/applications", label: "Applications", icon: ClipboardList },
-  { href: "/spt/admin/accounts", label: "Account Tracking", icon: LineChart },
+  { href: "/spt/admin/subscriptions", label: "Subscriptions", icon: Bell },
+  { href: "/spt/admin/account-progress", label: "Account Progress", icon: LineChart },
   { href: "/spt/admin/profit-share", label: "Profit Share", icon: BadgeDollarSign },
   { href: "/spt/admin/payments", label: "Payments", icon: CreditCard },
   { href: "/spt/admin/expenses", label: "Expenses", icon: Receipt },
@@ -52,7 +53,7 @@ export function SPTAdminShell({
           </span>
           <span className="leading-tight">
             <span className="block font-semibold">SPT Admin</span>
-            <span className="block text-xs uppercase tracking-[0.14em] text-profit-500">CRM Foundation</span>
+            <span className="block text-xs uppercase tracking-[0.14em] text-profit-500">Live CRM Workspace</span>
           </span>
         </Link>
         <nav className="space-y-1">

@@ -1,33 +1,77 @@
 import Link from "next/link";
-import { Card, SectionHeader } from "@/components/UI";
-import { ExpenseBarChart, RevenueAreaChart } from "@/components/Charts";
+import { addMonths, endOfMonth, format, startOfMonth, subMonths } from "date-fns";
+import { Card, DataTable, EmptyState, SectionHeader } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { prisma } from "@/lib/prisma";
+import { money, readableEnum } from "@/lib/spt-admin-format";
 import { requireAdmin } from "@/lib/spt-admin-auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function SPTAdminReportsPage() {
   const session = await requireAdmin();
-  const reports = [
-    "Monthly revenue",
-    "Monthly expenses",
-    "Profit/loss",
-    "Active customers",
-    "Expired subscriptions",
-    "Leads by campaign",
-    "Conversion rate",
-    "Profit-share summary",
-    "Evaluation account progress",
-    "Funded account withdrawals",
-    "Business subscription renewals"
-  ];
+  const now = new Date();
+  const monthStarts = Array.from({ length: 6 }).map((_, index) => startOfMonth(subMonths(now, 5 - index)));
+
+  const [payments, expenses, subscriptions, leads, customers, profitShares, evaluationProgress, fundedProgress] =
+    await Promise.all([
+      prisma.payment.findMany({ orderBy: { paymentDate: "asc" } }),
+      prisma.expense.findMany({ orderBy: { renewalDate: "asc" } }),
+      prisma.subscription.findMany({ include: { customer: true }, orderBy: { renewalDate: "asc" } }),
+      prisma.lead.findMany({ orderBy: { createdAt: "desc" } }),
+      prisma.customer.findMany({ orderBy: { createdAt: "desc" } }),
+      prisma.profitShare.findMany({ include: { customer: true }, orderBy: { createdAt: "desc" } }),
+      prisma.accountProgress.findMany({
+        where: { serviceType: "EVALUATION" },
+        include: { customer: true },
+        orderBy: { updatedAt: "desc" }
+      }),
+      prisma.accountProgress.findMany({
+        where: { serviceType: "INSTANT_FUNDED" },
+        include: { customer: true },
+        orderBy: { updatedAt: "desc" }
+      })
+    ]);
+
+  const monthlyPerformance = monthStarts.map((monthStart) => {
+    const monthEnd = endOfMonth(monthStart);
+    const label = format(monthStart, "MMM");
+    const revenue = payments
+      .filter((payment) => payment.paymentDate && payment.paymentDate >= monthStart && payment.paymentDate <= monthEnd)
+      .reduce((sum, payment) => sum + Number(payment.amount), 0);
+    const cost = expenses
+      .filter((expense) => expense.createdAt >= monthStart && expense.createdAt <= monthEnd)
+      .reduce((sum, expense) => sum + Number(expense.amount), 0);
+    return {
+      label,
+      revenue,
+      cost,
+      net: revenue - cost
+    };
+  });
+
+  const maxBarValue = Math.max(1, ...monthlyPerformance.flatMap((month) => [month.revenue, month.cost, Math.abs(month.net)]));
+  const activeCustomers = customers.filter((customer) => customer.status === "ACTIVE").length;
+  const expiredSubscriptions = subscriptions.filter((subscription) => subscription.status === "EXPIRED" || subscription.status === "OVERDUE").length;
+  const convertedLeads = leads.filter((lead) => lead.status === "CONVERTED").length;
+  const conversionRate = leads.length ? Math.round((convertedLeads / leads.length) * 100) : 0;
+  const totalRevenue = payments.reduce((sum, payment) => sum + Number(payment.amount), 0);
+  const totalExpenses = expenses.reduce((sum, expense) => sum + Number(expense.amount), 0);
+  const totalProfitSharePending = profitShares.reduce((sum, share) => sum + Number(share.amountPending), 0);
+  const leadsByCampaign = Array.from(
+    leads.reduce((map, lead) => {
+      const key = lead.campaign || "Unassigned";
+      map.set(key, (map.get(key) ?? 0) + 1);
+      return map;
+    }, new Map<string, number>())
+  ).sort((a, b) => b[1] - a[1]);
 
   return (
     <SPTAdminShell title="Reports" role={session.role}>
       <Card>
         <SectionHeader
           title="Report filters"
-          text="Filter by date range, service type, customer, staff, and status. Export the current report to CSV."
+          text="This foundation report is now driven by live database records. CSV export uses your actual leads, customers, payments, expenses, subscriptions, and profit-share entries."
           action={
             <Link href="/api/reports/export" className="rounded-md bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950">
               Export CSV
@@ -44,24 +88,93 @@ export default async function SPTAdminReportsPage() {
       </Card>
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
         <Card>
-          <SectionHeader title="Revenue report" />
-          <RevenueAreaChart />
+          <SectionHeader title="Monthly revenue vs expenses" text="A quick visual of recorded revenue, operating costs, and net outcome by month." />
+          <div className="space-y-4">
+            {monthlyPerformance.map((month) => (
+              <div key={month.label}>
+                <div className="mb-2 flex items-center justify-between text-sm">
+                  <span className="font-semibold text-navy-950">{month.label}</span>
+                  <span className="text-slate-500">
+                    Revenue {money(month.revenue)} · Expenses {money(month.cost)} · Net {money(month.net)}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-3 overflow-hidden rounded-full bg-slate-100">
+                    <div className="h-full rounded-full bg-profit-500" style={{ width: `${(month.revenue / maxBarValue) * 100}%` }} />
+                  </div>
+                  <div className="h-3 overflow-hidden rounded-full bg-slate-100">
+                    <div className="h-full rounded-full bg-navy-950" style={{ width: `${(month.cost / maxBarValue) * 100}%` }} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </Card>
         <Card>
-          <SectionHeader title="Expense and growth report" />
-          <ExpenseBarChart />
+          <SectionHeader title="Operational snapshot" text="Use this as a quick business-read panel before drilling deeper into the tables below." />
+          <div className="grid gap-4 md:grid-cols-2">
+            {[
+              ["Total revenue", money(totalRevenue)],
+              ["Total expenses", money(totalExpenses)],
+              ["Profit share pending", money(totalProfitSharePending)],
+              ["Active customers", activeCustomers],
+              ["Expired or overdue subscriptions", expiredSubscriptions],
+              ["Lead conversion rate", `${conversionRate}%`]
+            ].map(([label, value]) => (
+              <div key={String(label)} className="rounded-md border border-slate-200 p-4">
+                <p className="text-sm font-medium text-slate-500">{label}</p>
+                <p className="mt-2 text-2xl font-semibold text-navy-950">{value}</p>
+              </div>
+            ))}
+          </div>
         </Card>
       </div>
       <Card className="mt-6">
-        <SectionHeader title="Available reports" />
-        <div className="grid gap-3 md:grid-cols-3">
-          {reports.map((report) => (
-            <div key={report} className="rounded-md border border-slate-200 p-4 text-sm font-semibold text-navy-950">
-              {report}
-            </div>
-          ))}
-        </div>
+        <SectionHeader title="Leads by campaign" text="This helps you spot which traffic sources and campaign names are currently producing demand." />
+        {leadsByCampaign.length ? (
+          <DataTable columns={["Campaign", "Lead count"]} rows={leadsByCampaign.map(([campaign, count]) => [campaign, count])} />
+        ) : (
+          <EmptyState title="No lead campaigns yet" text="Campaign data will appear here once leads arrive with campaign attribution." />
+        )}
       </Card>
+      <div className="mt-6 grid gap-6 xl:grid-cols-2">
+        <Card>
+          <SectionHeader title="Evaluation account progress" text="Latest live evaluation account performance pulled from account progress records." />
+          {evaluationProgress.length ? (
+            <DataTable
+              columns={["Customer", "Phase", "Balance", "Profit target", "Current profit", "Status"]}
+              rows={evaluationProgress.slice(0, 8).map((row) => [
+                row.customer.fullName,
+                row.phase ?? "-",
+                money(row.currentBalance),
+                money(row.profitTarget),
+                money(row.currentProfit),
+                readableEnum(row.status)
+              ])}
+            />
+          ) : (
+            <EmptyState title="No evaluation progress yet" text="Evaluation records will appear here once account progress data starts flowing in." />
+          )}
+        </Card>
+        <Card>
+          <SectionHeader title="Instant funded account progress" text="Track live funded account balances, growth, and status in one operational view." />
+          {fundedProgress.length ? (
+            <DataTable
+              columns={["Customer", "Phase", "Balance", "Current profit", "Growth %", "Status"]}
+              rows={fundedProgress.slice(0, 8).map((row) => [
+                row.customer.fullName,
+                row.phase ?? "-",
+                money(row.currentBalance),
+                money(row.currentProfit),
+                `${Number(row.growthPercentage).toFixed(2)}%`,
+                readableEnum(row.status)
+              ])}
+            />
+          ) : (
+            <EmptyState title="No funded account progress yet" text="Funded account performance will show here as soon as those records are added." />
+          )}
+        </Card>
+      </div>
     </SPTAdminShell>
   );
 }

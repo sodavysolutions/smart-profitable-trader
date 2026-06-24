@@ -4,6 +4,24 @@ export function Card({ children, className }: { children: React.ReactNode; class
   return <section className={clsx("rounded-md border border-slate-200 bg-white p-5 shadow-sm", className)}>{children}</section>;
 }
 
+export function EmptyState({
+  title,
+  text,
+  action
+}: {
+  title: string;
+  text: string;
+  action?: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-md border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center">
+      <h3 className="text-lg font-semibold text-navy-950">{title}</h3>
+      <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-600">{text}</p>
+      {action && <div className="mt-4">{action}</div>}
+    </div>
+  );
+}
+
 export function SectionHeader({ title, text, action }: { title: string; text?: string; action?: React.ReactNode }) {
   return (
     <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
@@ -64,7 +82,7 @@ export function DataTable({
             rows.map((row, index) => (
               <tr key={index} className="hover:bg-slate-50">
                 {row.map((cell, cellIndex) => (
-                  <td key={cellIndex} className="whitespace-nowrap px-4 py-3 text-slate-700">
+                  <td key={cellIndex} className="px-4 py-3 align-top text-slate-700">
                     {cell}
                   </td>
                 ))}

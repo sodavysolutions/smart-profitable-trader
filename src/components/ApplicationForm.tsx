@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { services } from "@/lib/data";
 
@@ -17,10 +17,19 @@ const serviceMap: Record<string, string> = {
 export function ApplicationForm({ initialService = "general", thankYouPath = "/thank-you" }: { initialService?: string; thankYouPath?: string }) {
   const router = useRouter();
   const [service, setService] = useState(serviceMap[initialService] ?? "General Inquiry");
+  const [campaign, setCampaign] = useState("");
+  const [source, setSource] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   const current = useMemo(() => services.find((item) => item.title === service), [service]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    setCampaign(params.get("utm_campaign") ?? "");
+    setSource(params.get("utm_source") ?? params.get("source") ?? "");
+  }, []);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,18 +37,21 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
     setSubmitting(true);
     try {
       const formData = new FormData(event.currentTarget);
+      const payload = Object.fromEntries(formData.entries());
       const response = await fetch("/api/applications", {
         method: "POST",
-        body: JSON.stringify(Object.fromEntries(formData.entries())),
+        body: JSON.stringify(payload),
         headers: { "Content-Type": "application/json" }
       });
+
+      const result = await response.json().catch(() => null);
 
       if (response.ok) {
         router.push(thankYouPath);
         return;
       }
 
-      setError("Please check your details and try submitting again.");
+      setError(result?.error ?? "Please check your details and try submitting again.");
     } catch {
       setError("We could not submit your application. Please check your connection and try again.");
     } finally {
@@ -65,8 +77,9 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
           ))}
         </select>
       </label>
+      <input type="hidden" name="campaign" value={campaign} />
       <div className="grid gap-4 md:grid-cols-2">
-        <Field name="source" label="How did you hear about us?" />
+        <Field name="source" label="How did you hear about us?" defaultValue={source} />
         {service.includes("Copy") && (
           <>
             <Field name="broker" label="Broker" />
@@ -123,7 +136,8 @@ function Field({
   type = "text",
   required = false,
   autoComplete,
-  inputMode
+  inputMode,
+  defaultValue
 }: {
   name: string;
   label: string;
@@ -131,13 +145,14 @@ function Field({
   required?: boolean;
   autoComplete?: string;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  defaultValue?: string;
 }) {
   const id = `application-${name}`;
 
   return (
     <label htmlFor={id} className="grid gap-1 text-sm font-medium text-slate-700">
       {label}
-      <input id={id} name={name} type={type} required={required} autoComplete={autoComplete} inputMode={inputMode} className="rounded-md border border-slate-200 px-3 py-2" />
+      <input id={id} name={name} type={type} required={required} autoComplete={autoComplete} inputMode={inputMode} defaultValue={defaultValue} className="rounded-md border border-slate-200 px-3 py-2" />
     </label>
   );
 }

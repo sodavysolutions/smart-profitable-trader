@@ -1,9 +1,12 @@
 import { revalidatePath } from "next/cache";
-import { Card, DataTable, SectionHeader, StatusBadge } from "@/components/UI";
+import { Card, DataTable, EmptyState, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { sendWelcomeWorkflow } from "@/lib/message-workflows";
 import { prisma } from "@/lib/prisma";
+import { inferCustomerType, normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
 import { readableEnum } from "@/lib/spt-admin-format";
 import { requireAdmin } from "@/lib/spt-admin-auth";
+import { leadUpdateSchema } from "@/lib/validation";
 import type { LeadStatus } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -13,19 +16,22 @@ const leadStatuses: LeadStatus[] = ["NEW", "CONTACTED", "INTERESTED", "FOLLOW_UP
 async function updateLead(formData: FormData) {
   "use server";
   const session = await requireAdmin();
-  const id = String(formData.get("id"));
-  const status = String(formData.get("status")) as LeadStatus;
-  const notes = String(formData.get("notes") ?? "");
+  const parsed = leadUpdateSchema.safeParse(Object.fromEntries(formData.entries()));
+
+  if (!parsed.success) {
+    throw new Error("Invalid lead update details.");
+  }
 
   await prisma.lead.update({
-    where: { id },
+    where: { id: parsed.data.id },
     data: {
-      status,
-      notes: notes || undefined,
+      status: parsed.data.status,
+      notes: normalizeText(parsed.data.notes) ?? undefined,
+      nextFollowUpAt: normalizeDate(parsed.data.nextFollowUpAt),
       activityLogs: {
         create: {
           type: "LEAD_UPDATED",
-          description: `Lead status updated to ${status}.`,
+          description: `Lead status updated to ${parsed.data.status}.`,
           userId: session.userId
         }
       }
@@ -39,18 +45,21 @@ async function convertLead(formData: FormData) {
   const session = await requireAdmin();
   const id = String(formData.get("id"));
   const lead = await prisma.lead.findUniqueOrThrow({ where: { id } });
-  const customerType = lead.serviceInterest.toLowerCase().includes("vip")
-    ? "VIP_SIGNALS"
-    : lead.serviceInterest.toLowerCase().includes("copy")
-      ? "COPY_TRADING"
-      : lead.serviceInterest.toLowerCase().includes("funded")
-        ? "INSTANT_FUNDED"
-        : lead.serviceInterest.toLowerCase().includes("evaluation")
-          ? "EVALUATION"
-          : "PERSONAL_ACCOUNT";
+  const customerType = inferCustomerType(lead.serviceInterest);
 
-  await prisma.customer.create({
-    data: {
+  const customer = await prisma.customer.upsert({
+    where: { email: lead.email },
+    update: {
+      fullName: lead.fullName,
+      phone: lead.phone,
+      whatsapp: lead.whatsapp,
+      country: lead.country,
+      city: lead.city,
+      customerType,
+      status: "PENDING_SETUP",
+      notes: lead.notes
+    },
+    create: {
       fullName: lead.fullName,
       email: lead.email,
       phone: lead.phone,
@@ -70,7 +79,21 @@ async function convertLead(formData: FormData) {
     }
   });
 
-  await prisma.lead.update({ where: { id }, data: { status: "CONVERTED" } });
+  await sendWelcomeWorkflow(customer.id);
+
+  await prisma.lead.update({
+    where: { id },
+    data: {
+      status: "CONVERTED",
+      activityLogs: {
+        create: {
+          type: "LEAD_CONVERTED",
+          description: `Lead converted into a customer record.`,
+          userId: session.userId
+        }
+      }
+    }
+  });
   revalidatePath("/spt/admin/leads");
   revalidatePath("/spt/admin/customers");
 }
@@ -106,23 +129,30 @@ export default async function SPTAdminLeadsPage({ searchParams }: { searchParams
         />
       </Card>
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
-        {leads.slice(0, 8).map((lead) => (
-          <Card key={lead.id}>
-            <SectionHeader title={lead.fullName} text={`${lead.email} · ${lead.serviceInterest}`} />
-            <form action={updateLead} className="grid gap-3">
-              <input type="hidden" name="id" value={lead.id} />
-              <select name="status" defaultValue={lead.status} className="rounded-md border border-slate-200 px-3 py-2 text-sm">
-                {leadStatuses.map((item) => <option key={item} value={item}>{readableEnum(item)}</option>)}
-              </select>
-              <textarea name="notes" defaultValue={lead.notes ?? ""} rows={3} placeholder="Add notes" className="rounded-md border border-slate-200 px-3 py-2 text-sm" />
-              <button className="rounded-md bg-navy-950 px-4 py-2 text-sm font-bold text-white">Update Lead</button>
-            </form>
-            <form action={convertLead} className="mt-3">
-              <input type="hidden" name="id" value={lead.id} />
-              <button className="rounded-md bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950">Convert to Customer</button>
-            </form>
-          </Card>
-        ))}
+        {leads.length ? (
+          leads.slice(0, 8).map((lead) => (
+            <Card key={lead.id}>
+              <SectionHeader title={lead.fullName} text={`${lead.email} · ${lead.serviceInterest}`} />
+              <form action={updateLead} className="grid gap-3">
+                <input type="hidden" name="id" value={lead.id} />
+                <select name="status" defaultValue={lead.status} className="rounded-md border border-slate-200 px-3 py-2 text-sm">
+                  {leadStatuses.map((item) => <option key={item} value={item}>{readableEnum(item)}</option>)}
+                </select>
+                <input type="date" name="nextFollowUpAt" defaultValue={lead.nextFollowUpAt ? lead.nextFollowUpAt.toISOString().slice(0, 10) : ""} className="rounded-md border border-slate-200 px-3 py-2 text-sm" />
+                <textarea name="notes" defaultValue={lead.notes ?? ""} rows={3} placeholder="Add notes" className="rounded-md border border-slate-200 px-3 py-2 text-sm" />
+                <button className="rounded-md bg-navy-950 px-4 py-2 text-sm font-bold text-white">Update Lead</button>
+              </form>
+              <form action={convertLead} className="mt-3">
+                <input type="hidden" name="id" value={lead.id} />
+                <button className="rounded-md bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950">Convert to Customer</button>
+              </form>
+            </Card>
+          ))
+        ) : (
+          <div className="lg:col-span-2">
+            <EmptyState title="No leads yet" text="Website submissions and manually added prospects will appear here once the funnel starts bringing in interest." />
+          </div>
+        )}
       </div>
     </SPTAdminShell>
   );

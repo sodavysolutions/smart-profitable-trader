@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum UserRole {
@@ -59,6 +60,43 @@ enum ApplicationStatus {
   CONVERTED
 }
 
+enum SubscriptionType {
+  CUSTOMER_SUBSCRIPTION
+  BUSINESS_EXPENSE
+}
+
+enum BillingCycle {
+  ONE_TIME
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  UPCOMING
+  OVERDUE
+  PAUSED
+  CANCELLED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_PAID
+}
+
+enum ExpensePaymentStatus {
+  PAID
+  UPCOMING
+  OVERDUE
+  CANCELLED
+}
+
 enum CommunicationChannel {
   EMAIL
   WHATSAPP
@@ -71,16 +109,24 @@ enum CommunicationStatus {
   FAILED
 }
 
+enum ProfitShareStatus {
+  PENDING
+  PARTIALLY_PAID
+  PAID
+  DISPUTED
+  CANCELLED
+}
+
 model User {
-  id           String             @id @default(cuid())
+  id           String          @id @default(cuid())
   name         String
-  email        String             @unique
+  email        String          @unique
   passwordHash String
-  role         UserRole           @default(STAFF)
-  assignedLeads Lead[]            @relation("AssignedLead")
+  role         UserRole        @default(STAFF)
+  assignedLeads Lead[]         @relation("AssignedLead")
   activityLogs ActivityLog[]
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 }
 
 model Lead {
@@ -94,47 +140,52 @@ model Lead {
   serviceInterest String
   leadSource      String?
   campaign        String?
-  status          LeadStatus          @default(NEW)
+  status          LeadStatus         @default(NEW)
   assignedToId    String?
-  assignedTo      User?               @relation("AssignedLead", fields: [assignedToId], references: [id])
+  assignedTo      User?              @relation("AssignedLead", fields: [assignedToId], references: [id])
   notes           String?
   lastContactedAt DateTime?
   nextFollowUpAt  DateTime?
   activityLogs    ActivityLog[]
   communications  CommunicationLog[]
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 }
 
 model Customer {
-  id                 String             @id @default(cuid())
-  fullName           String
-  email              String             @unique
-  phone              String?
-  whatsapp           String?
-  country            String?
-  city               String?
-  customerType       CustomerType
-  accountPlatform    AccountPlatform?
-  brokerOrPropFirm   String?
-  accountLogin       String?
-  initialCapital     Decimal            @default(0)
-  currentBalance     Decimal            @default(0)
-  currentEquity      Decimal            @default(0)
-  status             CustomerStatus      @default(PENDING_SETUP)
-  startDate          DateTime?
-  renewalDate        DateTime?
-  profitShareTier    String?
-  setupFeeStatus     String?
-  notes              String?
-  activityLogs       ActivityLog[]
-  communications     CommunicationLog[]
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
+  id               String             @id @default(cuid())
+  fullName         String
+  email            String             @unique
+  phone            String?
+  whatsapp         String?
+  dateOfBirth      DateTime?
+  country          String?
+  city             String?
+  customerType     CustomerType
+  accountPlatform  AccountPlatform?
+  brokerOrPropFirm String?
+  accountLogin     String?
+  initialCapital   Decimal            @default(0)
+  currentBalance   Decimal            @default(0)
+  currentEquity    Decimal            @default(0)
+  status           CustomerStatus     @default(PENDING_SETUP)
+  startDate        DateTime?
+  renewalDate      DateTime?
+  profitShareTier  String?
+  setupFeeStatus   String?
+  notes            String?
+  subscriptions    Subscription[]
+  payments         Payment[]
+  profitShares     ProfitShare[]
+  accountProgress  AccountProgress[]
+  activityLogs     ActivityLog[]
+  communications   CommunicationLog[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 }
 
 model Application {
-  id                String             @id @default(cuid())
+  id                String            @id @default(cuid())
   fullName          String
   email             String
   phone             String?
@@ -148,11 +199,113 @@ model Application {
   broker            String?
   tradingExperience String?
   message           String?
-  status            ApplicationStatus  @default(NEW)
+  status            ApplicationStatus @default(NEW)
   activityLogs      ActivityLog[]
   communications    CommunicationLog[]
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+model Subscription {
+  id              String             @id @default(cuid())
+  name            String
+  type            SubscriptionType
+  customerId      String?
+  customer        Customer?          @relation(fields: [customerId], references: [id])
+  expenseId       String?            @unique
+  expense         Expense?           @relation(fields: [expenseId], references: [id])
+  relatedName     String?
+  amount          Decimal            @default(0)
+  currency        String             @default("USD")
+  startDate       DateTime?
+  renewalDate     DateTime?
+  billingCycle    BillingCycle       @default(MONTHLY)
+  status          SubscriptionStatus @default(ACTIVE)
+  reminderEnabled Boolean            @default(true)
+  notes           String?
+  activityLogs    ActivityLog[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+model Payment {
+  id               String         @id @default(cuid())
+  customerId       String?
+  customer         Customer?      @relation(fields: [customerId], references: [id])
+  serviceType      String
+  amount           Decimal        @default(0)
+  currency         String         @default("USD")
+  paymentDate      DateTime?
+  paymentMethod    String?
+  status           PaymentStatus  @default(PENDING)
+  invoiceReference String?
+  notes            String?
+  activityLogs     ActivityLog[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Expense {
+  id            String               @id @default(cuid())
+  name          String
+  category      String
+  amount        Decimal              @default(0)
+  currency      String               @default("USD")
+  billingCycle  BillingCycle         @default(MONTHLY)
+  dueDate       DateTime?
+  renewalDate   DateTime?
+  paymentStatus ExpensePaymentStatus @default(UPCOMING)
+  paymentMethod String?
+  vendor        String?
+  notes         String?
+  subscription  Subscription?
+  activityLogs  ActivityLog[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+}
+
+model ProfitShare {
+  id                String            @id @default(cuid())
+  customerId        String
+  customer          Customer          @relation(fields: [customerId], references: [id])
+  totalProfit       Decimal           @default(0)
+  clientPercentage  Decimal           @default(65)
+  companyPercentage Decimal           @default(35)
+  clientShare       Decimal           @default(0)
+  companyShare      Decimal           @default(0)
+  amountPaid        Decimal           @default(0)
+  amountPending     Decimal           @default(0)
+  paymentDate       DateTime?
+  status            ProfitShareStatus @default(PENDING)
+  notes             String?
+  activityLogs      ActivityLog[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+}
+
+model AccountProgress {
+  id                String         @id @default(cuid())
+  customerId        String
+  customer          Customer       @relation(fields: [customerId], references: [id])
+  serviceType       CustomerType
+  phase             String?
+  accountSize       Decimal        @default(0)
+  currentBalance    Decimal        @default(0)
+  currentEquity     Decimal        @default(0)
+  profitTarget      Decimal        @default(0)
+  currentProfit     Decimal        @default(0)
+  growthPercentage  Decimal        @default(0)
+  drawdownLimit     Decimal        @default(0)
+  currentDrawdown   Decimal        @default(0)
+  dailyDrawdown     Decimal        @default(0)
+  maxDrawdown       Decimal        @default(0)
+  daysTraded        Int            @default(0)
+  minimumTradeDays  Int            @default(0)
+  status            String
+  notes             String?
+  activityLogs      ActivityLog[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 }
 
 model ActivityLog {
@@ -165,6 +318,16 @@ model ActivityLog {
   customer      Customer?    @relation(fields: [customerId], references: [id])
   applicationId String?
   application   Application? @relation(fields: [applicationId], references: [id])
+  subscriptionId String?
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  paymentId      String?
+  payment        Payment?    @relation(fields: [paymentId], references: [id])
+  expenseId      String?
+  expense        Expense?    @relation(fields: [expenseId], references: [id])
+  profitShareId  String?
+  profitShare    ProfitShare? @relation(fields: [profitShareId], references: [id])
+  accountProgressId String?
+  accountProgress   AccountProgress? @relation(fields: [accountProgressId], references: [id])
   userId        String?
   user          User?        @relation(fields: [userId], references: [id])
   createdAt     DateTime     @default(now())
@@ -183,6 +346,7 @@ model CommunicationLog {
   customer      Customer?           @relation(fields: [customerId], references: [id])
   applicationId String?
   application   Application?        @relation(fields: [applicationId], references: [id])
+  sentAt        DateTime?
   createdAt     DateTime            @default(now())
 }
 
