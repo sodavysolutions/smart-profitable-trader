@@ -6,7 +6,7 @@ const funnelNav = [
   { href: "/spt/home#trading-solutions", label: "Trading Solutions" },
   { href: "/spt/home#smart-profit-algo", label: "Smart Profit Algo" },
   { href: "/spt/home#founder", label: "Founder" },
-  { href: "/spt/home#faq", label: "Questions" }
+  { href: "/spt/home#faq", label: "FAQ" }
 ];
 
 export function PublicShell({ children }: { children: React.ReactNode }) {

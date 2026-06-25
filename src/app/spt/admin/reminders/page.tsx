@@ -160,11 +160,11 @@ export default async function SPTAdminRemindersPage() {
             </div>
           }
         />
-        {schemaNotice && <div className="mb-5"><InlineNotice title="Reminders are in setup mode" text={schemaNotice} /></div>}
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Reminders are still being prepared" text={schemaNotice} /></div>}
         {!schemaNotice ? (
           <DataTable columns={["Workflow", "State", "Notes"]} rows={workflowRows} />
         ) : (
-          <EmptyState title="Reminder workflows are not ready yet" text="This area will become available as soon as the subscription, settings, and communication tables are fully live in the production database." />
+          <EmptyState title="Reminder workflows are still being prepared" text="This area will become available as soon as the subscription, settings, and communication tables are fully live in the production database." />
         )}
       </Card>
       <Card className="mb-6">
@@ -210,8 +210,8 @@ export default async function SPTAdminRemindersPage() {
           />
         ) : schemaNotice ? (
           <EmptyState
-            title="Reminder queue is not ready yet"
-            text="The live renewal queue will turn on automatically once the missing reminder and subscription fields are available in the production database."
+            title="Reminder queue is still being prepared"
+            text="The live renewal queue will turn on automatically once the remaining reminder and subscription fields are available in the production database."
           />
         ) : (
           <EmptyState

@@ -82,7 +82,7 @@ export default async function SPTAdminProfitSharePage() {
     <SPTAdminShell title="Profit Share" role={session.role}>
       <Card>
         <SectionHeader title="Profit-share records" text="Use 65/35 for setup-fee clients and 50/50 for no-setup-fee clients, with override support whenever a custom agreement applies." />
-        {schemaNotice && <div className="mb-5"><InlineNotice title="Profit-share records are in setup mode" text={schemaNotice} /></div>}
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Profit-share records are still being prepared" text={schemaNotice} /></div>}
         {!schemaNotice && <form action={createProfitShare} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Customer
@@ -149,7 +149,7 @@ export default async function SPTAdminProfitSharePage() {
             ])}
           />
         ) : schemaNotice ? (
-          <EmptyState title="Profit-share tracking is not ready yet" text="This section will become available once the live profit-share tables and related customer links are fully present in production." />
+          <EmptyState title="Profit-share tracking is still being prepared" text="This section will become available once the live profit-share tables and related customer links are fully present in production." />
         ) : (
           <EmptyState title="No profit-share records yet" text="Create the first record here once a funded, evaluation, copy trading, or personal account client becomes eligible for a split." />
         )}

@@ -115,7 +115,7 @@ export function DataTable({
           ) : (
             <tr>
               <td colSpan={columns.length} className="px-4 py-8 text-center text-sm text-slate-500">
-                No records to display.
+                No records yet.
               </td>
             </tr>
           )}

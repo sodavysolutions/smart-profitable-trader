@@ -21,18 +21,18 @@ import type { UserRole } from "@prisma/client";
 
 const navItems = [
   { href: "/spt/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/spt/admin/leads", label: "Leads", icon: Megaphone },
-  { href: "/spt/admin/customers", label: "Customers", icon: Users },
+  { href: "/spt/admin/leads", label: "Lead Pipeline", icon: Megaphone },
+  { href: "/spt/admin/customers", label: "Customer Records", icon: Users },
   { href: "/spt/admin/applications", label: "Applications", icon: ClipboardList },
-  { href: "/spt/admin/subscriptions", label: "Subscriptions", icon: Bell },
-  { href: "/spt/admin/account-progress", label: "Account Progress", icon: LineChart },
+  { href: "/spt/admin/subscriptions", label: "Subscription Center", icon: Bell },
+  { href: "/spt/admin/account-progress", label: "Account Tracking", icon: LineChart },
   { href: "/spt/admin/profit-share", label: "Profit Share", icon: BadgeDollarSign },
   { href: "/spt/admin/payments", label: "Payments", icon: CreditCard },
-  { href: "/spt/admin/expenses", label: "Expenses", icon: Receipt },
+  { href: "/spt/admin/expenses", label: "Business Expenses", icon: Receipt },
   { href: "/spt/admin/reminders", label: "Reminders", icon: Bell },
-  { href: "/spt/admin/communications", label: "Communications", icon: MessageSquare },
-  { href: "/spt/admin/reports", label: "Reports", icon: ChartNoAxesCombined },
-  { href: "/spt/admin/settings", label: "Settings", icon: Settings }
+  { href: "/spt/admin/communications", label: "Message Center", icon: MessageSquare },
+  { href: "/spt/admin/reports", label: "Business Reports", icon: ChartNoAxesCombined },
+  { href: "/spt/admin/settings", label: "Workspace Settings", icon: Settings }
 ];
 
 export function SPTAdminShell({
@@ -53,7 +53,7 @@ export function SPTAdminShell({
           </span>
           <span className="leading-tight">
             <span className="block font-semibold">SPT Admin</span>
-            <span className="block text-xs uppercase tracking-[0.14em] text-profit-500">Live CRM Workspace</span>
+            <span className="block text-xs uppercase tracking-[0.14em] text-profit-500">Business Control Center</span>
           </span>
         </Link>
         <nav className="space-y-1">
@@ -68,7 +68,7 @@ export function SPTAdminShell({
           })}
         </nav>
         <div className="absolute bottom-5 left-5 right-5 rounded-md border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
-          <div className="font-semibold text-white">Admin access</div>
+          <div className="font-semibold text-white">Access level</div>
           <p className="mt-1 leading-5">Role: {String(role).replaceAll("_", " ")}</p>
         </div>
       </aside>
@@ -82,7 +82,7 @@ export function SPTAdminShell({
             <div className="flex items-center gap-3">
               <div className="hidden h-10 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 sm:flex">
                 <Search size={17} className="text-slate-400" />
-                <span className="text-sm text-slate-500">Search CRM records</span>
+                <span className="text-sm text-slate-500">Search records</span>
               </div>
               <button className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white text-slate-600">
                 <Bell size={18} />

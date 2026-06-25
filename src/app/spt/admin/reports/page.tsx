@@ -107,7 +107,7 @@ export default async function SPTAdminReportsPage() {
   ).sort((a, b) => b[1] - a[1]);
 
   return (
-    <SPTAdminShell title="Reports" role={session.role}>
+    <SPTAdminShell title="Business Reports" role={session.role}>
       <Card>
         <SectionHeader
           title="Report filters"
@@ -118,7 +118,7 @@ export default async function SPTAdminReportsPage() {
             </Link>
           }
         />
-        {schemaNotice && <div className="mb-5"><InlineNotice title="Reports are in setup mode" text={schemaNotice} /></div>}
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Reports are still being prepared" text={schemaNotice} /></div>}
         <div className="grid gap-3 md:grid-cols-5">
           {["Date range", "Service type", "Customer", "Staff", "Status"].map((filter) => (
             <select key={filter} aria-label={filter} className="rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-600">
@@ -149,7 +149,7 @@ export default async function SPTAdminReportsPage() {
                 </div>
               </div>
             ))}
-          </div> : <EmptyState title="Reports are not ready yet" text="This reporting area will automatically come alive once the missing business tables are fully available in the live database." />}
+          </div> : <EmptyState title="Reports are still being prepared" text="This reporting area will come online once the remaining business tables are fully available in the live database." />}
         </Card>
         <Card>
           <SectionHeader title="Operational snapshot" text="Use this as a quick business-read panel before drilling deeper into the tables below." />
@@ -175,9 +175,9 @@ export default async function SPTAdminReportsPage() {
         {!schemaNotice && leadsByCampaign.length ? (
           <DataTable columns={["Campaign", "Lead count"]} rows={leadsByCampaign.map(([campaign, count]) => [campaign, count])} />
         ) : schemaNotice ? (
-          <EmptyState title="Campaign reporting is not ready yet" text="As soon as the reporting schema is fully in place, campaign summaries and exports will appear here." />
+          <EmptyState title="Campaign reporting is still being prepared" text="Campaign summaries and exports will appear here as soon as the reporting schema is fully in place." />
         ) : (
-          <EmptyState title="No lead campaigns yet" text="Campaign data will appear here once leads arrive with campaign attribution." />
+          <EmptyState title="No campaign data yet" text="Campaign data will appear here once leads begin arriving with campaign attribution." />
         )}
       </Card>
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
@@ -196,9 +196,9 @@ export default async function SPTAdminReportsPage() {
               ])}
             />
           ) : schemaNotice ? (
-            <EmptyState title="Evaluation reports are not ready yet" text="Evaluation account reporting will appear here once the missing reporting tables and columns are fully live." />
+            <EmptyState title="Evaluation reports are still being prepared" text="Evaluation account reporting will appear here once the remaining reporting tables and fields are fully live." />
           ) : (
-            <EmptyState title="No evaluation progress yet" text="Evaluation records will appear here once account progress data starts flowing in." />
+            <EmptyState title="No evaluation activity yet" text="Evaluation records will appear here once account progress data starts flowing in." />
           )}
         </Card>
         <Card>
@@ -216,9 +216,9 @@ export default async function SPTAdminReportsPage() {
               ])}
             />
           ) : schemaNotice ? (
-            <EmptyState title="Funded account reports are not ready yet" text="This section will turn on automatically once the funded-account reporting schema is fully available in production." />
+            <EmptyState title="Funded account reports are still being prepared" text="This section will turn on once the funded-account reporting schema is fully available in production." />
           ) : (
-            <EmptyState title="No funded account progress yet" text="Funded account performance will show here as soon as those records are added." />
+            <EmptyState title="No funded account activity yet" text="Funded account performance will show here as soon as those records are added." />
           )}
         </Card>
       </div>

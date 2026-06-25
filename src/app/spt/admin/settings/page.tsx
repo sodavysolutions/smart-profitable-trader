@@ -66,7 +66,7 @@ export default async function SPTAdminSettingsPage() {
   const values = Object.fromEntries(settings.map((setting) => [setting.key, setting.value]));
 
   return (
-    <SPTAdminShell title="Settings" role={session.role}>
+    <SPTAdminShell title="Workspace Settings" role={session.role}>
       <Card className="mb-6">
         <SectionHeader
           title="Provider status"

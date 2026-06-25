@@ -112,10 +112,10 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
   }
 
   return (
-    <SPTAdminShell title="Customers" role={session.role}>
+    <SPTAdminShell title="Customer Records" role={session.role}>
       <Card>
-        <SectionHeader title="Customer management" text="Search, filter, add notes, and update balance, equity, customer status, and birthdays for automation." />
-        {schemaNotice && <div className="mb-5"><InlineNotice title="Customer records are in setup mode" text={schemaNotice} /></div>}
+        <SectionHeader title="Customer records" text="Search, filter, add notes, and keep balances, equity, status, renewal dates, and birthdays up to date." />
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Customer records are still being prepared" text={schemaNotice} /></div>}
         {!schemaNotice && <details className="mb-5 rounded-xl border border-slate-200 bg-slate-50/60 p-4">
           <summary className="cursor-pointer list-none text-sm font-bold text-navy-950">Add customer</summary>
           <form action={createCustomer} className="mt-4 grid gap-3 md:grid-cols-2">
@@ -208,11 +208,11 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
           ))
         ) : schemaNotice ? (
           <div className="lg:col-span-2">
-            <EmptyState title="Customer records are not ready yet" text="Once the live database repair finishes, customer search, birthdays, and balance tracking will appear here automatically." />
+            <EmptyState title="Customer records are still being prepared" text="As soon as the live database update is fully in place, this page will start showing customer search, birthdays, and balance tracking." />
           </div>
         ) : (
           <div className="lg:col-span-2">
-            <EmptyState title="No customers yet" text="Converted leads, approved applications, and manually created client records will show up here once your operations begin." />
+            <EmptyState title="No customers yet" text="Converted leads, approved applications, and manually created client records will appear here once you start onboarding clients." />
           </div>
         )}
       </div>

@@ -11,7 +11,7 @@ const sptLinks = [
   { href: "/spt/home#trading-solutions", label: "Trading Solutions", shortLabel: "Trading Solutions" },
   { href: "/spt/home#smart-profit-algo", label: "Smart Profit Algo", shortLabel: "Smart Profit Algo" },
   { href: "/spt/home#founder", label: "Meet the Founder", shortLabel: "Founder" },
-  { href: "/spt/home#faq", label: "Questions", shortLabel: "Questions" }
+  { href: "/spt/home#faq", label: "FAQ", shortLabel: "FAQ" }
 ];
 
 const whatsappUrl = "https://wa.me/2347087970133";

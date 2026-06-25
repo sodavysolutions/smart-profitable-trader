@@ -62,10 +62,10 @@ export default async function SPTAdminExpensesPage() {
   }
 
   return (
-    <SPTAdminShell title="Expenses" role={session.role}>
+    <SPTAdminShell title="Business Expenses" role={session.role}>
       <Card>
         <SectionHeader title="Business expenses" text="Store recurring and one-off operational costs so cash flow, renewals, and vendor payments stay visible." />
-        {schemaNotice && <div className="mb-5"><InlineNotice title="Expenses are in setup mode" text={schemaNotice} /></div>}
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Expenses are still being prepared" text={schemaNotice} /></div>}
         {!schemaNotice && <form action={createExpense} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Expense name
@@ -138,9 +138,9 @@ export default async function SPTAdminExpensesPage() {
             ])}
           />
         ) : schemaNotice ? (
-          <EmptyState title="Expenses are not ready yet" text="This page will come alive as soon as the live expense table is present in production." />
+          <EmptyState title="Expenses are still being prepared" text="This page will come online as soon as the live expense table is available in production." />
         ) : (
-          <EmptyState title="No expenses yet" text="Record your first business expense here to start tracking recurring software, VPS, data, and operational costs." />
+          <EmptyState title="No expenses yet" text="Record your first business expense here to start tracking software, VPS, data, and day-to-day operating costs." />
         )}
       </Card>
     </SPTAdminShell>

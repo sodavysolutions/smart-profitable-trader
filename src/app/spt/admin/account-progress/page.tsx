@@ -106,10 +106,10 @@ export default async function SPTAdminAccountProgressPage() {
   }
 
   return (
-    <SPTAdminShell title="Account Progress" role={session.role}>
+    <SPTAdminShell title="Account Tracking" role={session.role}>
       <Card>
-        <SectionHeader title="Account progress tracker" text="Capture prop firm phases, copy trading balance changes, drawdown usage, and personal account updates from one place." />
-        {schemaNotice && <div className="mb-5"><InlineNotice title="Account progress is in setup mode" text={schemaNotice} /></div>}
+        <SectionHeader title="Account tracking" text="Capture prop firm phases, copy trading balance changes, drawdown usage, and personal account updates from one place." />
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Account tracking is still being prepared" text={schemaNotice} /></div>}
         {!schemaNotice && <form action={createAccountProgress} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Customer
@@ -178,12 +178,12 @@ export default async function SPTAdminAccountProgressPage() {
               ])}
             />
           ) : (
-            <EmptyState title="No account progress yet" text="Once you save copy trading, prop evaluation, funded, or personal account performance, it will appear here." />
+            <EmptyState title="No account activity yet" text="Copy trading, prop evaluation, funded, and personal account performance will appear here once you start saving updates." />
           )}
         </Card>
 
         <Card>
-          <SectionHeader title="Target and drawdown view" text="Use these bars for a quick operational read on how close each account is to target and how much drawdown is being used." />
+          <SectionHeader title="Target and drawdown view" text="Use these bars for a quick operating view of how close each account is to target and how much drawdown is being used." />
           <div className="space-y-4">
             {!schemaNotice && progressRows.length ? (
               progressRows.slice(0, 8).map((row) => {
@@ -223,7 +223,7 @@ export default async function SPTAdminAccountProgressPage() {
                 );
               })
             ) : (
-              <EmptyState title="Nothing to monitor yet" text="Your target progress and drawdown usage widgets will populate as soon as account progress records are entered." />
+              <EmptyState title="Nothing to monitor yet" text="These target progress and drawdown widgets will populate as soon as account tracking records are entered." />
             )}
           </div>
         </Card>

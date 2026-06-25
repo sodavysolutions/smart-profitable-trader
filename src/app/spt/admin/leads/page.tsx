@@ -111,9 +111,9 @@ export default async function SPTAdminLeadsPage({ searchParams }: { searchParams
   });
 
   return (
-    <SPTAdminShell title="Leads" role={session.role}>
+    <SPTAdminShell title="Lead Pipeline" role={session.role}>
       <Card>
-        <SectionHeader title="Lead management" text="Search, filter, update status, add notes, and convert qualified leads into customers." action={<button className="rounded-md bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950">Add Lead</button>} />
+        <SectionHeader title="Lead pipeline" text="Review new interest, update follow-up status, add notes, and convert qualified leads into customers." action={<button className="rounded-md bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950">Add Lead</button>} />
         <form className="mb-4 grid gap-3 md:grid-cols-4">
           <input name="q" defaultValue={q} placeholder="Search name or email" className="rounded-md border border-slate-200 px-3 py-2 text-sm" />
           <select name="status" defaultValue={status ?? ""} className="rounded-md border border-slate-200 px-3 py-2 text-sm">
@@ -150,7 +150,7 @@ export default async function SPTAdminLeadsPage({ searchParams }: { searchParams
           ))
         ) : (
           <div className="lg:col-span-2">
-            <EmptyState title="No leads yet" text="Website submissions and manually added prospects will appear here once the funnel starts bringing in interest." />
+            <EmptyState title="No leads yet" text="New website enquiries and manually added prospects will appear here as soon as interest starts coming in." />
           </div>
         )}
       </div>

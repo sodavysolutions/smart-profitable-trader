@@ -78,8 +78,8 @@ export default async function SPTAdminPaymentsPage() {
   return (
     <SPTAdminShell title="Payments" role={session.role}>
       <Card>
-        <SectionHeader title="Revenue records" text="Record setup fees, subscriptions, management fees, funded payouts, and any manual adjustments in one place." />
-        {schemaNotice && <div className="mb-5"><InlineNotice title="Payments are in setup mode" text={schemaNotice} /></div>}
+        <SectionHeader title="Payment records" text="Record setup fees, subscriptions, management fees, funded payouts, and any manual adjustments in one place." />
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Payments are still being prepared" text={schemaNotice} /></div>}
         {!schemaNotice && <form action={createPayment} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Customer
@@ -129,7 +129,7 @@ export default async function SPTAdminPaymentsPage() {
       </Card>
 
       <Card className="mt-6">
-        <SectionHeader title="Payment history" text="This table becomes your first source of truth for customer charges, payment acknowledgements, and revenue checks." />
+        <SectionHeader title="Payment history" text="Use this as your main record for customer charges, acknowledgements, and revenue checks." />
         {!schemaNotice && payments.length ? (
           <DataTable
             columns={["Customer", "Service", "Amount", "Method", "Status", "Reference", "Date"]}
@@ -144,9 +144,9 @@ export default async function SPTAdminPaymentsPage() {
             ])}
           />
         ) : schemaNotice ? (
-          <EmptyState title="Payments are not ready yet" text="Once the live payments table is available, this page will show payment records and acknowledgement flows automatically." />
+          <EmptyState title="Payments are still being prepared" text="As soon as the live payments table is available, this page will begin showing payment records and acknowledgement activity." />
         ) : (
-          <EmptyState title="No payments yet" text="Once you begin recording subscription fees, setup fees, and client payments, they will appear here." />
+          <EmptyState title="No payments yet" text="Recorded subscription fees, setup fees, and client payments will appear here once you start logging them." />
         )}
       </Card>
     </SPTAdminShell>

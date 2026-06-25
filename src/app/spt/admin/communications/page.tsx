@@ -79,13 +79,13 @@ export default async function SPTAdminCommunicationsPage() {
   }
 
   return (
-    <SPTAdminShell title="Communications" role={session.role}>
+    <SPTAdminShell title="Message Center" role={session.role}>
       <Card>
         <SectionHeader
-          title="Log a communication"
+          title="Log a message"
           text="Use this for manual follow-ups, internal notes, or any outreach that happens outside the automated workflows. Every touchpoint should still be recorded here so each lead, customer, or application keeps a clean history."
         />
-        {schemaNotice && <div className="mb-5"><InlineNotice title="Communications are in setup mode" text={schemaNotice} /></div>}
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Message history is still being prepared" text={schemaNotice} /></div>}
         {!schemaNotice && <form action={createCommunication} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Recipient
@@ -160,7 +160,7 @@ export default async function SPTAdminCommunicationsPage() {
 
       <Card className="mt-6">
         <SectionHeader
-          title="Communication log"
+          title="Message history"
           text="Automated acknowledgements, welcome messages, renewal reminders, and manual communication records all land here. Sent, failed, and pending items stay visible so your team can track delivery and follow up confidently."
         />
         {!schemaNotice && communications.length ? (
@@ -177,13 +177,13 @@ export default async function SPTAdminCommunicationsPage() {
           />
         ) : schemaNotice ? (
           <EmptyState
-            title="Communications are not live yet"
-            text="This section will become available as soon as the missing communication tables and related columns are fully present in the live database."
+            title="Message history is still being prepared"
+            text="This section will become available as soon as the live communication tables and related fields are fully present in the database."
           />
         ) : (
           <EmptyState
-            title="No communication logs yet"
-            text="As soon as welcome messages, acknowledgements, follow-ups, or manual outreach notes are logged, they will appear here."
+            title="No messages yet"
+            text="Welcome messages, acknowledgements, follow-ups, and manual outreach notes will appear here as soon as they are logged."
           />
         )}
       </Card>

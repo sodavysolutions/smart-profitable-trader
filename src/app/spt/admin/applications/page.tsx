@@ -210,7 +210,7 @@ export default async function SPTAdminApplicationsPage({ searchParams }: { searc
   return (
     <SPTAdminShell title="Applications" role={session.role}>
       <Card>
-        <SectionHeader title="Application submissions" text="Submissions from /spt/apply are saved here for review, approval, rejection, and conversion." />
+        <SectionHeader title="Application queue" text="Submissions from /spt/apply are stored here for review, approval, rejection, and conversion." />
         <form className="mb-4 grid gap-3 md:grid-cols-3">
           <input name="service" defaultValue={service} placeholder="Filter by service" className="rounded-md border border-slate-200 px-3 py-2 text-sm" />
           <select name="status" defaultValue={status ?? ""} className="rounded-md border border-slate-200 px-3 py-2 text-sm">
@@ -257,7 +257,7 @@ export default async function SPTAdminApplicationsPage({ searchParams }: { searc
           ))
         ) : (
           <div className="lg:col-span-2">
-            <EmptyState title="No applications yet" text="New website applications will land here automatically once visitors start submitting the live forms." />
+            <EmptyState title="No applications yet" text="New website applications will appear here automatically once visitors start submitting the live forms." />
           </div>
         )}
       </div>

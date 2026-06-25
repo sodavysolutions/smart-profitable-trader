@@ -84,10 +84,10 @@ export default async function SPTAdminSubscriptionsPage() {
   }
 
   return (
-    <SPTAdminShell title="Subscriptions" role={session.role}>
+    <SPTAdminShell title="Subscription Center" role={session.role}>
       <Card>
-        <SectionHeader title="Subscription management" text="Track customer renewals and recurring business expenses in one place. Reminder flags, billing cycle, and renewal dates are stored here." />
-        {schemaNotice && <div className="mb-5"><InlineNotice title="Subscriptions are in setup mode" text={schemaNotice} /></div>}
+        <SectionHeader title="Subscription center" text="Track customer renewals and recurring business expenses in one place, with billing cycles, reminder flags, and renewal dates." />
+        {schemaNotice && <div className="mb-5"><InlineNotice title="Subscriptions are still being prepared" text={schemaNotice} /></div>}
         {!schemaNotice && <form action={createSubscription} className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Subscription name
@@ -160,7 +160,7 @@ export default async function SPTAdminSubscriptionsPage() {
       </Card>
 
       <Card className="mt-6">
-        <SectionHeader title="Current subscriptions" text="The list below powers renewal reminders and gives you one place to monitor recurring revenue and operating commitments." />
+        <SectionHeader title="Active subscriptions" text="This list powers renewal reminders and gives you one place to monitor recurring revenue and operating commitments." />
         {!schemaNotice && subscriptions.length ? (
           <DataTable
             columns={["Name", "Type", "Related", "Amount", "Cycle", "Renewal", "Status", "Reminder"]}
@@ -176,7 +176,7 @@ export default async function SPTAdminSubscriptionsPage() {
             ])}
           />
         ) : schemaNotice ? (
-          <EmptyState title="Subscriptions are not live yet" text="This section will start working as soon as the missing subscription and expense tables are present in the production database." />
+          <EmptyState title="Subscriptions are still being prepared" text="This section will come online as soon as the live subscription and expense tables are available in production." />
         ) : (
           <EmptyState title="No subscriptions yet" text="Add your first customer plan or recurring business bill here so renewals and reminders have a reliable source of truth." />
         )}
