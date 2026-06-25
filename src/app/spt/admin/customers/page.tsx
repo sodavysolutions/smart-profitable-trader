@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { prisma } from "@/lib/prisma";
 import { normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
 import { money, readableEnum } from "@/lib/spt-admin-format";
@@ -24,7 +25,7 @@ async function createCustomer(formData: FormData) {
     throw new Error("Invalid customer details.");
   }
 
-  await prisma.customer.create({
+  const customer = await prisma.customer.create({
     data: {
       fullName: parsed.data.fullName,
       email: parsed.data.email,
@@ -55,6 +56,7 @@ async function createCustomer(formData: FormData) {
       }
     }
   });
+  await syncRecordToGoogleSheets("Customer", customer, "CREATE");
   revalidatePath("/spt/admin/customers");
 }
 
@@ -67,7 +69,7 @@ async function updateCustomer(formData: FormData) {
     throw new Error("Invalid customer update details.");
   }
 
-  await prisma.customer.update({
+  const customer = await prisma.customer.update({
     where: { id: parsed.data.id },
     data: {
       status: parsed.data.status,
@@ -85,6 +87,7 @@ async function updateCustomer(formData: FormData) {
       }
     }
   });
+  await syncRecordToGoogleSheets("Customer", customer, "UPDATE");
   revalidatePath("/spt/admin/customers");
 }
 

@@ -71,6 +71,11 @@ SMS_SENDER_ID=
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
+GOOGLE_SHEETS_CLIENT_EMAIL=
+GOOGLE_SHEETS_PRIVATE_KEY=
+GOOGLE_SHEETS_SPREADSHEET_ID=
+GOOGLE_SHEETS_PROJECT_ID=
+GOOGLE_SHEETS_PRIVATE_KEY_ID=
 ```
 
 Notes:
@@ -84,6 +89,7 @@ Notes:
 - `SMS_API_URL`, `SMS_API_KEY`, `SMS_PROVIDER`, and `SMS_SENDER_ID` are used for SMS reminders and urgent outbound notifications.
 - You can also store Sendy, WhatsApp, and SMS provider values inside `/spt/admin/settings` so your team can manage day-to-day messaging configuration from the admin panel.
 - If a provider is not configured yet, the CRM still logs the communication attempt so nothing disappears silently.
+- `GOOGLE_SHEETS_CLIENT_EMAIL`, `GOOGLE_SHEETS_PRIVATE_KEY`, and `GOOGLE_SHEETS_SPREADSHEET_ID` power the Google Sheets reporting backup. The project ID and private key ID are optional service-account metadata.
 
 ## 3. Local setup
 
@@ -180,7 +186,84 @@ Birthday and special-day notes:
 - Eid should be updated manually each year because the date changes.
 - The Reminders page now includes manual “send now” actions so you can test or trigger campaigns without waiting for the daily check.
 
-## 8. Test that data is saving
+## 8. Google Sheets Sync Setup
+
+Google Sheets is used as a reporting and backup layer only. Supabase remains the main database.
+
+### Create the Google Sheet
+
+1. Open Google Sheets and create a new spreadsheet.
+2. Copy the Spreadsheet ID from the URL.
+   - In `https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit`, copy the long value between `/d/` and `/edit`.
+3. The app can create the required tabs automatically when the service account has Editor access.
+4. If you prefer to create them manually, use these exact tab names:
+   - Leads
+   - Applications
+   - Customers
+   - Subscriptions
+   - Payments
+   - Expenses
+   - Account Progress
+   - Profit Share
+   - Communication Logs
+   - Activity Logs
+
+### Create a Google Cloud service account
+
+1. Open Google Cloud Console.
+2. Create or select a project.
+3. Go to APIs & Services > Library.
+4. Enable the Google Sheets API.
+5. Go to IAM & Admin > Service Accounts.
+6. Create a service account for this app.
+7. Open the service account, go to Keys, and create a JSON key.
+8. Download the JSON file and keep it private.
+
+### Share the Sheet with the service account
+
+1. Open the downloaded JSON key.
+2. Copy the `client_email` value.
+3. Open your Google Sheet.
+4. Click Share.
+5. Add the service account email as an Editor.
+
+### Add Vercel environment variables
+
+Add these in Vercel Project Settings > Environment Variables:
+
+```env
+GOOGLE_SHEETS_CLIENT_EMAIL=
+GOOGLE_SHEETS_PRIVATE_KEY=
+GOOGLE_SHEETS_SPREADSHEET_ID=
+GOOGLE_SHEETS_PROJECT_ID=
+GOOGLE_SHEETS_PRIVATE_KEY_ID=
+```
+
+Required:
+
+- `GOOGLE_SHEETS_CLIENT_EMAIL`
+- `GOOGLE_SHEETS_PRIVATE_KEY`
+- `GOOGLE_SHEETS_SPREADSHEET_ID`
+
+Optional:
+
+- `GOOGLE_SHEETS_PROJECT_ID`
+- `GOOGLE_SHEETS_PRIVATE_KEY_ID`
+
+For `GOOGLE_SHEETS_PRIVATE_KEY`, copy the full private key from the JSON file. In Vercel, keep the `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----` lines. If you paste it with `\n` line breaks, the app will convert them safely at runtime.
+
+### Test and sync
+
+1. Deploy the app after adding the environment variables.
+2. Open `/spt/admin/settings`.
+3. Find the Google Sheets integration section.
+4. Confirm Sync enabled is checked.
+5. Click Test Google Sheets Connection.
+6. Click Sync All Data to Google Sheets to send existing database records.
+
+After setup, new and updated records are copied to the matching sheet tab. If Google Sheets fails, the Supabase save still succeeds and the error is logged in the `SyncLog` table.
+
+## 9. Test that data is saving
 
 Start the app locally:
 
@@ -215,7 +298,7 @@ To test messaging too:
 7. Record a paid payment for a customer
 8. Confirm a payment acknowledgement log entry was created
 
-## 9. Deploy to Vercel
+## 10. Deploy to Vercel
 
 1. Push the project to GitHub.
 2. Import the repository into Vercel.
@@ -228,7 +311,7 @@ To test messaging too:
    - `/spt/admin/communications`
    - `/spt/admin/settings`
 
-## 10. Custom domain later
+## 11. Custom domain later
 
 When you are ready to connect a custom domain:
 
@@ -244,7 +327,7 @@ NEXTAUTH_URL=https://your-domain.com
 
 Then redeploy.
 
-## 11. Production readiness checklist
+## 12. Production readiness checklist
 
 Before using this with real clients:
 
@@ -258,6 +341,8 @@ Before using this with real clients:
 - Confirm Sendy provider status is ready in `/spt/admin/settings`
 - Confirm acknowledgement and welcome logs appear in `/spt/admin/communications`
 - Confirm reminder dates show correctly
+- Confirm Google Sheets connection test passes in `/spt/admin/settings`
+- Run Sync All Data to Google Sheets once after setup
 - Confirm your custom domain resolves to the active Vercel project
 
 ## Admin URLs

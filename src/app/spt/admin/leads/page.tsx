@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { Card, DataTable, EmptyState, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { sendWelcomeWorkflow } from "@/lib/message-workflows";
 import { prisma } from "@/lib/prisma";
 import { inferCustomerType, normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
@@ -22,7 +23,7 @@ async function updateLead(formData: FormData) {
     throw new Error("Invalid lead update details.");
   }
 
-  await prisma.lead.update({
+  const lead = await prisma.lead.update({
     where: { id: parsed.data.id },
     data: {
       status: parsed.data.status,
@@ -37,6 +38,7 @@ async function updateLead(formData: FormData) {
       }
     }
   });
+  await syncRecordToGoogleSheets("Lead", lead, "UPDATE");
   revalidatePath("/spt/admin/leads");
 }
 
@@ -81,7 +83,7 @@ async function convertLead(formData: FormData) {
 
   await sendWelcomeWorkflow(customer.id);
 
-  await prisma.lead.update({
+  const updatedLead = await prisma.lead.update({
     where: { id },
     data: {
       status: "CONVERTED",
@@ -94,6 +96,8 @@ async function convertLead(formData: FormData) {
       }
     }
   });
+  await syncRecordToGoogleSheets("Customer", customer, "UPSERT");
+  await syncRecordToGoogleSheets("Lead", updatedLead, "UPDATE");
   revalidatePath("/spt/admin/leads");
   revalidatePath("/spt/admin/customers");
 }

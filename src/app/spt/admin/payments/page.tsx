@@ -2,6 +2,7 @@ import { PaymentStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { sendPaymentAcknowledgement } from "@/lib/message-workflows";
 import { prisma } from "@/lib/prisma";
 import { money, readableEnum } from "@/lib/spt-admin-format";
@@ -53,6 +54,7 @@ async function createPayment(formData: FormData) {
     await sendPaymentAcknowledgement(payment.id);
   }
 
+  await syncRecordToGoogleSheets("Payment", payment, "CREATE");
   revalidatePath("/spt/admin/payments");
 }
 

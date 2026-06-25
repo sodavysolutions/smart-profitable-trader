@@ -2,6 +2,7 @@ import { CommunicationChannel, CommunicationStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { prisma } from "@/lib/prisma";
 import { readableEnum } from "@/lib/spt-admin-format";
 import { normalizeText } from "@/lib/spt-admin-helpers";
@@ -27,7 +28,7 @@ async function createCommunication(formData: FormData) {
     throw new Error("Invalid communication log details.");
   }
 
-  await prisma.communicationLog.create({
+  const communicationLog = await prisma.communicationLog.create({
     data: {
       channel: parsed.data.channel,
       recipient: parsed.data.recipient,
@@ -52,6 +53,7 @@ async function createCommunication(formData: FormData) {
     }
   });
 
+  await syncRecordToGoogleSheets("CommunicationLog", communicationLog, "CREATE");
   revalidatePath("/spt/admin/communications");
 }
 

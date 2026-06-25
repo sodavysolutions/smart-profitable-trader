@@ -2,6 +2,7 @@ import { BillingCycle, ExpensePaymentStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { prisma } from "@/lib/prisma";
 import { money, readableEnum } from "@/lib/spt-admin-format";
 import { normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
@@ -20,7 +21,7 @@ async function createExpense(formData: FormData) {
     throw new Error("Invalid expense details.");
   }
 
-  await prisma.expense.create({
+  const expense = await prisma.expense.create({
     data: {
       name: parsed.data.name,
       category: parsed.data.category,
@@ -43,6 +44,7 @@ async function createExpense(formData: FormData) {
     }
   });
 
+  await syncRecordToGoogleSheets("Expense", expense, "CREATE");
   revalidatePath("/spt/admin/expenses");
 }
 

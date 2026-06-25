@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { sendApplicationAcknowledgement } from "@/lib/message-workflows";
 import { applicationSchema } from "@/lib/validation";
+import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { prisma } from "@/lib/prisma";
 import { normalizeText } from "@/lib/spt-admin-helpers";
 
@@ -61,6 +62,7 @@ export async function POST(request: Request) {
     });
 
     await sendApplicationAcknowledgement(application.id);
+    await syncRecordToGoogleSheets("Application", application, "CREATE");
 
     return NextResponse.json({
       ok: true,

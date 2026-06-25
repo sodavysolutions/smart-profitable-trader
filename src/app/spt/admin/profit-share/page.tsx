@@ -2,6 +2,7 @@ import { ProfitShareStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { prisma } from "@/lib/prisma";
 import { calculateProfitShareValues, normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
 import { money, readableEnum } from "@/lib/spt-admin-format";
@@ -33,7 +34,7 @@ async function createProfitShare(formData: FormData) {
     parsed.data.companyPercentage
   );
 
-  await prisma.profitShare.create({
+  const profitShare = await prisma.profitShare.create({
     data: {
       customerId: parsed.data.customerId,
       totalProfit: parsed.data.totalProfit,
@@ -56,6 +57,7 @@ async function createProfitShare(formData: FormData) {
     }
   });
 
+  await syncRecordToGoogleSheets("ProfitShare", profitShare, "CREATE");
   revalidatePath("/spt/admin/profit-share");
 }
 

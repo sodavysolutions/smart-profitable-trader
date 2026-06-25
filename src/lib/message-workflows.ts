@@ -1,4 +1,5 @@
 import { CommunicationChannel, CommunicationStatus, type CommunicationLog, type Subscription } from "@prisma/client";
+import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { addSendySubscriber, sendSendyTransactionalEmail, sendSmsMessage, sendWhatsAppMessage } from "@/lib/integrations";
 import { prisma } from "@/lib/prisma";
 
@@ -62,7 +63,7 @@ async function getSettingMap(keys: string[]) {
 }
 
 export async function createCommunicationLog(input: LogCommunicationInput) {
-  return prisma.communicationLog.create({
+  const log = await prisma.communicationLog.create({
     data: {
       channel: input.channel,
       recipient: input.recipient,
@@ -74,10 +75,12 @@ export async function createCommunicationLog(input: LogCommunicationInput) {
       applicationId: input.applicationId ?? undefined
     }
   });
+  await syncRecordToGoogleSheets("CommunicationLog", log, "CREATE");
+  return log;
 }
 
 async function updateCommunicationLog(log: CommunicationLog, result: { ok: boolean; configured: boolean; response: string }) {
-  return prisma.communicationLog.update({
+  const updatedLog = await prisma.communicationLog.update({
     where: { id: log.id },
     data: {
       status: result.ok ? CommunicationStatus.SENT : result.configured ? CommunicationStatus.FAILED : CommunicationStatus.PENDING,
@@ -85,6 +88,8 @@ async function updateCommunicationLog(log: CommunicationLog, result: { ok: boole
       sentAt: result.ok ? new Date() : null
     }
   });
+  await syncRecordToGoogleSheets("CommunicationLog", updatedLog, "UPDATE");
+  return updatedLog;
 }
 
 async function logLifecycleActivity(
@@ -92,7 +97,7 @@ async function logLifecycleActivity(
   description: string,
   links: Pick<LogCommunicationInput, "leadId" | "customerId" | "applicationId">
 ) {
-  await prisma.activityLog.create({
+  const activityLog = await prisma.activityLog.create({
     data: {
       type,
       description,
@@ -101,6 +106,7 @@ async function logLifecycleActivity(
       applicationId: links.applicationId ?? undefined
     }
   });
+  await syncRecordToGoogleSheets("ActivityLog", activityLog, "CREATE");
 }
 
 export async function dispatchLifecycleMessage(args: LifecycleMessageArgs) {

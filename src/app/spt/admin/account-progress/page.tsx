@@ -2,6 +2,7 @@ import { CustomerType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { Card, DataTable, EmptyState, InlineNotice, ProgressBar, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { prisma } from "@/lib/prisma";
 import { money, readableEnum } from "@/lib/spt-admin-format";
 import { normalizeText } from "@/lib/spt-admin-helpers";
@@ -27,7 +28,7 @@ async function createAccountProgress(formData: FormData) {
     throw new Error("Invalid account progress details.");
   }
 
-  await prisma.accountProgress.upsert({
+  const accountProgress = await prisma.accountProgress.upsert({
     where: { id: `progress-${parsed.data.customerId}` },
     update: {
       serviceType: parsed.data.serviceType,
@@ -83,6 +84,7 @@ async function createAccountProgress(formData: FormData) {
     }
   });
 
+  await syncRecordToGoogleSheets("AccountProgress", accountProgress, "UPSERT");
   revalidatePath("/spt/admin/account-progress");
 }
 

@@ -2,6 +2,7 @@ import { BillingCycle, SubscriptionStatus, SubscriptionType } from "@prisma/clie
 import { revalidatePath } from "next/cache";
 import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { prisma } from "@/lib/prisma";
 import { money, readableEnum } from "@/lib/spt-admin-format";
 import { normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
@@ -34,7 +35,7 @@ async function createSubscription(formData: FormData) {
     throw new Error("Invalid subscription details.");
   }
 
-  await prisma.subscription.create({
+  const subscription = await prisma.subscription.create({
     data: {
       name: parsed.data.name,
       type: parsed.data.type,
@@ -59,6 +60,7 @@ async function createSubscription(formData: FormData) {
     }
   });
 
+  await syncRecordToGoogleSheets("Subscription", subscription, "CREATE");
   revalidatePath("/spt/admin/subscriptions");
 }
 

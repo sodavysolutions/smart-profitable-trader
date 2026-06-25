@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { sendWelcomeWorkflow } from "@/lib/message-workflows";
 import { prisma } from "@/lib/prisma";
 import { inferCustomerType } from "@/lib/spt-admin-helpers";
@@ -80,7 +81,7 @@ async function updateApplication(formData: FormData) {
     throw new Error("Invalid application update.");
   }
 
-  await prisma.application.update({
+  const application = await prisma.application.update({
     where: { id: parsed.data.id },
     data: {
       status: parsed.data.status,
@@ -93,6 +94,7 @@ async function updateApplication(formData: FormData) {
       }
     }
   });
+  await syncRecordToGoogleSheets("Application", application, "UPDATE");
   revalidatePath("/spt/admin/applications");
 }
 
@@ -116,7 +118,7 @@ async function convertApplicationToLead(formData: FormData) {
     }
   });
 
-  await prisma.lead.upsert({
+  const lead = await prisma.lead.upsert({
     where: { email: app.email },
     update: {
       fullName: app.fullName,
@@ -149,7 +151,7 @@ async function convertApplicationToLead(formData: FormData) {
       }
     }
   });
-  await prisma.application.update({
+  const application = await prisma.application.update({
     where: { id },
     data: {
       status: "CONVERTED",
@@ -162,6 +164,8 @@ async function convertApplicationToLead(formData: FormData) {
       }
     }
   });
+  await syncRecordToGoogleSheets("Lead", lead, "UPSERT");
+  await syncRecordToGoogleSheets("Application", application, "UPDATE");
   revalidatePath("/spt/admin/applications");
   revalidatePath("/spt/admin/leads");
 }
@@ -235,7 +239,7 @@ async function convertApplicationToCustomer(formData: FormData) {
     }
   });
 
-  await prisma.accountProgress.upsert({
+  const accountProgress = await prisma.accountProgress.upsert({
     where: { id: `progress-${customer.id}` },
     update: {
       serviceType: customerType,
@@ -268,7 +272,7 @@ async function convertApplicationToCustomer(formData: FormData) {
     }
   });
 
-  await prisma.application.update({
+  const application = await prisma.application.update({
     where: { id },
     data: {
       status: "CONVERTED",
@@ -283,6 +287,9 @@ async function convertApplicationToCustomer(formData: FormData) {
   });
 
   await sendWelcomeWorkflow(customer.id);
+  await syncRecordToGoogleSheets("Customer", customer, "UPSERT");
+  await syncRecordToGoogleSheets("AccountProgress", accountProgress, "UPSERT");
+  await syncRecordToGoogleSheets("Application", application, "UPDATE");
 
   revalidatePath("/spt/admin/applications");
   revalidatePath("/spt/admin/customers");

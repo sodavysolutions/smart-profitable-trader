@@ -1,6 +1,14 @@
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { Card, DataTable, InlineNotice, SectionHeader } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import {
+  getGoogleSheetsSyncSnapshot,
+  googleSheetTabNames,
+  setGoogleSheetsSyncEnabled,
+  syncAllExistingDataToGoogleSheets,
+  testGoogleSheetsConnection
+} from "@/lib/google-sheets";
 import { getMessagingProviderSnapshot } from "@/lib/integrations";
 import { prisma } from "@/lib/prisma";
 import { normalizeText } from "@/lib/spt-admin-helpers";
@@ -139,8 +147,34 @@ async function saveSettings(formData: FormData) {
   revalidatePath("/spt/admin/settings");
 }
 
-export default async function SPTAdminSettingsPage() {
+async function saveGoogleSheetsSettings(formData: FormData) {
+  "use server";
+  await requireAdmin();
+  await setGoogleSheetsSyncEnabled(formData.get("google_sheets_sync_enabled") === "on");
+  revalidatePath("/spt/admin/settings");
+}
+
+async function testGoogleSheets(formData: FormData) {
+  "use server";
+  await requireAdmin();
+  await setGoogleSheetsSyncEnabled(formData.get("google_sheets_sync_enabled") === "on");
+  const result = await testGoogleSheetsConnection();
+  revalidatePath("/spt/admin/settings");
+  redirect(`/spt/admin/settings?sheetsStatus=${encodeURIComponent(result.message)}`);
+}
+
+async function syncAllGoogleSheetsData(formData: FormData) {
+  "use server";
+  await requireAdmin();
+  await setGoogleSheetsSyncEnabled(formData.get("google_sheets_sync_enabled") === "on");
+  const result = await syncAllExistingDataToGoogleSheets();
+  revalidatePath("/spt/admin/settings");
+  redirect(`/spt/admin/settings?sheetsStatus=${encodeURIComponent(result.message)}`);
+}
+
+export default async function SPTAdminSettingsPage({ searchParams }: { searchParams: Promise<{ sheetsStatus?: string }> }) {
   const session = await requireAdmin();
+  const { sheetsStatus } = await searchParams;
   let settings = [] as Awaited<ReturnType<typeof prisma.setting.findMany>>;
   let providerSnapshot = {
     sendyConfigured: false,
@@ -148,12 +182,22 @@ export default async function SPTAdminSettingsPage() {
     whatsappConfigured: false,
     smsConfigured: false
   };
+  let googleSheetsSnapshot = {
+    configured: false,
+    enabled: true,
+    spreadsheetId: "",
+    clientEmail: "",
+    lastSyncStatus: "Not run yet",
+    lastSyncResult: "PENDING",
+    lastSyncTime: ""
+  };
   let schemaNotice: string | null = null;
 
   try {
-    [settings, providerSnapshot] = await Promise.all([
+    [settings, providerSnapshot, googleSheetsSnapshot] = await Promise.all([
       prisma.setting.findMany({ orderBy: { key: "asc" } }),
-      getMessagingProviderSnapshot()
+      getMessagingProviderSnapshot(),
+      getGoogleSheetsSyncSnapshot()
     ]);
   } catch (error) {
     if (isSchemaMismatchError(error)) {
@@ -196,6 +240,56 @@ export default async function SPTAdminSettingsPage() {
             ["SMS", providerSnapshot.smsConfigured ? "Ready" : "Needs setup", "Renewal reminders and urgent text alerts"]
           ]}
         />
+      </Card>
+      <Card className="mb-6">
+        <SectionHeader
+          title="Google Sheets integration"
+          text="Supabase remains the main database. Google Sheets receives a reporting and backup copy when records are created, updated, or manually synced."
+        />
+        {sheetsStatus && (
+          <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm font-semibold text-slate-700">
+            {sheetsStatus}
+          </div>
+        )}
+        <DataTable
+          columns={["Setting", "Value"]}
+          rows={[
+            ["Spreadsheet ID", googleSheetsSnapshot.spreadsheetId || "Add GOOGLE_SHEETS_SPREADSHEET_ID in Vercel"],
+            ["Service account", googleSheetsSnapshot.clientEmail || "Add GOOGLE_SHEETS_CLIENT_EMAIL in Vercel"],
+            ["Automatic sync", googleSheetsSnapshot.enabled ? "Enabled" : "Disabled"],
+            ["Connection", googleSheetsSnapshot.configured ? "Credentials present" : "Needs environment variables"],
+            ["Last sync result", googleSheetsSnapshot.lastSyncResult],
+            ["Last sync status", googleSheetsSnapshot.lastSyncStatus],
+            ["Last sync time", googleSheetsSnapshot.lastSyncTime ? new Date(googleSheetsSnapshot.lastSyncTime).toLocaleString() : "Not run yet"]
+          ]}
+        />
+        <form action={saveGoogleSheetsSettings} className="mt-4 flex flex-wrap items-center gap-3">
+          <label className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700">
+            <input
+              type="checkbox"
+              name="google_sheets_sync_enabled"
+              defaultChecked={googleSheetsSnapshot.enabled}
+              className="h-4 w-4 rounded border-slate-300"
+            />
+            Sync enabled
+          </label>
+          <button className="rounded-md bg-navy-950 px-4 py-2 text-sm font-bold text-white">Save Google Sheets Setting</button>
+        </form>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <form action={testGoogleSheets}>
+            <input type="hidden" name="google_sheets_sync_enabled" value={googleSheetsSnapshot.enabled ? "on" : ""} />
+            <button className="rounded-md bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950">Test Google Sheets Connection</button>
+          </form>
+          <form action={syncAllGoogleSheetsData}>
+            <input type="hidden" name="google_sheets_sync_enabled" value={googleSheetsSnapshot.enabled ? "on" : ""} />
+            <button className="rounded-md border border-navy-950 px-4 py-2 text-sm font-bold text-navy-950">Sync All Data to Google Sheets</button>
+          </form>
+        </div>
+        <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+          <p className="font-semibold text-slate-800">Required tabs</p>
+          <p className="mt-1">{googleSheetTabNames.join(", ")}</p>
+          <p className="mt-2">The app will create these tabs automatically when the service account has Editor access.</p>
+        </div>
       </Card>
       <Card>
         <SectionHeader
