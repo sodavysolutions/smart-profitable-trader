@@ -16,18 +16,52 @@ import { z } from "zod";
 
 const optionalText = z.string().trim().max(500).optional().or(z.literal(""));
 const optionalDate = z.string().optional().or(z.literal(""));
+const requiredText = z.string().trim().min(1).max(500);
+
+const approvedServices = [
+  "Smart Profits Trader VIP Signal Service",
+  "Copy Trading / Personal Account Trading",
+  "Instant Funded Prop Trading",
+  "Evaluation Account Management",
+  "Personal Account Management",
+  "Not sure yet - I need guidance"
+] as const;
+
+const optionalApplicationText = z.string().trim().max(2000).optional().or(z.literal(""));
 
 export const applicationSchema = z.object({
   fullName: z.string().trim().min(2, "Enter the applicant's name."),
   email: z.string().trim().email("Enter a valid email address."),
+  phoneWhatsapp: z.string().trim().min(5, "Enter a phone or WhatsApp number.").max(30),
+  locationAddress: z.string().trim().min(2, "Enter the applicant's location.").max(180),
   phone: z.string().trim().min(5).max(30).optional().or(z.literal("")),
   whatsapp: z.string().trim().max(30).optional().or(z.literal("")),
   country: z.string().trim().max(80).optional().or(z.literal("")),
   city: z.string().trim().max(80).optional().or(z.literal("")),
   source: z.string().trim().max(120).optional().or(z.literal("")),
   campaign: z.string().trim().max(120).optional().or(z.literal("")),
-  service: z.string().trim().min(2, "Select a service."),
+  service: z.enum(approvedServices, { errorMap: () => ({ message: "Select a valid service." }) }),
   message: z.string().trim().max(2000).optional().or(z.literal("")),
+  tradingExperienceYesNo: requiredText,
+  experienceRating: requiredText,
+  automatedTradingExperience: requiredText,
+  investmentAmount: requiredText,
+  expectedMonthlyProfitGoal: requiredText,
+  hasExistingTradingAccount: requiredText,
+  riskStyle: requiredText,
+  mainGoal: requiredText,
+  riskAcknowledged: z.literal("on"),
+  preferredBroker: optionalApplicationText,
+  goldTradingExperience: optionalApplicationText,
+  signalAccountType: optionalApplicationText,
+  mtPlatform: optionalApplicationText,
+  evaluationPropFirm: optionalApplicationText,
+  evaluationStage: optionalApplicationText,
+  evaluationAccountSize: optionalApplicationText,
+  instantFundedProvider: optionalApplicationText,
+  instantFundedAccountSize: optionalApplicationText,
+  readyToPaySetupFee: optionalApplicationText,
+  personalManagementPreference: optionalApplicationText,
   broker: optionalText,
   platform: optionalText,
   accountBalance: optionalText,
@@ -39,6 +73,22 @@ export const applicationSchema = z.object({
   withdrawalTarget: optionalText,
   tradingExperience: optionalText,
   riskPreference: optionalText
+}).superRefine((data, ctx) => {
+  if ((data.service.includes("Copy Trading") || data.service.includes("Personal Account")) && !data.preferredBroker) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Select a preferred broker.", path: ["preferredBroker"] });
+  }
+  if (data.service.includes("Evaluation") && !data.evaluationPropFirm) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Select an evaluation prop firm.", path: ["evaluationPropFirm"] });
+  }
+  if (data.service.includes("Evaluation") && !data.evaluationStage) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Select the evaluation stage.", path: ["evaluationStage"] });
+  }
+  if (data.service.includes("Instant Funded") && !data.instantFundedProvider) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Select an instant funded provider.", path: ["instantFundedProvider"] });
+  }
+  if (data.service.includes("Instant Funded") && !data.readyToPaySetupFee) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Select setup-fee readiness.", path: ["readyToPaySetupFee"] });
+  }
 });
 
 export const leadUpdateSchema = z.object({

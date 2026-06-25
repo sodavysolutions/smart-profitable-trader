@@ -13,6 +13,63 @@ export const dynamic = "force-dynamic";
 
 const statuses: ApplicationStatus[] = ["NEW", "REVIEWING", "APPROVED", "REJECTED", "CONVERTED"];
 
+function valueOrDash(value?: string | null) {
+  return value && value.trim() ? value : "-";
+}
+
+function detailRows(item: {
+  phoneWhatsapp?: string | null;
+  phone?: string | null;
+  locationAddress?: string | null;
+  tradingExperienceYesNo?: string | null;
+  experienceRating?: string | null;
+  automatedTradingExperience?: string | null;
+  investmentAmount?: string | null;
+  expectedMonthlyProfitGoal?: string | null;
+  hasExistingTradingAccount?: string | null;
+  riskStyle?: string | null;
+  mainGoal?: string | null;
+  preferredBroker?: string | null;
+  broker?: string | null;
+  goldTradingExperience?: string | null;
+  signalAccountType?: string | null;
+  mtPlatform?: string | null;
+  evaluationPropFirm?: string | null;
+  evaluationStage?: string | null;
+  evaluationAccountSize?: string | null;
+  propFirm?: string | null;
+  instantFundedProvider?: string | null;
+  instantFundedAccountSize?: string | null;
+  readyToPaySetupFee?: string | null;
+  personalManagementPreference?: string | null;
+  message?: string | null;
+}) {
+  return [
+    ["Phone / WhatsApp Number", item.phoneWhatsapp ?? item.phone],
+    ["Location / Address", item.locationAddress],
+    ["Trading Experience", item.tradingExperienceYesNo],
+    ["Experience Rating", item.experienceRating],
+    ["Automated Trading Experience", item.automatedTradingExperience],
+    ["Investment Amount", item.investmentAmount],
+    ["Expected Monthly Profit Goal", item.expectedMonthlyProfitGoal],
+    ["Existing Trading Account", item.hasExistingTradingAccount],
+    ["Risk Style", item.riskStyle],
+    ["Main Goal", item.mainGoal],
+    ["Preferred Broker", item.preferredBroker ?? item.broker],
+    ["Gold Trading Experience", item.goldTradingExperience],
+    ["Signal Account Type", item.signalAccountType],
+    ["MT4 / MT5", item.mtPlatform],
+    ["Evaluation Prop Firm", item.evaluationPropFirm],
+    ["Evaluation Stage", item.evaluationStage],
+    ["Evaluation Account Size", item.evaluationAccountSize],
+    ["Instant Funded Provider", item.instantFundedProvider ?? item.propFirm],
+    ["Instant Funded Account Size", item.instantFundedAccountSize],
+    ["Ready To Pay Setup Fee", item.readyToPaySetupFee],
+    ["Personal Management Preference", item.personalManagementPreference],
+    ["Additional Message", item.message]
+  ].filter(([, value]) => value && String(value).trim());
+}
+
 async function updateApplication(formData: FormData) {
   "use server";
   const session = await requireAdmin();
@@ -48,8 +105,8 @@ async function convertApplicationToLead(formData: FormData) {
     where: { email: app.email },
     update: {
       fullName: app.fullName,
-      phone: app.phone,
-      whatsapp: app.whatsapp,
+      phone: app.phoneWhatsapp ?? app.phone,
+      whatsapp: app.phoneWhatsapp ?? app.whatsapp,
       country: app.country,
       city: app.city,
       serviceInterest: app.service,
@@ -60,8 +117,8 @@ async function convertApplicationToLead(formData: FormData) {
     create: {
       fullName: app.fullName,
       email: app.email,
-      phone: app.phone,
-      whatsapp: app.whatsapp,
+      phone: app.phoneWhatsapp ?? app.phone,
+      whatsapp: app.phoneWhatsapp ?? app.whatsapp,
       country: app.country,
       city: app.city,
       serviceInterest: app.service,
@@ -106,13 +163,13 @@ async function convertApplicationToCustomer(formData: FormData) {
     where: { email: app.email },
     update: {
       fullName: app.fullName,
-      phone: app.phone,
-      whatsapp: app.whatsapp,
+      phone: app.phoneWhatsapp ?? app.phone,
+      whatsapp: app.phoneWhatsapp ?? app.whatsapp,
       country: app.country,
       city: app.city,
       customerType,
       status: "PENDING_SETUP",
-      brokerOrPropFirm: app.broker || app.propFirm,
+      brokerOrPropFirm: app.preferredBroker || app.broker || app.evaluationPropFirm || app.instantFundedProvider || app.propFirm,
       initialCapital,
       currentBalance: initialCapital,
       currentEquity: initialCapital,
@@ -121,13 +178,13 @@ async function convertApplicationToCustomer(formData: FormData) {
     create: {
       fullName: app.fullName,
       email: app.email,
-      phone: app.phone,
-      whatsapp: app.whatsapp,
+      phone: app.phoneWhatsapp ?? app.phone,
+      whatsapp: app.phoneWhatsapp ?? app.whatsapp,
       country: app.country,
       city: app.city,
       customerType,
       status: "PENDING_SETUP",
-      brokerOrPropFirm: app.broker || app.propFirm,
+      brokerOrPropFirm: app.preferredBroker || app.broker || app.evaluationPropFirm || app.instantFundedProvider || app.propFirm,
       initialCapital,
       currentBalance: initialCapital,
       currentEquity: initialCapital,
@@ -220,8 +277,17 @@ export default async function SPTAdminApplicationsPage({ searchParams }: { searc
           <button className="rounded-md bg-navy-950 px-4 py-2 text-sm font-bold text-white">Filter</button>
         </form>
         <DataTable
-          columns={["Applicant", "Email", "Service", "Capital/Size", "Status", "Submitted"]}
-          rows={applications.map((item) => [item.fullName, item.email, item.service, item.startingCapital ?? item.accountSize ?? "-", <StatusBadge key={item.id} value={readableEnum(item.status)} />, item.createdAt.toLocaleDateString()])}
+          columns={["Full Name", "Phone / WhatsApp", "Service Interested In", "Investment Amount", "Risk Style", "Status", "Created Date"]}
+          rows={applications.map((item) => [
+            item.fullName,
+            valueOrDash(item.phoneWhatsapp ?? item.phone),
+            item.service,
+            valueOrDash(item.investmentAmount ?? item.startingCapital ?? item.accountSize),
+            valueOrDash(item.riskStyle),
+            <StatusBadge key={item.id} value={readableEnum(item.status)} />,
+            item.createdAt.toLocaleDateString()
+          ])}
+          caption="Applications submitted from Smart Profits Trader"
         />
       </Card>
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
@@ -229,13 +295,14 @@ export default async function SPTAdminApplicationsPage({ searchParams }: { searc
           applications.slice(0, 10).map((item) => (
             <Card key={item.id}>
               <SectionHeader title={item.fullName} text={`${item.service} · ${item.email}`} />
-              <div className="grid gap-2 text-sm text-slate-600">
-                <p>Phone: {item.phone ?? "-"}</p>
-                <p>WhatsApp: {item.whatsapp ?? "-"}</p>
-                <p>Broker: {item.broker ?? "-"}</p>
-                <p>Prop firm: {item.propFirm ?? "-"}</p>
-                <p>Message: {item.message ?? "-"}</p>
-              </div>
+              <dl className="grid gap-2 text-sm text-slate-600">
+                {detailRows(item).map(([label, value]) => (
+                  <div key={label} className="grid gap-1 rounded-md bg-slate-50 p-3">
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</dt>
+                    <dd className="leading-6 text-slate-700">{valueOrDash(String(value))}</dd>
+                  </div>
+                ))}
+              </dl>
               <form action={updateApplication} className="mt-4 flex flex-wrap gap-2">
                 <input type="hidden" name="id" value={item.id} />
                 <select name="status" defaultValue={item.status} className="rounded-md border border-slate-200 px-3 py-2 text-sm">
