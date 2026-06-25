@@ -1,11 +1,12 @@
 import { revalidatePath } from "next/cache";
-import { Card, DataTable, EmptyState, SectionHeader, StatusBadge } from "@/components/UI";
+import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
 import { sendWelcomeWorkflow } from "@/lib/message-workflows";
 import { prisma } from "@/lib/prisma";
 import { inferCustomerType } from "@/lib/spt-admin-helpers";
 import { readableEnum } from "@/lib/spt-admin-format";
 import { requireAdmin } from "@/lib/spt-admin-auth";
+import { getSchemaMismatchMessage, isSchemaMismatchError } from "@/lib/spt-admin-schema";
 import { applicationUpdateSchema } from "@/lib/validation";
 import type { ApplicationStatus } from "@prisma/client";
 
@@ -99,7 +100,21 @@ async function convertApplicationToLead(formData: FormData) {
   "use server";
   const session = await requireAdmin();
   const id = String(formData.get("id"));
-  const app = await prisma.application.findUniqueOrThrow({ where: { id } });
+  const app = await prisma.application.findUniqueOrThrow({
+    where: { id },
+    select: {
+      id: true,
+      fullName: true,
+      email: true,
+      phone: true,
+      whatsapp: true,
+      country: true,
+      city: true,
+      service: true,
+      phoneWhatsapp: true,
+      message: true
+    }
+  });
 
   await prisma.lead.upsert({
     where: { email: app.email },
@@ -155,7 +170,28 @@ async function convertApplicationToCustomer(formData: FormData) {
   "use server";
   const session = await requireAdmin();
   const id = String(formData.get("id"));
-  const app = await prisma.application.findUniqueOrThrow({ where: { id } });
+  const app = await prisma.application.findUniqueOrThrow({
+    where: { id },
+    select: {
+      id: true,
+      fullName: true,
+      email: true,
+      phone: true,
+      whatsapp: true,
+      country: true,
+      city: true,
+      service: true,
+      accountSize: true,
+      startingCapital: true,
+      propFirm: true,
+      broker: true,
+      phoneWhatsapp: true,
+      message: true,
+      preferredBroker: true,
+      evaluationPropFirm: true,
+      instantFundedProvider: true
+    }
+  });
   const customerType = inferCustomerType(app.service);
   const initialCapital = Number(app.startingCapital ?? app.accountSize ?? 0) || 0;
 
@@ -256,18 +292,63 @@ async function convertApplicationToCustomer(formData: FormData) {
 export default async function SPTAdminApplicationsPage({ searchParams }: { searchParams: Promise<{ service?: string; status?: ApplicationStatus }> }) {
   const session = await requireAdmin();
   const { service, status } = await searchParams;
-  const applications = await prisma.application.findMany({
-    where: {
-      ...(service ? { service: { contains: service, mode: "insensitive" } } : {}),
-      ...(status ? { status } : {})
-    },
-    orderBy: { createdAt: "desc" }
-  });
+  let applications: Array<{
+    id: string;
+    fullName: string;
+    email: string;
+    phone: string | null;
+    phoneWhatsapp: string | null;
+    service: string;
+    investmentAmount: string | null;
+    startingCapital: string | null;
+    accountSize: string | null;
+    riskStyle: string | null;
+    status: ApplicationStatus;
+    createdAt: Date;
+    message: string | null;
+  }> = [];
+  let schemaNotice: string | null = null;
+
+  try {
+    applications = await prisma.application.findMany({
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        phone: true,
+        phoneWhatsapp: true,
+        service: true,
+        investmentAmount: true,
+        startingCapital: true,
+        accountSize: true,
+        riskStyle: true,
+        status: true,
+        createdAt: true,
+        message: true
+      },
+      where: {
+        ...(service ? { service: { contains: service, mode: "insensitive" } } : {}),
+        ...(status ? { status } : {})
+      },
+      orderBy: { createdAt: "desc" }
+    });
+  } catch (error) {
+    if (isSchemaMismatchError(error)) {
+      schemaNotice = getSchemaMismatchMessage("Applications");
+    } else {
+      throw error;
+    }
+  }
 
   return (
     <SPTAdminShell title="Applications" role={session.role}>
       <Card>
         <SectionHeader title="Application queue" text="Submissions from /spt/apply are stored here for review, approval, rejection, and conversion." />
+        {schemaNotice && (
+          <div className="mb-5">
+            <InlineNotice title="Applications are still being prepared" text={schemaNotice} />
+          </div>
+        )}
         <form className="mb-4 grid gap-3 md:grid-cols-3">
           <input name="service" defaultValue={service} placeholder="Filter by service" className="rounded-md border border-slate-200 px-3 py-2 text-sm" />
           <select name="status" defaultValue={status ?? ""} className="rounded-md border border-slate-200 px-3 py-2 text-sm">
@@ -276,22 +357,26 @@ export default async function SPTAdminApplicationsPage({ searchParams }: { searc
           </select>
           <button className="rounded-md bg-navy-950 px-4 py-2 text-sm font-bold text-white">Filter</button>
         </form>
-        <DataTable
-          columns={["Full Name", "Phone / WhatsApp", "Service Interested In", "Investment Amount", "Risk Style", "Status", "Created Date"]}
-          rows={applications.map((item) => [
-            item.fullName,
-            valueOrDash(item.phoneWhatsapp ?? item.phone),
-            item.service,
-            valueOrDash(item.investmentAmount ?? item.startingCapital ?? item.accountSize),
-            valueOrDash(item.riskStyle),
-            <StatusBadge key={item.id} value={readableEnum(item.status)} />,
-            item.createdAt.toLocaleDateString()
-          ])}
-          caption="Applications submitted from Smart Profits Trader"
-        />
+        {!schemaNotice ? (
+          <DataTable
+            columns={["Full Name", "Phone / WhatsApp", "Service Interested In", "Investment Amount", "Risk Style", "Status", "Created Date"]}
+            rows={applications.map((item) => [
+              item.fullName,
+              valueOrDash(item.phoneWhatsapp ?? item.phone),
+              item.service,
+              valueOrDash(item.investmentAmount ?? item.startingCapital ?? item.accountSize),
+              valueOrDash(item.riskStyle),
+              <StatusBadge key={item.id} value={readableEnum(item.status)} />,
+              item.createdAt.toLocaleDateString()
+            ])}
+            caption="Applications submitted from Smart Profits Trader"
+          />
+        ) : (
+          <EmptyState title="Applications are still being prepared" text="This queue will turn back on as soon as the live application schema finishes syncing." />
+        )}
       </Card>
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
-        {applications.length ? (
+        {!schemaNotice && applications.length ? (
           applications.slice(0, 10).map((item) => (
             <Card key={item.id}>
               <SectionHeader title={item.fullName} text={`${item.service} · ${item.email}`} />
@@ -322,6 +407,10 @@ export default async function SPTAdminApplicationsPage({ searchParams }: { searc
               </div>
             </Card>
           ))
+        ) : schemaNotice ? (
+          <div className="lg:col-span-2">
+            <EmptyState title="Applications are still being prepared" text="Detailed review cards will appear here as soon as the live application fields are fully available." />
+          </div>
         ) : (
           <div className="lg:col-span-2">
             <EmptyState title="No applications yet" text="New website applications will appear here automatically once visitors start submitting the live forms." />

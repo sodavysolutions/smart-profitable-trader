@@ -60,7 +60,7 @@ export default async function SPTAdminCommunicationsPage() {
   let communications = [] as Awaited<ReturnType<typeof getCommunicationRows>>;
   let leads = [] as Awaited<ReturnType<typeof prisma.lead.findMany>>;
   let customers = [] as Awaited<ReturnType<typeof prisma.customer.findMany>>;
-  let applications = [] as Awaited<ReturnType<typeof prisma.application.findMany>>;
+  let applications: Array<{ id: string; fullName: string }> = [];
   let schemaNotice: string | null = null;
 
   try {
@@ -68,7 +68,10 @@ export default async function SPTAdminCommunicationsPage() {
       getCommunicationRows(),
       prisma.lead.findMany({ orderBy: { fullName: "asc" } }),
       prisma.customer.findMany({ orderBy: { fullName: "asc" } }),
-      prisma.application.findMany({ orderBy: { fullName: "asc" } })
+      prisma.application.findMany({
+        select: { id: true, fullName: true },
+        orderBy: { fullName: "asc" }
+      })
     ]);
   } catch (error) {
     if (isSchemaMismatchError(error)) {
