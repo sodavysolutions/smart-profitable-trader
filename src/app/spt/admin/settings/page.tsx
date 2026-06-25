@@ -1,10 +1,11 @@
 import { revalidatePath } from "next/cache";
-import { Card, DataTable, SectionHeader } from "@/components/UI";
+import { Card, DataTable, InlineNotice, SectionHeader } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
 import { getMessagingProviderSnapshot } from "@/lib/integrations";
 import { prisma } from "@/lib/prisma";
 import { normalizeText } from "@/lib/spt-admin-helpers";
 import { requireAdmin } from "@/lib/spt-admin-auth";
+import { getSchemaMismatchMessage, isSchemaMismatchError } from "@/lib/spt-admin-schema";
 import { settingsSchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
@@ -38,12 +39,93 @@ const settingFields: Array<{ key: string; label: string; multiline?: boolean }> 
   { key: "message_template_independence_day", label: "Independence day message template", multiline: true }
 ] as const;
 
+const defaultSettingValues: Record<string, string> = {
+  company_name: "Smart Profitable Trader",
+  whatsapp_number: "+2347087970133",
+  logo_url: "/brand/spt-logo.png",
+  default_admin_email: "sodavysolutions@gmail.com",
+  sendy_api_url: "",
+  sendy_api_key: "",
+  sendy_list_id: "",
+  sendy_transactional_endpoint: "",
+  whatsapp_api_token: "",
+  whatsapp_phone_number_id: "",
+  sms_provider: "",
+  sms_api_url: "",
+  sms_api_key: "",
+  sms_sender_id: "",
+  event_date_christmas: "12-25",
+  event_date_new_year: "01-01",
+  event_date_eid: "",
+  event_date_independence_day: "10-01",
+  message_template_welcome:
+    "Welcome to Smart Profitable Trader. We have received your request and our team will contact you shortly.",
+  message_template_form_acknowledgement:
+    "Thank you for submitting your application. We are reviewing your details and will follow up with the next steps.",
+  message_template_payment_acknowledgement:
+    "Your payment has been received successfully. We appreciate your trust and will confirm activation shortly.",
+  message_template_birthday:
+    "Happy birthday from Smart Profitable Trader. We appreciate you and wish you a prosperous new year ahead.",
+  message_template_christmas:
+    "Merry Christmas from Smart Profitable Trader. Thank you for being part of our community.",
+  message_template_new_year:
+    "Happy New Year from Smart Profitable Trader. Wishing you clarity, growth, and disciplined execution in the markets.",
+  message_template_eid:
+    "Warm Eid greetings from Smart Profitable Trader. May this season bring peace, blessing, and progress.",
+  message_template_independence_day:
+    "Happy Independence Day from Smart Profitable Trader. Thank you for growing with us."
+};
+
+const requiredSettingKeys = new Set<keyof typeof defaultSettingValues>([
+  "company_name",
+  "whatsapp_number",
+  "logo_url",
+  "default_admin_email",
+  "message_template_welcome",
+  "message_template_form_acknowledgement",
+  "message_template_payment_acknowledgement",
+  "message_template_birthday",
+  "message_template_christmas",
+  "message_template_new_year",
+  "message_template_eid",
+  "message_template_independence_day"
+]);
+
+function buildSettingsPayload(source: Record<string, string | undefined>) {
+  return Object.fromEntries(
+    settingFields.map((field) => {
+      const rawValue = source[field.key];
+      const normalized = normalizeText(rawValue);
+      const fallback = defaultSettingValues[field.key] ?? "";
+
+      if (requiredSettingKeys.has(field.key as keyof typeof defaultSettingValues)) {
+        return [field.key, normalized && normalized.length ? normalized : fallback];
+      }
+
+      return [field.key, normalized ?? ""];
+    })
+  );
+}
+
 async function saveSettings(formData: FormData) {
   "use server";
   await requireAdmin();
-  const parsed = settingsSchema.safeParse(Object.fromEntries(formData.entries()));
+  const existingSettings = await prisma.setting.findMany({ orderBy: { key: "asc" } });
+  const existingValues = Object.fromEntries(existingSettings.map((setting) => [setting.key, setting.value]));
+  const submittedValues = Object.fromEntries(
+    settingFields.map((field) => [field.key, typeof formData.get(field.key) === "string" ? String(formData.get(field.key)) : ""])
+  );
+  const payload = buildSettingsPayload({
+    ...defaultSettingValues,
+    ...existingValues,
+    ...submittedValues
+  });
+  const parsed = settingsSchema.safeParse(payload);
+
   if (!parsed.success) {
-    throw new Error("Invalid settings payload.");
+    console.error("Settings validation failed", parsed.error.flatten());
+    revalidatePath("/spt/admin/settings");
+    return;
   }
 
   for (const field of settingFields) {
@@ -59,14 +141,43 @@ async function saveSettings(formData: FormData) {
 
 export default async function SPTAdminSettingsPage() {
   const session = await requireAdmin();
-  const [settings, providerSnapshot] = await Promise.all([
-    prisma.setting.findMany({ orderBy: { key: "asc" } }),
-    getMessagingProviderSnapshot()
-  ]);
-  const values = Object.fromEntries(settings.map((setting) => [setting.key, setting.value]));
+  let settings = [] as Awaited<ReturnType<typeof prisma.setting.findMany>>;
+  let providerSnapshot = {
+    sendyConfigured: false,
+    sendyTransactionalConfigured: false,
+    whatsappConfigured: false,
+    smsConfigured: false
+  };
+  let schemaNotice: string | null = null;
+
+  try {
+    [settings, providerSnapshot] = await Promise.all([
+      prisma.setting.findMany({ orderBy: { key: "asc" } }),
+      getMessagingProviderSnapshot()
+    ]);
+  } catch (error) {
+    if (isSchemaMismatchError(error)) {
+      schemaNotice = getSchemaMismatchMessage("Workspace settings");
+    } else {
+      throw error;
+    }
+  }
+
+  const values = {
+    ...defaultSettingValues,
+    ...Object.fromEntries(settings.map((setting) => [setting.key, setting.value]))
+  };
 
   return (
     <SPTAdminShell title="Workspace Settings" role={session.role}>
+      {schemaNotice && (
+        <div className="mb-6">
+          <InlineNotice
+            title="Workspace settings are still being prepared"
+            text={schemaNotice}
+          />
+        </div>
+      )}
       <Card className="mb-6">
         <SectionHeader
           title="Provider status"
