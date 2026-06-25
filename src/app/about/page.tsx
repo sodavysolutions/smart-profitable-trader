@@ -5,9 +5,9 @@ export default function AboutPage() {
   return (
     <PublicShell>
       <section className="page-shell py-14">
-        <h1 className="text-4xl font-semibold text-navy-950">About Smart Profitable Trader</h1>
+        <h1 className="text-4xl font-semibold text-navy-950">About Smart Profits Trader</h1>
         <p className="mt-4 max-w-3xl leading-7 text-slate-600">
-          Smart Profitable Trader is designed around disciplined account management, transparent operations, client communication, and risk-aware growth.
+          Smart Profits Trader is designed around disciplined account management, transparent operations, client communication, and risk-aware growth.
         </p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {[

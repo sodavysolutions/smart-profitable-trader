@@ -12,8 +12,8 @@ export default async function SPTAdminLoginPage() {
   return (
     <main className="grid min-h-screen place-items-center bg-navy-950 px-4 py-10">
       <div className="w-full max-w-md">
-        <div className="mb-5 inline-flex rounded-md bg-white px-3 py-2">
-          <Image src="/brand/spt-logo.png" alt="Smart Profitable Trader logo" width={190} height={80} className="h-14 w-auto object-contain" />
+        <div className="mb-5 inline-flex rounded-xl bg-white p-3 shadow-sm">
+          <Image src="/images/smart-profits-trader-logo.png" alt="Smart Profits Trader logo" width={160} height={160} className="h-16 w-16 object-contain" />
         </div>
         <AdminLoginForm />
       </div>

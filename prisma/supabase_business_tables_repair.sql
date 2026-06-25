@@ -1,4 +1,4 @@
--- Smart Profitable Trader business tables repair
+-- Smart Profits Trader business tables repair
 -- Purpose: add the newer CRM/business tables to a database that already has:
 -- User, Lead, Customer, Application, ActivityLog, CommunicationLog, Setting
 -- Safe to run in Supabase SQL Editor.
@@ -206,14 +206,14 @@ VALUES
   ('setting-event-date-new-year', 'event_date_new_year', '01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('setting-event-date-eid', 'event_date_eid', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('setting-event-date-independence-day', 'event_date_independence_day', '10-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  ('setting-message-template-welcome', 'message_template_welcome', 'Welcome {{name}}. Your Smart Profitable Trader onboarding is now active.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('setting-message-template-welcome', 'message_template_welcome', 'Welcome {{name}}. Your Smart Profits Trader onboarding is now active.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('setting-message-template-form-acknowledgement', 'message_template_form_acknowledgement', 'Hello {{name}}, we have received your application for {{service}}. Our team will contact you shortly.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('setting-message-template-payment-acknowledgement', 'message_template_payment_acknowledgement', 'Hello {{name}}, your payment of {{amount}} for {{service}} has been received. Thank you.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  ('setting-message-template-birthday', 'message_template_birthday', 'Happy Birthday {{name}}. Wishing you a blessed and profitable new year ahead from Smart Profitable Trader.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  ('setting-message-template-christmas', 'message_template_christmas', 'Merry Christmas {{name}}. Thank you for being part of Smart Profitable Trader.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  ('setting-message-template-new-year', 'message_template_new_year', 'Happy New Year {{name}}. Wishing you a prosperous year ahead from Smart Profitable Trader.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  ('setting-message-template-eid', 'message_template_eid', 'Eid Mubarak {{name}}. Wishing you peace, joy, and abundance from Smart Profitable Trader.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  ('setting-message-template-independence-day', 'message_template_independence_day', 'Happy Independence Day {{name}}. Thank you for being with Smart Profitable Trader.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+  ('setting-message-template-birthday', 'message_template_birthday', 'Happy Birthday {{name}}. Wishing you a blessed and profitable new year ahead from Smart Profits Trader.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('setting-message-template-christmas', 'message_template_christmas', 'Merry Christmas {{name}}. Thank you for being part of Smart Profits Trader.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('setting-message-template-new-year', 'message_template_new_year', 'Happy New Year {{name}}. Wishing you a prosperous year ahead from Smart Profits Trader.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('setting-message-template-eid', 'message_template_eid', 'Eid Mubarak {{name}}. Wishing you peace, joy, and abundance from Smart Profits Trader.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('setting-message-template-independence-day', 'message_template_independence_day', 'Happy Independence Day {{name}}. Thank you for being with Smart Profits Trader.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT ("key") DO UPDATE SET
   "value" = EXCLUDED."value",
   "updatedAt" = CURRENT_TIMESTAMP;

@@ -3,8 +3,8 @@ import Link from "next/link";
 import { SPTPageShell } from "@/components/spt/sections";
 
 export const metadata: Metadata = {
-  title: "Thank You | Smart Profitable Trader",
-  description: "Your Smart Profitable Trader application has been received."
+  title: "Thank You | Smart Profits Trader",
+  description: "Your Smart Profits Trader application has been received."
 };
 
 export default function SPTThankYouPage() {

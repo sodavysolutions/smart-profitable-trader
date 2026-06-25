@@ -3,8 +3,8 @@ import { ApplicationForm } from "@/components/ApplicationForm";
 import { SPTPageShell } from "@/components/spt/sections";
 
 export const metadata: Metadata = {
-  title: "Contact | Smart Profitable Trader",
-  description: "Contact Smart Profitable Trader for VIP signals, copy trading, prop trading, and evaluation account support."
+  title: "Contact | Smart Profits Trader",
+  description: "Contact Smart Profits Trader for VIP signals, copy trading, prop trading, and evaluation account support."
 };
 
 export default function SPTContactPage() {
@@ -12,7 +12,7 @@ export default function SPTContactPage() {
     <SPTPageShell>
       <section className="page-shell grid gap-10 py-16 lg:grid-cols-[420px_1fr]">
         <div>
-          <h1 className="text-4xl font-semibold text-navy-950">Contact Smart Profitable Trader</h1>
+          <h1 className="text-4xl font-semibold text-navy-950">Contact Smart Profits Trader</h1>
           <p className="mt-4 leading-7 text-slate-600">
             Send a message, request a consultation, or apply for the trading pathway that fits your goals.
           </p>

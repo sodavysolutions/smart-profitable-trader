@@ -40,9 +40,9 @@ const settingFields: Array<{ key: string; label: string; multiline?: boolean }> 
 ] as const;
 
 const defaultSettingValues: Record<string, string> = {
-  company_name: "Smart Profitable Trader",
+  company_name: "Smart Profits Trader",
   whatsapp_number: "+2347087970133",
-  logo_url: "/brand/spt-logo.png",
+  logo_url: "/images/smart-profits-trader-logo.png",
   default_admin_email: "sodavysolutions@gmail.com",
   sendy_api_url: "",
   sendy_api_key: "",
@@ -59,21 +59,21 @@ const defaultSettingValues: Record<string, string> = {
   event_date_eid: "",
   event_date_independence_day: "10-01",
   message_template_welcome:
-    "Welcome to Smart Profitable Trader. We have received your request and our team will contact you shortly.",
+    "Welcome to Smart Profits Trader. We have received your request and our team will contact you shortly.",
   message_template_form_acknowledgement:
     "Thank you for submitting your application. We are reviewing your details and will follow up with the next steps.",
   message_template_payment_acknowledgement:
     "Your payment has been received successfully. We appreciate your trust and will confirm activation shortly.",
   message_template_birthday:
-    "Happy birthday from Smart Profitable Trader. We appreciate you and wish you a prosperous new year ahead.",
+    "Happy birthday from Smart Profits Trader. We appreciate you and wish you a prosperous new year ahead.",
   message_template_christmas:
-    "Merry Christmas from Smart Profitable Trader. Thank you for being part of our community.",
+    "Merry Christmas from Smart Profits Trader. Thank you for being part of our community.",
   message_template_new_year:
-    "Happy New Year from Smart Profitable Trader. Wishing you clarity, growth, and disciplined execution in the markets.",
+    "Happy New Year from Smart Profits Trader. Wishing you clarity, growth, and disciplined execution in the markets.",
   message_template_eid:
-    "Warm Eid greetings from Smart Profitable Trader. May this season bring peace, blessing, and progress.",
+    "Warm Eid greetings from Smart Profits Trader. May this season bring peace, blessing, and progress.",
   message_template_independence_day:
-    "Happy Independence Day from Smart Profitable Trader. Thank you for growing with us."
+    "Happy Independence Day from Smart Profits Trader. Thank you for growing with us."
 };
 
 const requiredSettingKeys = new Set<keyof typeof defaultSettingValues>([

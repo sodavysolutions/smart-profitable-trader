@@ -84,11 +84,11 @@ export function InstantFundedHeader() {
     <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/92 backdrop-blur-xl">
       <div className="page-shell flex min-h-20 items-center justify-between gap-4 py-3">
         <div className="flex items-center gap-3">
-          <span className="grid h-14 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-white px-2 shadow-soft">
-            <Image src="/brand/spt-logo.png" alt="Smart Profitable Trader logo" width={220} height={90} className="h-12 w-auto object-contain" priority />
+          <span className="grid h-14 w-14 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-soft">
+            <Image src="/images/smart-profits-trader-logo.png" alt="Smart Profits Trader logo" width={160} height={160} className="h-full w-full object-contain" priority />
           </span>
           <span className="hidden leading-tight sm:block">
-            <span className="block font-semibold text-navy-950">Smart Profitable Trader Instant Funded</span>
+            <span className="block font-semibold text-navy-950">Smart Profits Trader Instant Funded</span>
             <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-profit-600">A Prop Trading Account Growth Solution</span>
           </span>
         </div>
@@ -180,7 +180,7 @@ export function InstantFundedHero() {
               </h1>
               <div className="mt-6 space-y-4 text-base leading-8 text-slate-600 sm:text-lg">
                 <p>
-                  Smart Profitable Trader Instant Funded helps clients access funded prop trading opportunities faster, with account setup support, structured trading management, progress tracking, and profit-share handling, all powered by our <strong>Smart Profit Algo</strong>.
+                  Smart Profits Trader Instant Funded helps clients access funded prop trading opportunities faster, with account setup support, structured trading management, progress tracking, and profit-share handling, all powered by our <strong>Smart Profit Algo</strong>.
                 </p>
                 <p>
                   Instead of struggling through Phase 1 and Phase 2 evaluations yourself, you can start with an instant funded account pathway and allow our structured trading operation to manage the trading process professionally.
@@ -236,7 +236,7 @@ export function InstantFundedPainSection() {
             ))}
           </div>
           <p className="mt-5 leading-7 text-slate-600">
-            That is why Smart Profitable Trader created the Instant Funded pathway for clients who want a faster route to funded trading without going through the traditional challenge process alone.
+            That is why Smart Profits Trader created the Instant Funded pathway for clients who want a faster route to funded trading without going through the traditional challenge process alone.
           </p>
         </div>
       </div>
@@ -263,7 +263,7 @@ export function InstantFundedSolutionSection() {
           <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">A Faster, More Structured Path Into Prop Trading</h2>
           <div className="mt-5 space-y-4 leading-7 text-slate-600">
             <p>
-              With Smart Profitable Trader Instant Funded, you can purchase or access an instant funded account option and allow our team to support the trading operation using a structured, risk-managed process.
+              With Smart Profits Trader Instant Funded, you can purchase or access an instant funded account option and allow our team to support the trading operation using a structured, risk-managed process.
             </p>
             <p>
               The goal is to help clients participate in funded trading opportunities with more structure, more discipline, and better operational support.
@@ -382,7 +382,7 @@ export function InstantFundedAccountOptions() {
         <div>
           <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Choose an Instant Funded Account Option That Fits Your Goal</h2>
           <p className="mt-5 leading-7 text-slate-600">
-            Smart Profitable Trader can help you get started with instant funded account options based on your capital, goal, and risk appetite.
+            Smart Profits Trader can help you get started with instant funded account options based on your capital, goal, and risk appetite.
           </p>
           <p className="mt-5 rounded-[18px] border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
             Account prices, rules, drawdown limits, and profit-share terms may vary depending on the prop firm or instant funding provider. Final details will be confirmed during application review.
@@ -448,7 +448,7 @@ export function InstantFundedProfitShare() {
         <div>
           <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Clear Profit-Share Structure</h2>
           <p className="mt-5 leading-7 text-slate-600">
-            Smart Profitable Trader uses a simple profit-share structure for instant funded account management. This allows clients to choose the entry option that works best for them while keeping the trading operation fair, transparent, and performance-based.
+            Smart Profits Trader uses a simple profit-share structure for instant funded account management. This allows clients to choose the entry option that works best for them while keeping the trading operation fair, transparent, and performance-based.
           </p>
           <p className="mt-5 rounded-[18px] border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">
             Profit share only applies when profits are generated and withdrawals are successfully processed. Trading losses, account violations, or failed accounts can affect withdrawal eligibility.
@@ -456,8 +456,8 @@ export function InstantFundedProfitShare() {
         </div>
         <div className="grid gap-5 md:grid-cols-2">
           {[
-            ["If You Pay the Setup Fee", "65%", "Client receives", "35%", "Smart Profitable Trader receives"],
-            ["If You Do Not Pay the Setup Fee", "50%", "Client receives", "50%", "Smart Profitable Trader receives"]
+            ["If You Pay the Setup Fee", "65%", "Client receives", "35%", "Smart Profits Trader receives"],
+            ["If You Do Not Pay the Setup Fee", "50%", "Client receives", "50%", "Smart Profits Trader receives"]
           ].map(([title, clientShare, clientLabel, sptShare, sptLabel]) => (
             <div key={title} className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-soft">
               <h3 className="text-xl font-semibold text-navy-950">{title}</h3>
@@ -589,7 +589,7 @@ export function InstantFundedFinalCTA() {
         <div className="relative mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Ready to Access Funded Trading Without the Long Challenge Process?</h2>
           <p className="mt-5 leading-7 text-slate-600">
-            If you want to participate in prop trading but do not want to go through the stressful evaluation route alone, Smart Profitable Trader Instant Funded may be the right path for you.
+            If you want to participate in prop trading but do not want to go through the stressful evaluation route alone, Smart Profits Trader Instant Funded may be the right path for you.
           </p>
           <p className="mt-3 leading-7 text-slate-600">
             Apply now and let us review your goal, preferred account size, and available funding options.
@@ -610,9 +610,9 @@ export function InstantFundedFooter() {
       <div className="page-shell">
         <div className="flex flex-col justify-between gap-5 text-sm text-slate-500 md:flex-row md:items-start">
           <div className="max-w-2xl">
-            <p>Smart Profitable Trader Instant Funded is part of the Smart Profitable Trader ecosystem by Laptop Lifestyle Income.</p>
+            <p>Smart Profits Trader Instant Funded is part of the Smart Profits Trader ecosystem by Laptop Lifestyle Income.</p>
             <p className="mt-3 text-xs leading-5">
-              Trading involves significant risk. Smart Profitable Trader does not guarantee profits, fixed returns, withdrawals, or risk-free results. Funded accounts can be lost if trading rules or drawdown limits are violated. Only participate with funds you can afford to risk.
+              Trading involves significant risk. Smart Profits Trader does not guarantee profits, fixed returns, withdrawals, or risk-free results. Funded accounts can be lost if trading rules or drawdown limits are violated. Only participate with funds you can afford to risk.
             </p>
           </div>
           <div className="flex flex-wrap gap-4">

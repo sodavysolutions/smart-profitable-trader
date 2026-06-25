@@ -39,17 +39,17 @@ export function SPTNavbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/92 backdrop-blur-xl">
       <div className="page-shell flex h-[72px] items-center justify-between gap-4 sm:h-20">
-        <Link href="/spt/home" onClick={closeMenu} className="flex min-w-0 items-center gap-3" aria-label="Smart Profitable Trader home">
-          <span className="grid h-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-white px-2 shadow-soft sm:h-14">
-            <Image src="/brand/spt-logo.png" alt="Smart Profitable Trader logo" width={220} height={90} className="h-10 w-auto object-contain sm:h-12" priority />
+        <Link href="/spt/home" onClick={closeMenu} className="flex min-w-0 items-center gap-3" aria-label="Smart Profits Trader home">
+          <span className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-soft sm:h-14 sm:w-14">
+            <Image src="/images/smart-profits-trader-logo.png" alt="Smart Profits Trader logo" width={160} height={160} className="h-full w-full object-contain" priority />
           </span>
           <span className="hidden min-w-0 leading-tight sm:block">
-            <span className="block font-semibold text-navy-950">Smart Profitable Trader</span>
+            <span className="block font-semibold text-navy-950">Smart Profits Trader</span>
             <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-profit-600">Algo-Powered Trading Ecosystem</span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-5 text-sm font-semibold text-slate-600 lg:flex" aria-label="Smart Profitable Trader desktop navigation">
+        <nav className="hidden items-center gap-5 text-sm font-semibold text-slate-600 lg:flex" aria-label="Smart Profits Trader desktop navigation">
           {sptLinks.slice(1).map((item) => (
             <Link key={item.href} href={item.href} className="whitespace-nowrap transition hover:text-navy-950">
               {item.shortLabel}
@@ -89,7 +89,7 @@ export function SPTNavbar() {
         <nav
           id="spt-mobile-menu"
           className={`relative mx-auto w-[min(calc(100%_-_24px),430px)] origin-top overflow-hidden rounded-b-2xl border border-t-0 border-slate-200 bg-white p-4 shadow-[0_24px_70px_rgba(15,35,70,0.2)] transition duration-200 ${isOpen ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0"}`}
-          aria-label="Smart Profitable Trader mobile navigation"
+          aria-label="Smart Profits Trader mobile navigation"
         >
           <div className="space-y-1">
             {sptLinks.map((item) => (

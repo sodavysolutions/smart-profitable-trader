@@ -1,4 +1,4 @@
--- Smart Profitable Trader admin CRM bootstrap
+-- Smart Profits Trader admin CRM bootstrap
 -- 1. Replace {{ADMIN_EMAIL}} with your real admin email.
 -- 2. Replace {{ADMIN_PASSWORD}} with your real admin password.
 -- 3. Run this whole file in the Supabase SQL Editor once.
@@ -224,7 +224,7 @@ ON CONFLICT ("email") DO UPDATE SET
 
 INSERT INTO "Setting" ("id", "key", "value", "createdAt", "updatedAt")
 VALUES
-  ('setting-company-name', 'company_name', 'Smart Profitable Trader', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('setting-company-name', 'company_name', 'Smart Profits Trader', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('setting-whatsapp-number', 'whatsapp_number', '+2347087970133', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('setting-sendy-api-url', 'sendy_api_url', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('setting-sendy-api-key', 'sendy_api_key', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -241,7 +241,7 @@ VALUES
   ('setting-event-date-eid', 'event_date_eid', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('setting-event-date-independence-day', 'event_date_independence_day', '10-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('setting-default-admin-email', 'default_admin_email', '{{ADMIN_EMAIL}}', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  ('setting-logo-url', 'logo_url', '/brand/spt-logo.png', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+  ('setting-logo-url', 'logo_url', '/images/smart-profits-trader-logo.png', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT ("key") DO UPDATE SET
   "value" = EXCLUDED."value",
   "updatedAt" = CURRENT_TIMESTAMP;

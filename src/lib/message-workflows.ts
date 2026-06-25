@@ -33,11 +33,11 @@ type RenewalRecord = Subscription & {
 };
 
 const eventTitles: Record<EventKey, string> = {
-  birthday: "Happy birthday from Smart Profitable Trader",
-  christmas: "Christmas greetings from Smart Profitable Trader",
-  new_year: "Happy New Year from Smart Profitable Trader",
-  eid: "Warm Eid greetings from Smart Profitable Trader",
-  independence_day: "Happy Independence Day from Smart Profitable Trader"
+  birthday: "Happy birthday from Smart Profits Trader",
+  christmas: "Christmas greetings from Smart Profits Trader",
+  new_year: "Happy New Year from Smart Profits Trader",
+  eid: "Warm Eid greetings from Smart Profits Trader",
+  independence_day: "Happy Independence Day from Smart Profits Trader"
 };
 
 const defaultEventDates: Partial<Record<Exclude<EventKey, "birthday">, string>> = {
@@ -268,12 +268,12 @@ export async function sendApplicationAcknowledgement(applicationId: string) {
   const message = interpolateTemplate(template, {
     fullName: application.fullName,
     service: application.service,
-    companyName: settings.company_name ?? "Smart Profitable Trader"
+    companyName: settings.company_name ?? "Smart Profits Trader"
   });
 
   return dispatchLifecycleMessage({
     recipient: application.email,
-    subject: "We received your Smart Profitable Trader application",
+    subject: "We received your Smart Profits Trader application",
     message,
     applicationId: application.id,
     send: async () => {
@@ -281,7 +281,7 @@ export async function sendApplicationAcknowledgement(applicationId: string) {
         recipient: application.fullName,
         email: application.email,
         name: application.fullName,
-        title: "We received your Smart Profitable Trader application",
+        title: "We received your Smart Profits Trader application",
         body: message,
         tags: [buildServiceTag(application.service), "application"]
       });
@@ -318,13 +318,13 @@ export async function sendWelcomeWorkflow(customerId: string) {
 
   const message = interpolateTemplate(template, {
     fullName: customer.fullName,
-    companyName: settings.company_name ?? "Smart Profitable Trader",
+    companyName: settings.company_name ?? "Smart Profits Trader",
     serviceType: customer.customerType
   });
 
   return dispatchLifecycleMessage({
     recipient: customer.email,
-    subject: "Welcome to Smart Profitable Trader",
+    subject: "Welcome to Smart Profits Trader",
     message,
     customerId: customer.id,
     send: async () => {
@@ -332,7 +332,7 @@ export async function sendWelcomeWorkflow(customerId: string) {
         recipient: customer.fullName,
         email: customer.email,
         name: customer.fullName,
-        title: "Welcome to Smart Profitable Trader",
+        title: "Welcome to Smart Profits Trader",
         body: message,
         tags: [customer.customerType.toLowerCase(), "welcome"]
       });
@@ -345,7 +345,7 @@ export async function sendWelcomeWorkflow(customerId: string) {
         recipient: customer.fullName,
         email: customer.email,
         name: customer.fullName,
-        title: "Welcome to Smart Profitable Trader",
+        title: "Welcome to Smart Profits Trader",
         body: message,
         tags: [customer.customerType.toLowerCase(), "welcome"]
       });
@@ -372,7 +372,7 @@ export async function sendPaymentAcknowledgement(paymentId: string) {
 
   const message = interpolateTemplate(template, {
     fullName: payment.customer.fullName,
-    companyName: settings.company_name ?? "Smart Profitable Trader",
+    companyName: settings.company_name ?? "Smart Profits Trader",
     serviceType: payment.serviceType,
     amount: payment.amount.toString(),
     currency: payment.currency
@@ -380,7 +380,7 @@ export async function sendPaymentAcknowledgement(paymentId: string) {
 
   return dispatchLifecycleMessage({
     recipient: payment.customer.email,
-    subject: "Payment received by Smart Profitable Trader",
+    subject: "Payment received by Smart Profits Trader",
     message,
     customerId: payment.customerId,
     send: async () =>
@@ -388,7 +388,7 @@ export async function sendPaymentAcknowledgement(paymentId: string) {
         recipient: payment.customer!.fullName,
         email: payment.customer!.email,
         name: payment.customer!.fullName,
-        title: "Payment received by Smart Profitable Trader",
+        title: "Payment received by Smart Profits Trader",
         body: message,
         tags: ["payment", buildServiceTag(payment.serviceType)]
       })
@@ -410,7 +410,7 @@ export async function sendEventBroadcastPreview(eventKey: EventKey) {
     fullName: customer.fullName,
     email: customer.email,
     preview: interpolateTemplate(template, {
-      ...buildEventContext(customer, settings.company_name ?? "Smart Profitable Trader", eventKey)
+      ...buildEventContext(customer, settings.company_name ?? "Smart Profits Trader", eventKey)
     })
   }));
 }
@@ -422,7 +422,7 @@ export async function sendEventBroadcastNow(eventKey: Exclude<EventKey, "birthda
   });
 
   const template = settings[`message_template_${eventKey}`] ?? "";
-  const companyName = settings.company_name ?? "Smart Profitable Trader";
+  const companyName = settings.company_name ?? "Smart Profits Trader";
 
   return Promise.all(
     customers.map((customer) => dispatchCustomerEventMessage(customer, eventKey, template, companyName))
@@ -438,7 +438,7 @@ export async function sendBirthdayMessagesForDate(date = new Date()) {
 
   const matches = customers.filter((customer) => customer.dateOfBirth && monthDayKey(customer.dateOfBirth) === monthDayKey(date));
   const template = settings.message_template_birthday ?? "";
-  const companyName = settings.company_name ?? "Smart Profitable Trader";
+  const companyName = settings.company_name ?? "Smart Profits Trader";
 
   return Promise.all(matches.map((customer) => dispatchCustomerEventMessage(customer, "birthday", template, companyName)));
 }
@@ -446,7 +446,7 @@ export async function sendBirthdayMessagesForDate(date = new Date()) {
 export async function sendSpecialEventMessagesForDate(date = new Date()) {
   const settings = await getCompanySettingMap();
   const dateKey = monthDayKey(date);
-  const companyName = settings.company_name ?? "Smart Profitable Trader";
+  const companyName = settings.company_name ?? "Smart Profits Trader";
   const customers = await prisma.customer.findMany({
     orderBy: { fullName: "asc" }
   });

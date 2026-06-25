@@ -26,7 +26,7 @@ import { SPTNavbar } from "@/components/spt/spt-navbar";
 
 const whatsappUrl = "https://wa.me/2347087970133";
 const evaluationWhatsappUrl = `${whatsappUrl}?text=${encodeURIComponent(
-  "Hello Smart Profitable Trader team, I'm interested in the Evaluation Prop Trading service. Please send me the recommended prop firms, account options, management process, risk guidelines, and how to get started."
+  "Hello Smart Profits Trader team, I'm interested in the Evaluation Prop Trading service. Please send me the recommended prop firms, account options, management process, risk guidelines, and how to get started."
 )}`;
 
 const offers: Array<{
@@ -39,7 +39,7 @@ const offers: Array<{
   icon: LucideIcon;
 }> = [
   {
-    title: "Smart Profitable Trader VIP Signal Service",
+    title: "Smart Profits Trader VIP Signal Service",
     subtitle: "Premium trading signals for serious traders",
     copy: "Get structured market alerts supported by our Smart Profit Algo process, weekly optimization reviews, and risk-managed trade planning.",
     bestFor: ["Traders who want guided alerts", "Beginners who need structure", "Busy people who trade manually", "People who want a disciplined signal flow"],
@@ -122,7 +122,7 @@ const features = [
 const proofCards = ["Account Growth", "Weekly Review", "Profit Share", "Drawdown Monitoring", "Evaluation Progress", "Withdrawal Tracking"];
 
 const faqs = [
-  ["Is profit guaranteed?", "No. Trading involves risk and profits are not guaranteed. Smart Profitable Trader focuses on structure, risk management, and continuous optimization, but losses can still happen."],
+  ["Is profit guaranteed?", "No. Trading involves risk and profits are not guaranteed. Smart Profits Trader focuses on structure, risk management, and continuous optimization, but losses can still happen."],
   ["What is the Smart Profit Algo?", "The Smart Profit Algo is our algorithmic trading system that helps analyze market behavior, test strategies, validate setups, and support trading decisions."],
   ["Do I need trading experience?", "Not necessarily. If you are new, you can start with VIP signals or copy trading. If you already understand trading, choose the offer that fits your goals."],
   ["Can I use my personal account?", "Yes. Personal account trading and copy trading are designed for clients who want to use their own trading accounts."],
@@ -222,7 +222,7 @@ export function SPTHeroSection() {
               Choose a More Structured Forex Trading Path
             </h1>
             <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-              Smart Profitable Trader helps you choose between VIP signals, managed account support, and prop firm account guidance, all backed by a clearer trading process and risk-aware execution.
+              Smart Profits Trader helps you choose between VIP signals, managed account support, and prop firm account guidance, all backed by a clearer trading process and risk-aware execution.
             </p>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-500">
               Start with the path that fits your goal, then apply for a review so our team can recommend the best next step.
@@ -314,7 +314,7 @@ export function SPTEcosystemSection() {
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-semibold text-navy-950 sm:text-4xl">One Ecosystem. Multiple Trading Income Pathways.</h2>
         <p className="mt-4 leading-7 text-slate-600">
-          Smart Profitable Trader helps traders, investors, and busy professionals access structured trading opportunities without needing to trade alone.
+          Smart Profits Trader helps traders, investors, and busy professionals access structured trading opportunities without needing to trade alone.
         </p>
       </div>
       <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -372,7 +372,7 @@ export function OfferCardsSection() {
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-semibold text-navy-950 sm:text-4xl">Choose the Trading Path That Fits You</h2>
         <p className="mt-4 leading-7 text-slate-600">
-          Different people have different goals. Smart Profitable Trader gives you multiple ways to participate in a structured trading ecosystem.
+          Different people have different goals. Smart Profits Trader gives you multiple ways to participate in a structured trading ecosystem.
         </p>
       </div>
       <div className="mt-8 grid gap-3 rounded-[22px] border border-slate-200 bg-slate-50 p-4 md:grid-cols-4">
@@ -420,7 +420,7 @@ export function WhyChooseSPTSection() {
     <section className="bg-gradient-to-b from-white to-slate-50 py-16">
       <div className="page-shell">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-semibold text-navy-950 sm:text-4xl">Why Traders and Investors Choose Smart Profitable Trader</h2>
+          <h2 className="text-3xl font-semibold text-navy-950 sm:text-4xl">Why Traders and Investors Choose Smart Profits Trader</h2>
         </div>
         <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {features.map(([title, text, Icon]) => (
@@ -441,18 +441,18 @@ export function AboutFounderSection() {
     <section id="founder" className="page-shell py-16">
       <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="overflow-hidden rounded-[28px] bg-gradient-to-br from-blue-100 to-emerald-50 p-3 shadow-[0_24px_70px_rgba(15,35,70,0.12)]">
-          <Image src="/brand/founder-portrait.png" alt="Solomon David, founder of Smart Profitable Trader" width={900} height={1200} className="h-[520px] w-full rounded-[22px] object-cover object-top max-sm:h-[420px]" />
+          <Image src="/brand/founder-portrait.png" alt="Solomon David, founder of Smart Profits Trader" width={900} height={1200} className="h-[520px] w-full rounded-[22px] object-cover object-top max-sm:h-[420px]" />
         </div>
         <div>
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-profit-600">About the Founder</p>
           <h2 className="mt-4 text-3xl font-semibold text-navy-950 sm:text-4xl">Solomon David</h2>
           <p className="mt-2 text-lg font-semibold text-slate-700">Entrepreneur, digital marketing strategist, and trading systems builder</p>
           <div className="mt-5 space-y-4 leading-7 text-slate-600">
-            <p>I created Smart Profitable Trader to help everyday people access trading opportunities with more structure, better systems, and less guesswork.</p>
+            <p>I created Smart Profits Trader to help everyday people access trading opportunities with more structure, better systems, and less guesswork.</p>
             <p>The ecosystem is built for traders, investors, and busy professionals who want guidance, tracking, communication, and a more organized way to participate in trading opportunities.</p>
             <p>Through the Smart Profit Algo, weekly optimization, VIP signals, copy trading, personal account trading, and prop firm account management, we are building a complete trading business ecosystem for people who want to take trading seriously.</p>
           </div>
-          <p className="mt-6 font-semibold text-navy-950">- Solomon David, Founder of Smart Profitable Trader</p>
+          <p className="mt-6 font-semibold text-navy-950">- Solomon David, Founder of Smart Profits Trader</p>
           <Link href="/spt/apply" className="mt-7 inline-flex items-center gap-2 rounded-md bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950">
             Start Your Trading Journey <ArrowRight size={15} />
           </Link>
@@ -467,7 +467,7 @@ export function HowItWorksSection() {
     <section id="how-it-works" className="bg-slate-50 py-16">
       <div className="page-shell">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-semibold text-navy-950 sm:text-4xl">How the Smart Profitable Trader Ecosystem Works</h2>
+          <h2 className="text-3xl font-semibold text-navy-950 sm:text-4xl">How the Smart Profits Trader Ecosystem Works</h2>
         </div>
         <div className="mt-10 grid gap-4 md:grid-cols-4">
           {[
@@ -546,7 +546,7 @@ export function FinalCTASection() {
       <div className="min-w-0">
         <h2 className="text-3xl font-semibold text-navy-950 sm:text-4xl">Not Sure Which Trading Path Fits You?</h2>
         <p className="mt-4 leading-7 text-slate-600">
-          Apply and we will review your goal, experience, account type, and risk comfort so we can recommend the most practical Smart Profitable Trader option for you.
+          Apply and we will review your goal, experience, account type, and risk comfort so we can recommend the most practical Smart Profits Trader option for you.
         </p>
         <div className="mt-7 grid gap-3">
           {afterApplyItems.map(([title, text], index) => (
@@ -583,7 +583,7 @@ export function SPTFooter() {
   return (
     <footer className="border-t border-slate-200 bg-white py-8">
       <div className="page-shell flex flex-col justify-between gap-5 text-sm text-slate-500 md:flex-row md:items-center">
-        <p>Smart Profitable Trader by Laptop Lifestyle Income. Trading involves risk and results are not guaranteed.</p>
+        <p>Smart Profits Trader by Laptop Lifestyle Income. Trading involves risk and results are not guaranteed.</p>
         <div className="flex flex-wrap gap-4">
           {[
             ["VIP Signals", "/spt/vip-signals"],
@@ -632,7 +632,7 @@ export function SPTHomepage() {
 
 export const funnelPages = {
   "vip-signals": {
-    title: "Smart Profitable Trader VIP Signal Service",
+    title: "Smart Profits Trader VIP Signal Service",
     subtitle: "Structured trading alerts powered by the Smart Profit Algo",
     description: "Receive professional trading alerts supported by algo-backed market analysis, weekly optimization reviews, and risk-managed trade planning. Built for traders who want clearer opportunities without trading blindly.",
     service: "vip-signals"
@@ -747,7 +747,7 @@ function EvaluationManagementFunnel() {
                   Stop Failing Prop Firm Challenges Alone. Trade Your Evaluation With a More Structured System.
                 </h1>
                 <p className="mt-6 text-lg leading-8 text-slate-600">
-                  Smart Profitable Trader Evaluation Management helps traders and investors approach prop firm challenges with structured account management, risk control, phase tracking, and algo-supported trade selection powered by the <strong className="font-semibold text-navy-950">Smart Profit Algo</strong>.
+                  Smart Profits Trader Evaluation Management helps traders and investors approach prop firm challenges with structured account management, risk control, phase tracking, and algo-supported trade selection powered by the <strong className="font-semibold text-navy-950">Smart Profit Algo</strong>.
                 </p>
                 <p className="mt-4 leading-7 text-slate-600">
                   Whether you are starting Phase 1, moving into Phase 2, or trying to protect a funded account, our goal is to help you trade with more discipline, less emotion, and a clearer process.
@@ -826,7 +826,7 @@ function EvaluationManagementFunnel() {
       <section className="bg-slate-50 py-16">
         <div className="page-shell">
           <EvaluationSectionHeader title="A More Professional Way to Approach Phase 1, Phase 2, and Funded Accounts">
-            <p>Smart Profitable Trader Evaluation Management is designed for clients who want support managing prop firm evaluation accounts.</p>
+            <p>Smart Profits Trader Evaluation Management is designed for clients who want support managing prop firm evaluation accounts.</p>
             <p>Instead of treating the challenge like gambling, we treat it like a serious trading operation that requires patience, discipline, and proper risk control.</p>
           </EvaluationSectionHeader>
           <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
@@ -871,7 +871,7 @@ function EvaluationManagementFunnel() {
 
       <section className="bg-gradient-to-b from-white to-slate-50 py-16">
         <div className="page-shell">
-          <EvaluationSectionHeader title="Why Use Smart Profitable Trader for Your Evaluation Account?" />
+          <EvaluationSectionHeader title="Why Use Smart Profits Trader for Your Evaluation Account?" />
           <div className="mt-10 grid gap-4 lg:grid-cols-3">
             {evaluationBenefits.map(([title, text, Icon]) => (
               <div key={title} className="funnel-card rounded-md border border-slate-200 bg-white p-6 shadow-sm">
@@ -976,14 +976,14 @@ function EvaluationManagementFunnel() {
         <div>
           <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">Ready to Approach Your Prop Firm Challenge With More Structure?</h2>
           <p className="mt-5 leading-7 text-slate-600">
-            If you want to take a prop firm evaluation but do not want to trade it alone, Smart Profitable Trader Evaluation Management may be the right path for you.
+            If you want to take a prop firm evaluation but do not want to trade it alone, Smart Profits Trader Evaluation Management may be the right path for you.
           </p>
           <p className="mt-4 leading-7 text-slate-600">
             Apply now and let us review your prop firm, account size, phase, and trading goal.
           </p>
           <EvaluationCTAButtons className="mt-8" />
           <p className="mt-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">
-            Trading involves significant risk. Smart Profitable Trader does not guarantee passing evaluations, funded approval, withdrawals, fixed returns, or risk-free results. Prop firm accounts can fail if targets are not reached, rules are violated, or drawdown limits are exceeded. Only participate with funds you can afford to risk.
+            Trading involves significant risk. Smart Profits Trader does not guarantee passing evaluations, funded approval, withdrawals, fixed returns, or risk-free results. Prop firm accounts can fail if targets are not reached, rules are violated, or drawdown limits are exceeded. Only participate with funds you can afford to risk.
           </p>
         </div>
         <ApplicationForm initialService="evaluation" thankYouPath="/spt/thank-you" />

@@ -35,7 +35,7 @@ export function AdminLoginForm() {
   return (
     <form onSubmit={submit} className="w-full max-w-md rounded-md bg-white p-6 shadow-soft">
       <h1 className="text-2xl font-semibold text-navy-950">Admin login</h1>
-      <p className="mt-2 text-sm text-slate-600">Secure access for Smart Profitable Trader CRM.</p>
+      <p className="mt-2 text-sm text-slate-600">Secure access for Smart Profits Trader CRM.</p>
       <label className="mt-6 grid gap-1 text-sm font-medium text-slate-700">
         Email
         <input name="email" className="rounded-md border border-slate-200 px-3 py-2" type="email" required />

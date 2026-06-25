@@ -43,7 +43,7 @@ export const publicNav = [
 
 export const services = [
   {
-    title: "Smart Profitable Trader VIP Signal Service",
+    title: "Smart Profits Trader VIP Signal Service",
     slug: "vip-signals",
     icon: Megaphone,
     description: "Access structured VIP trading alerts supported by Smart Profit Algo analysis and weekly optimization reviews.",

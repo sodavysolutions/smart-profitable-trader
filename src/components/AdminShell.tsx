@@ -7,7 +7,7 @@ export function AdminShell({ children, title = "Dashboard" }: { children: React.
   return (
     <main className="min-h-screen bg-slate-100 text-slate-900">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 bg-navy-950 p-5 text-white lg:block">
-        <Link href="/admin" aria-label="Smart Profitable Trader admin dashboard" className="mb-8 block">
+        <Link href="/admin" aria-label="Smart Profits Trader admin dashboard" className="mb-8 block">
           <Brand />
         </Link>
         <nav aria-label="Admin navigation" className="space-y-1">
@@ -34,7 +34,7 @@ export function AdminShell({ children, title = "Dashboard" }: { children: React.
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
           <div className="flex min-h-20 flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
             <div>
-              <p className="text-sm font-medium text-profit-600">Smart Profitable Trader</p>
+              <p className="text-sm font-medium text-profit-600">Smart Profits Trader</p>
               <h1 className="text-2xl font-semibold tracking-normal text-navy-950">{title}</h1>
             </div>
             <div className="flex items-center gap-3">

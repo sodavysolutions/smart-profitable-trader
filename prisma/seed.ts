@@ -47,7 +47,7 @@ async function main() {
 
   const leads = [
     ["Amara Okafor", "amara@example.com", "Copy Trading Subscription", "Instagram", "June Growth", LeadStatus.NEW],
-    ["Daniel Reed", "daniel@example.com", "Smart Profitable Trader VIP Signal Service", "Referral", "VIP Push", LeadStatus.CONTACTED],
+    ["Daniel Reed", "daniel@example.com", "Smart Profits Trader VIP Signal Service", "Referral", "VIP Push", LeadStatus.CONTACTED],
     ["Grace Mensah", "grace@example.com", "Funded Account Trading", "WhatsApp", "Funded Sprint", LeadStatus.INTERESTED],
     ["Owen Carter", "owen@example.com", "Evaluation Account Management", "Google", "Evaluation Drive", LeadStatus.FOLLOW_UP],
     ["Priya Shah", "priya@example.com", "Copy Trading Subscription", "Facebook", "Copy Conversion", LeadStatus.PAYMENT_PENDING],
@@ -55,7 +55,7 @@ async function main() {
     ["Lina Brooks", "lina@example.com", "General Inquiry", "Website", "General Interest", LeadStatus.NOT_INTERESTED],
     ["Kwame Boateng", "kwame@example.com", "Funded Account Trading", "Campaign", "Funded Sprint", LeadStatus.INTERESTED],
     ["Maya Chen", "maya@example.com", "Evaluation Account Management", "LinkedIn", "Evaluation Drive", LeadStatus.CONTACTED],
-    ["Ibrahim Bello", "ibrahim@example.com", "Smart Profitable Trader VIP Signal Service", "TikTok", "VIP Push", LeadStatus.LOST]
+    ["Ibrahim Bello", "ibrahim@example.com", "Smart Profits Trader VIP Signal Service", "TikTok", "VIP Push", LeadStatus.LOST]
   ] as const;
 
   for (const [fullName, email, serviceInterest, leadSource, campaign, status] of leads) {
@@ -104,7 +104,7 @@ async function main() {
 
   const applications = [
     ["Amina Yusuf", "amina@example.com", "Copy Trading Subscription", "5000", "IC Markets", ""],
-    ["Ruth Gray", "ruth@example.com", "Smart Profitable Trader VIP Signal Service", "250", "", ""],
+    ["Ruth Gray", "ruth@example.com", "Smart Profits Trader VIP Signal Service", "250", "", ""],
     ["Kelvin Hart", "kelvin@example.com", "Evaluation Account Management", "50000", "", "FTMO"],
     ["Jason Cole", "jason@example.com", "Funded Account Trading", "100000", "", "FundedNext"],
     ["Adaeze Obi", "adaeze@example.com", "Personal Trading Account Management", "10000", "Pepperstone", ""]
@@ -389,7 +389,7 @@ async function main() {
       update: {
         channel: CommunicationChannel.EMAIL,
         recipient: customer.email,
-        subject: "Welcome to Smart Profitable Trader",
+        subject: "Welcome to Smart Profits Trader",
         message: "Your account setup is being processed. Our team will follow up with your next steps.",
         status: CommunicationStatus.SENT,
         sentAt: new Date(now.getTime() - day)
@@ -398,7 +398,7 @@ async function main() {
         id: `communication-${customer.id}`,
         channel: CommunicationChannel.EMAIL,
         recipient: customer.email,
-        subject: "Welcome to Smart Profitable Trader",
+        subject: "Welcome to Smart Profits Trader",
         message: "Your account setup is being processed. Our team will follow up with your next steps.",
         status: CommunicationStatus.SENT,
         sentAt: new Date(now.getTime() - day),
@@ -494,7 +494,7 @@ async function main() {
   }
 
   const settings = {
-    company_name: "Smart Profitable Trader",
+    company_name: "Smart Profits Trader",
     whatsapp_number: "+2347087970133",
     sendy_api_url: process.env.SENDY_BASE_URL ?? "https://sendy.laptoplifestyleincome.com/",
     sendy_api_key: process.env.SENDY_API_KEY ?? "",
@@ -511,15 +511,15 @@ async function main() {
     event_date_eid: "",
     event_date_independence_day: "10-01",
     default_admin_email: adminEmail,
-    logo_url: "/brand/spt-logo.png",
-    message_template_welcome: "Welcome to Smart Profitable Trader. We have received your request and our team will contact you shortly.",
+    logo_url: "/images/smart-profits-trader-logo.png",
+    message_template_welcome: "Welcome to Smart Profits Trader. We have received your request and our team will contact you shortly.",
     message_template_form_acknowledgement: "Thank you for submitting your application. We are reviewing your details and will follow up with the next steps.",
     message_template_payment_acknowledgement: "Your payment has been received successfully. We appreciate your trust and will confirm activation shortly.",
-    message_template_birthday: "Happy birthday from Smart Profitable Trader. We appreciate you and wish you a prosperous new year ahead.",
-    message_template_christmas: "Merry Christmas from Smart Profitable Trader. Thank you for being part of our community.",
-    message_template_new_year: "Happy New Year from Smart Profitable Trader. Wishing you clarity, growth, and disciplined execution in the markets.",
-    message_template_eid: "Warm Eid greetings from Smart Profitable Trader. May this season bring peace, blessing, and progress.",
-    message_template_independence_day: "Happy Independence Day from Smart Profitable Trader. Thank you for growing with us."
+    message_template_birthday: "Happy birthday from Smart Profits Trader. We appreciate you and wish you a prosperous new year ahead.",
+    message_template_christmas: "Merry Christmas from Smart Profits Trader. Thank you for being part of our community.",
+    message_template_new_year: "Happy New Year from Smart Profits Trader. Wishing you clarity, growth, and disciplined execution in the markets.",
+    message_template_eid: "Warm Eid greetings from Smart Profits Trader. May this season bring peace, blessing, and progress.",
+    message_template_independence_day: "Happy Independence Day from Smart Profits Trader. Thank you for growing with us."
   } as const;
 
   for (const [key, value] of Object.entries(settings)) {

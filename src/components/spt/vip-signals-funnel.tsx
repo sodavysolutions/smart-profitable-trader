@@ -160,11 +160,11 @@ export function VipSignalsHeader() {
     <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/92 backdrop-blur-xl">
       <div className="page-shell flex min-h-20 items-center justify-between gap-4 py-3">
         <Link href="/spt/home" className="flex items-center gap-3">
-          <span className="grid h-14 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-white px-2 shadow-soft">
-            <Image src="/brand/spt-logo.png" alt="Smart Profitable Trader logo" width={220} height={90} className="h-12 w-auto object-contain" priority />
+          <span className="grid h-14 w-14 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-soft">
+            <Image src="/images/smart-profits-trader-logo.png" alt="Smart Profits Trader logo" width={160} height={160} className="h-full w-full object-contain" priority />
           </span>
           <span className="hidden leading-tight sm:block">
-            <span className="block font-semibold text-navy-950">Smart Profitable Trader VIP</span>
+            <span className="block font-semibold text-navy-950">Smart Profits Trader VIP</span>
             <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-profit-600">Premium XAUUSD Trading Signals</span>
           </span>
         </Link>
@@ -189,13 +189,13 @@ export function VipSignalsHero() {
           <MarketBackdrop variant="gold" />
           <div className="funnel-hero-grid">
             <div className="funnel-hero-copy hero-slide-left">
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-profit-600">Smart Profitable Trader VIP</p>
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-profit-600">Smart Profits Trader VIP</p>
               <h1 className="funnel-headline mt-5 text-4xl text-navy-950 sm:text-5xl lg:text-[4rem]">
                 Get High-Quality XAUUSD Trade Signals Without Spending All Day Analyzing the Market
               </h1>
               <div className="mt-6 space-y-4 text-base leading-8 text-slate-600 sm:text-lg">
                 <p>
-                  Join <strong>Smart Profitable Trader VIP</strong> and receive structured gold trading signals powered by our <strong>Smart Profit Algo</strong> — designed for traders who want clear entries, trade direction, risk guidance, and a more professional way to participate in the market.
+                  Join <strong>Smart Profits Trader VIP</strong> and receive structured gold trading signals powered by our <strong>Smart Profit Algo</strong> — designed for traders who want clear entries, trade direction, risk guidance, and a more professional way to participate in the market.
                 </p>
                 <p>
                   We trade mostly <strong>XAUUSD</strong>, target up to <strong>200 pips daily</strong>, and our internal performance tracking averages around <strong>7 winning trades out of every 10</strong> over time.
@@ -318,7 +318,7 @@ export function VipSignalsPainSection() {
           </div>
           <p className="mt-5">The result is simple: frustration, inconsistency, and avoidable losses.</p>
           <p className="mt-4">
-            That is why we created <strong>Smart Profitable Trader VIP</strong>.
+            That is why we created <strong>Smart Profits Trader VIP</strong>.
           </p>
           <p className="mt-4">
             It is for people who want to trade with clearer direction, better structure, and access to signals backed by a more organized trading process.
@@ -338,7 +338,7 @@ export function VipSignalsSolutionSection() {
           <div>
             <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">A Simple Way to Trade Gold With More Clarity and Confidence</h2>
             <div className="mt-5 space-y-4 leading-7 text-slate-600">
-              <p>Smart Profitable Trader VIP gives you access to premium XAUUSD trade signals from our structured trading operation.</p>
+              <p>Smart Profits Trader VIP gives you access to premium XAUUSD trade signals from our structured trading operation.</p>
               <p>Each signal is designed to help you know:</p>
               <ul className="grid gap-2 text-sm text-slate-700 sm:grid-cols-2">
                 {["What pair we are watching", "Whether we are buying or selling", "Entry zone", "Stop-loss guidance", "Take-profit guidance", "Risk notes where necessary", "Market update when needed"].map((item) => (
@@ -396,7 +396,7 @@ export function VipSignalsBenefits() {
   return (
     <section className="page-shell py-16">
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Why Join Smart Profitable Trader VIP?</h2>
+        <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Why Join Smart Profits Trader VIP?</h2>
       </div>
       <div className="mt-10 grid gap-5 lg:grid-cols-3">
         {benefits.map(([title, text, Icon], index) => (
@@ -423,7 +423,7 @@ export function VipSignalsIncludedSection() {
         <div className="mx-auto max-w-4xl rounded-[26px] border border-slate-200 bg-white p-6 shadow-[0_24px_70px_rgba(15,35,70,0.09)] md:p-8">
           <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">What You Get for $50/Month</h2>
           <p className="mt-4 leading-7 text-slate-600">
-            When you join Smart Profitable Trader VIP, you get access to a premium trading signal experience designed to help you trade with more structure.
+            When you join Smart Profits Trader VIP, you get access to a premium trading signal experience designed to help you trade with more structure.
           </p>
           <div className="mt-7 grid gap-3 md:grid-cols-2">
             {[
@@ -524,7 +524,7 @@ export function VipSignalsWhoFor() {
   return (
     <section className="page-shell py-16">
       <div className="mx-auto max-w-4xl rounded-[26px] border border-slate-200 bg-white p-6 shadow-[0_24px_70px_rgba(15,35,70,0.09)] md:p-8">
-        <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Smart Profitable Trader VIP Is Best For You If…</h2>
+        <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Smart Profits Trader VIP Is Best For You If…</h2>
         <div className="mt-7 grid gap-3 md:grid-cols-2">
           {[
             "You want to trade forex or gold but need clearer trade direction.",
@@ -588,7 +588,7 @@ export function VipSignalsTrustSection() {
         <div>
           <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Built for Traders Who Want Structure, Not Hype</h2>
           <div className="mt-5 space-y-4 leading-7 text-slate-600">
-            <p>Smart Profitable Trader VIP is not built around noise, fake promises, or emotional trading.</p>
+            <p>Smart Profits Trader VIP is not built around noise, fake promises, or emotional trading.</p>
             <p>We focus on:</p>
             <ul className="grid gap-2 text-sm text-slate-700 sm:grid-cols-2">
               {["XAUUSD signal opportunities", "Smart Profit Algo support", "Weekly strategy optimization", "Risk guidance", "Trade structure", "Market updates", "Controlled execution"].map((item) => (
@@ -630,7 +630,7 @@ export function VipSignalsFinalCTA() {
         <div className="relative mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Ready to Trade Gold With More Clarity?</h2>
           <div className="mt-5 space-y-3 leading-7 text-slate-600">
-            <p>If you want to participate in the XAUUSD market but you do not want to trade blindly, Smart Profitable Trader VIP gives you access to structured trade signals powered by our Smart Profit Algo.</p>
+            <p>If you want to participate in the XAUUSD market but you do not want to trade blindly, Smart Profits Trader VIP gives you access to structured trade signals powered by our Smart Profit Algo.</p>
             <p>
               VIP access is only <strong>$50/month</strong>, and the recommended starting capital is <strong>$200</strong>.
             </p>
@@ -652,9 +652,9 @@ export function VipSignalsFooter() {
       <div className="page-shell">
         <div className="flex flex-col justify-between gap-5 text-sm text-slate-500 md:flex-row md:items-start">
           <div className="max-w-2xl">
-            <p>Smart Profitable Trader VIP is part of the Smart Profitable Trader ecosystem by Laptop Lifestyle Income.</p>
+            <p>Smart Profits Trader VIP is part of the Smart Profits Trader ecosystem by Laptop Lifestyle Income.</p>
             <p className="mt-3 text-xs leading-5">
-              Trading involves significant risk. Smart Profitable Trader does not guarantee profits, fixed returns, or risk-free results. Daily targets, average win rate, and past performance do not guarantee future outcomes. Only trade with funds you can afford to risk.
+              Trading involves significant risk. Smart Profits Trader does not guarantee profits, fixed returns, or risk-free results. Daily targets, average win rate, and past performance do not guarantee future outcomes. Only trade with funds you can afford to risk.
             </p>
           </div>
           <div className="flex flex-wrap gap-4">

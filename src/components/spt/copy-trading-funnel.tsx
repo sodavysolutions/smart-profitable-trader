@@ -49,11 +49,11 @@ export function CopyTradingHeader() {
     <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/92 backdrop-blur-xl">
       <div className="page-shell flex min-h-20 items-center justify-between gap-4 py-3">
         <Link href="/spt/home" className="flex items-center gap-3">
-          <span className="grid h-14 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-white px-2 shadow-soft">
-            <Image src="/brand/spt-logo.png" alt="Smart Profitable Trader logo" width={220} height={90} className="h-12 w-auto object-contain" priority />
+          <span className="grid h-14 w-14 place-items-center overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-soft">
+            <Image src="/images/smart-profits-trader-logo.png" alt="Smart Profits Trader logo" width={160} height={160} className="h-full w-full object-contain" priority />
           </span>
           <span className="hidden leading-tight sm:block">
-            <span className="block font-semibold text-navy-950">Smart Profitable Trader Copy Trading</span>
+            <span className="block font-semibold text-navy-950">Smart Profits Trader Copy Trading</span>
             <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-profit-600">A Personal Account Trading Solution</span>
           </span>
         </Link>
@@ -77,13 +77,13 @@ export function CopyTradingHero() {
         <div className="funnel-hero-panel">
           <div className="funnel-hero-grid">
             <div className="funnel-hero-copy hero-slide-left">
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-profit-600">Smart Profitable Trader Copy Trading</p>
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-profit-600">Smart Profits Trader Copy Trading</p>
               <h1 className="funnel-headline mt-5 text-4xl text-navy-950 sm:text-5xl lg:text-[4rem]">
                 Let Your Trading Account Follow a Smarter Algo-Powered System — Even If You Don’t Have Time to Trade Yourself
               </h1>
               <div className="mt-6 space-y-4 text-base leading-8 text-slate-600 sm:text-lg">
                 <p>
-                  Smart Profitable Trader Copy Trading helps busy people participate in the forex and gold market by connecting their trading account to a structured trading system powered by the <strong>Smart Profit Algo</strong>.
+                  Smart Profits Trader Copy Trading helps busy people participate in the forex and gold market by connecting their trading account to a structured trading system powered by the <strong>Smart Profit Algo</strong>.
                 </p>
                 <p>
                   Instead of spending hours analyzing charts, chasing signals, or making emotional trading decisions, your account can follow selected trades from our risk-managed trading operation.
@@ -170,7 +170,7 @@ export function CopyTradingPainSection() {
             ))}
           </div>
           <p className="mt-5">
-            That is why Smart Profitable Trader created a more structured path.
+            That is why Smart Profits Trader created a more structured path.
           </p>
           <p className="mt-4">
             Our Copy Trading service is designed for people who want trading exposure without spending all day in front of charts. You keep your trading account, you stay in control of your funds, and your account follows selected trading activity from our system.
@@ -190,7 +190,7 @@ export function CopyTradingSolutionSection() {
             <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">A More Structured Way to Participate in the Markets</h2>
             <div className="mt-5 space-y-4 leading-7 text-slate-600">
               <p>
-                With Smart Profitable Trader Copy Trading, your account is connected to our trading operation and follows selected trades powered by the <strong>Smart Profit Algo</strong>.
+                With Smart Profits Trader Copy Trading, your account is connected to our trading operation and follows selected trades powered by the <strong>Smart Profit Algo</strong>.
               </p>
               <p>
                 The Smart Profit Algo supports our trading decisions by testing strategies, analyzing market behavior, validating setups, and helping us stay aligned with current market conditions.
@@ -325,7 +325,7 @@ export function CopyTradingTrustSection() {
         <div>
           <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Built Around Risk Management, Not Hype</h2>
           <div className="mt-5 space-y-4 leading-7 text-slate-600">
-            <p>Smart Profitable Trader does not promote reckless trading or guaranteed-profit claims.</p>
+            <p>Smart Profits Trader does not promote reckless trading or guaranteed-profit claims.</p>
             <p>
               Our approach is built around structure, controlled exposure, weekly optimization, and account monitoring. The goal is to trade with a clear process instead of emotional decisions.
             </p>
@@ -361,7 +361,7 @@ export function CopyTradingFinalCTA() {
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Ready to Stop Trading Alone?</h2>
           <p className="mt-5 leading-7 text-slate-600">
-            If you want to participate in forex or gold trading but do not have the time, skill, or confidence to trade manually, Smart Profitable Trader Copy Trading may be the right path for you.
+            If you want to participate in forex or gold trading but do not have the time, skill, or confidence to trade manually, Smart Profits Trader Copy Trading may be the right path for you.
           </p>
           <p className="mt-3 leading-7 text-slate-600">
             Apply now and let us review your account to see if you qualify.
@@ -397,9 +397,9 @@ export function CopyTradingFooter() {
       <div className="page-shell">
         <div className="flex flex-col justify-between gap-5 text-sm text-slate-500 md:flex-row md:items-start">
           <div className="max-w-2xl">
-            <p>Smart Profitable Trader Copy Trading is part of the Smart Profitable Trader ecosystem by Laptop Lifestyle Income.</p>
+            <p>Smart Profits Trader Copy Trading is part of the Smart Profits Trader ecosystem by Laptop Lifestyle Income.</p>
             <p className="mt-3 text-xs leading-5">
-              Trading involves significant risk. Smart Profitable Trader does not guarantee profits, fixed returns, or risk-free results. Only trade with funds you can afford to risk.
+              Trading involves significant risk. Smart Profits Trader does not guarantee profits, fixed returns, or risk-free results. Only trade with funds you can afford to risk.
             </p>
           </div>
           <div className="flex flex-wrap gap-4">

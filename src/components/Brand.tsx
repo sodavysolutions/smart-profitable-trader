@@ -4,16 +4,20 @@ export function Brand({ compact = false }: { compact?: boolean }) {
   return (
     <div className="flex items-center gap-3">
       <Image
-        src="/brand/spt-logo.png"
-        alt="Smart Profitable Trader"
-        width={220}
-        height={90}
-        className={compact ? "h-10 w-10 rounded-md object-contain" : "h-12 w-auto max-w-[190px] rounded-md bg-white object-contain px-2 py-1"}
+        src="/images/smart-profits-trader-logo.png"
+        alt="Smart Profits Trader"
+        width={160}
+        height={160}
+        className={
+          compact
+            ? "h-10 w-10 rounded-md object-contain"
+            : "h-14 w-14 rounded-xl bg-white object-contain p-1.5 shadow-sm"
+        }
       />
       {!compact && (
         <div className="hidden leading-tight sm:block">
-          <div className="font-semibold text-white">Smart Profitable Trader</div>
-          <div className="text-xs font-medium uppercase tracking-[0.16em] text-profit-500">Trading Systems</div>
+          <div className="font-semibold text-white">Smart Profits Trader</div>
+          <div className="text-xs font-medium uppercase tracking-[0.16em] text-profit-500">Algo-Powered Trading Ecosystem</div>
         </div>
       )}
     </div>

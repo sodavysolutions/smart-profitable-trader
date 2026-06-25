@@ -48,12 +48,12 @@ export function SPTAdminShell({
     <main className="min-h-screen bg-slate-100 text-slate-900">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 bg-navy-950 p-5 text-white lg:block">
         <Link href="/spt/admin/dashboard" className="mb-8 flex items-center gap-3">
-          <span className="grid h-14 place-items-center overflow-hidden rounded-xl bg-white px-2">
-            <Image src="/brand/spt-logo.png" alt="Smart Profitable Trader logo" width={180} height={80} className="h-12 w-auto object-contain" />
+          <span className="grid h-14 w-14 place-items-center overflow-hidden rounded-xl bg-white p-1.5 shadow-sm">
+            <Image src="/images/smart-profits-trader-logo.png" alt="Smart Profits Trader logo" width={160} height={160} className="h-full w-full object-contain" />
           </span>
           <span className="leading-tight">
-            <span className="block font-semibold">SPT Admin</span>
-            <span className="block text-xs uppercase tracking-[0.14em] text-profit-500">Business Control Center</span>
+            <span className="block font-semibold">Smart Profits Trader</span>
+            <span className="block text-xs uppercase tracking-[0.14em] text-profit-500">Admin Workspace</span>
           </span>
         </Link>
         <nav className="space-y-1">
@@ -68,7 +68,7 @@ export function SPTAdminShell({
           })}
         </nav>
         <div className="absolute bottom-5 left-5 right-5 rounded-md border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
-          <div className="font-semibold text-white">Access level</div>
+          <div className="font-semibold text-white">Admin access</div>
           <p className="mt-1 leading-5">Role: {String(role).replaceAll("_", " ")}</p>
         </div>
       </aside>
@@ -76,13 +76,13 @@ export function SPTAdminShell({
         <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
           <div className="flex min-h-20 flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
             <div>
-              <p className="text-sm font-medium text-profit-600">Smart Profitable Trader</p>
+              <p className="text-sm font-medium text-profit-600">Smart Profits Trader</p>
               <h1 className="text-2xl font-semibold tracking-normal text-navy-950">{title}</h1>
             </div>
             <div className="flex items-center gap-3">
               <div className="hidden h-10 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 sm:flex">
                 <Search size={17} className="text-slate-400" />
-                <span className="text-sm text-slate-500">Search records</span>
+                <span className="text-sm text-slate-500">Search CRM records</span>
               </div>
               <button className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white text-slate-600">
                 <Bell size={18} />
