@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { publicSiteUrl } from "@/lib/site";
 
 const siteTitle = "Smart Profits Trader | Algo-Powered Trading Ecosystem";
 const siteDescription =
@@ -7,7 +8,7 @@ const siteDescription =
 const primaryLogo = "/images/smart-profits-trader-logo.png";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.smartprofitstrader.com"),
+  metadataBase: new URL(publicSiteUrl),
   title: {
     default: siteTitle,
     template: "%s"
