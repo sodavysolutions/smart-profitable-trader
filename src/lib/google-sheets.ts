@@ -599,17 +599,115 @@ function quoteSheetName(tabName: string) {
   return `'${tabName.replace(/'/g, "''")}'`;
 }
 
-async function ensureSheetTab(config: RowConfig) {
-  const metadata = await sheetsRequest<{ sheets?: Array<{ properties?: { title?: string } }> }>("");
-  const tabs = new Set(metadata.sheets?.map((sheet) => sheet.properties?.title).filter(Boolean));
+async function applySheetFormatting(sheetId: number, columnCount: number) {
+  // Brand colours: navy #071F3D, green #16A34A, light row #F0F6FF
+  const navy = { red: 7 / 255, green: 31 / 255, blue: 61 / 255 };
+  const white = { red: 1, green: 1, blue: 1 };
+  const lightRow = { red: 240 / 255, green: 246 / 255, blue: 255 / 255 };
 
-  if (!tabs.has(config.tabName)) {
+  const requests: unknown[] = [
+    // Header row — navy background, white bold text, 11pt
+    {
+      repeatCell: {
+        range: { sheetId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount },
+        cell: {
+          userEnteredFormat: {
+            backgroundColor: navy,
+            textFormat: { foregroundColor: white, bold: true, fontSize: 11 },
+            horizontalAlignment: "LEFT",
+            verticalAlignment: "MIDDLE",
+            wrapStrategy: "CLIP"
+          }
+        },
+        fields: "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment,verticalAlignment,wrapStrategy)"
+      }
+    },
+    // Freeze header row
+    {
+      updateSheetProperties: {
+        properties: { sheetId, gridProperties: { frozenRowCount: 1 } },
+        fields: "gridProperties.frozenRowCount"
+      }
+    },
+    // Header row height 40px
+    {
+      updateDimensionProperties: {
+        range: { sheetId, dimension: "ROWS", startIndex: 0, endIndex: 1 },
+        properties: { pixelSize: 40 },
+        fields: "pixelSize"
+      }
+    },
+    // Set minimum column widths (200px for most, 260px for first ID column)
+    {
+      updateDimensionProperties: {
+        range: { sheetId, dimension: "COLUMNS", startIndex: 0, endIndex: 1 },
+        properties: { pixelSize: 260 },
+        fields: "pixelSize"
+      }
+    },
+    {
+      updateDimensionProperties: {
+        range: { sheetId, dimension: "COLUMNS", startIndex: 1, endIndex: columnCount },
+        properties: { pixelSize: 180 },
+        fields: "pixelSize"
+      }
+    },
+    // Alternating row colours — white / light navy
+    {
+      addBanding: {
+        bandedRange: {
+          range: { sheetId, startRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount },
+          rowProperties: {
+            headerColor: navy,
+            firstBandColor: white,
+            secondBandColor: lightRow
+          }
+        }
+      }
+    },
+    // Outer border on entire used range
+    {
+      updateBorders: {
+        range: { sheetId, startRowIndex: 0, startColumnIndex: 0, endColumnIndex: columnCount },
+        outerBorder: {
+          style: "SOLID_MEDIUM",
+          color: navy
+        }
+      }
+    }
+  ];
+
+  // addBanding fails if one already exists — wrap so it doesn't break the sync
+  try {
     await sheetsRequest(":batchUpdate", {
       method: "POST",
-      body: JSON.stringify({
-        requests: [{ addSheet: { properties: { title: config.tabName } } }]
-      })
+      body: JSON.stringify({ requests })
     });
+  } catch {
+    // Retry without addBanding in case it already exists
+    await sheetsRequest(":batchUpdate", {
+      method: "POST",
+      body: JSON.stringify({ requests: requests.filter((r) => !(r as Record<string, unknown>).addBanding) })
+    }).catch(() => { /* formatting is best-effort */ });
+  }
+}
+
+async function ensureSheetTab(config: RowConfig) {
+  const metadata = await sheetsRequest<{ sheets?: Array<{ properties?: { title?: string; sheetId?: number } }> }>("");
+  const existingSheet = metadata.sheets?.find((s) => s.properties?.title === config.tabName);
+
+  let sheetId: number;
+  let isNew = false;
+
+  if (!existingSheet) {
+    const result = await sheetsRequest<{ replies?: Array<{ addSheet?: { properties?: { sheetId?: number } } }> }>(":batchUpdate", {
+      method: "POST",
+      body: JSON.stringify({ requests: [{ addSheet: { properties: { title: config.tabName } } }] })
+    });
+    sheetId = result.replies?.[0]?.addSheet?.properties?.sheetId ?? 0;
+    isNew = true;
+  } else {
+    sheetId = existingSheet.properties?.sheetId ?? 0;
   }
 
   const headerRange = `${quoteSheetName(config.tabName)}!1:1`;
@@ -621,6 +719,11 @@ async function ensureSheetTab(config: RowConfig) {
       method: "PUT",
       body: JSON.stringify({ values: [config.headers] })
     });
+    isNew = true;
+  }
+
+  if (isNew) {
+    await applySheetFormatting(sheetId, config.headers.length);
   }
 }
 
