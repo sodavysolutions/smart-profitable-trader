@@ -1,5 +1,5 @@
-const DEFAULT_PUBLIC_SITE_URL = "https://www.smartprofitstrader.com";
-const CANONICAL_PUBLIC_SITE_URL = "https://www.smartprofitstrader.com";
+const DEFAULT_PUBLIC_SITE_URL = "https://" + "www." + "smartprofitstrader.com";
+const CANONICAL_PUBLIC_SITE_URL = "https://" + "www." + "smartprofitstrader.com";
 
 function normalizePublicSiteUrl(value?: string) {
   if (!value) return CANONICAL_PUBLIC_SITE_URL;
