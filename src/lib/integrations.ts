@@ -1,3 +1,4 @@
+import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
 
 type MessagePayload = {
@@ -130,59 +131,60 @@ export async function sendSendyTransactionalEmail(
     name?: string;
   }
 ): Promise<IntegrationResult> {
-  const config = await getIntegrationConfig();
+  const smtpHost = process.env.SES_SMTP_HOST;
+  const smtpUser = process.env.SES_SMTP_USER;
+  const smtpPass = process.env.SES_SMTP_PASS;
+  const smtpPort = parseInt(process.env.SES_SMTP_PORT ?? "587", 10);
+  const fromEmail = process.env.SENDY_FROM_EMAIL ?? process.env.ADMIN_EMAIL ?? "";
+  const fromName = process.env.SENDY_FROM_NAME ?? "Smart Profits Trader";
 
-  // Derive the transactional endpoint from base URL if not explicitly set
-  const endpoint =
-    config.sendyTransactionalEndpoint ||
-    (config.sendyBaseUrl ? `${config.sendyBaseUrl}/api/transactional/send-email` : null);
-
-  if (!endpoint || !config.sendyApiKey) {
+  if (!smtpHost || !smtpUser || !smtpPass || !fromEmail) {
     return {
       ok: false,
       provider: "sendy",
       configured: false,
       action: "transactional_email",
       status: 0,
-      response: "Transactional Sendy endpoint is not configured."
+      response: "SES SMTP credentials are not configured (SES_SMTP_HOST, SES_SMTP_USER, SES_SMTP_PASS)."
     };
   }
 
-  // Sendy transactional API uses form-urlencoded with api_key in the body
-  const fromEmail = process.env.SENDY_FROM_EMAIL ?? process.env.ADMIN_EMAIL ?? "";
-  const fromName = process.env.SENDY_FROM_NAME ?? "Smart Profits Trader";
+  try {
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465,
+      auth: { user: smtpUser, pass: smtpPass }
+    });
 
-  const formBody = new URLSearchParams({
-    api_key: config.sendyApiKey,
-    to: payload.email.trim().toLowerCase(),
-    from_name: fromName,
-    from_email: fromEmail,
-    reply_to: fromEmail,
-    subject: payload.title,
-    html_text: payload.body,
-    plain_text: payload.body.replace(/<[^>]+>/g, " "),
-    tags: payload.tags?.join(",") ?? ""
-  });
+    await transporter.sendMail({
+      from: `"${fromName}" <${fromEmail}>`,
+      to: `"${payload.name ?? payload.recipient}" <${payload.email.trim().toLowerCase()}>`,
+      replyTo: fromEmail,
+      subject: payload.title,
+      html: payload.body,
+      text: payload.body.replace(/<[^>]+>/g, " ")
+    });
 
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: formBody.toString(),
-    cache: "no-store"
-  });
-
-  const text = (await response.text()).trim();
-  // Sendy returns "Email sent!" on success
-  const ok = response.ok || text.toLowerCase().includes("email sent");
-
-  return {
-    ok,
-    provider: "sendy",
-    configured: true,
-    action: "transactional_email",
-    status: response.status,
-    response: text || response.statusText
-  };
+    return {
+      ok: true,
+      provider: "sendy",
+      configured: true,
+      action: "transactional_email",
+      status: 200,
+      response: "Email sent via SES SMTP."
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown SMTP error.";
+    return {
+      ok: false,
+      provider: "sendy",
+      configured: true,
+      action: "transactional_email",
+      status: 500,
+      response: message
+    };
+  }
 }
 
 export async function sendWhatsAppMessage(payload: MessagePayload): Promise<IntegrationResult> {
