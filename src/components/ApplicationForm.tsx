@@ -50,6 +50,9 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  // If a specific service was passed in, lock it — no need to ask the user
+  const isServiceLocked = initialService !== "general" && Boolean(serviceMap[initialService]);
+
   const serviceSummary = useMemo(() => {
     if (service.includes("VIP Signal")) return "Tell us how you plan to use the signals and whether you already trade gold.";
     if (service.includes("Copy Trading")) return "We will confirm your broker, platform, capital level, and copy trading readiness.";
@@ -118,7 +121,18 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
 
       <FormSection title="Trading Background">
         <div className="grid gap-4">
-          <SelectField name="service" label="Which Smart Profits Trader service are you applying for?" value={service} onChange={setService} options={serviceOptions} required helper={serviceSummary} />
+          {isServiceLocked ? (
+            <>
+              {/* Hidden input carries the service value */}
+              <input type="hidden" name="service" value={service} />
+              {/* Show it as a read-only badge so the applicant can confirm */}
+              <div className="rounded-md border-2 border-profit-200 bg-profit-50 px-4 py-3 text-sm font-semibold text-profit-800">
+                Applying for: {service}
+              </div>
+            </>
+          ) : (
+            <SelectField name="service" label="Which service are you enquiring about?" value={service} onChange={setService} options={serviceOptions} required helper={serviceSummary} />
+          )}
           <RadioGroup name="tradingExperienceYesNo" label="Have you traded financial markets before (forex, stocks, crypto, indices)?" options={["Yes", "No"]} required />
           <RadioGroup
             name="experienceRating"
@@ -164,19 +178,21 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
             required
             helper="There is no wrong answer. This helps us match you with the right strategy and service level."
           />
-          <SelectField
-            name="mainGoal"
-            label="What is the primary outcome you want from joining Smart Profits Trader?"
-            options={[
-              "Receive daily trading signals I can act on",
-              "Have my trades copied automatically into my account",
-              "Have my personal account professionally managed",
-              "Pass a prop firm evaluation challenge",
-              "Get an instant funded trading account",
-              "I need guidance – help me choose the right path"
-            ]}
-            required
-          />
+          {!isServiceLocked && (
+            <SelectField
+              name="mainGoal"
+              label="What is the primary outcome you want from joining Smart Profits Trader?"
+              options={[
+                "Receive daily trading signals I can act on",
+                "Have my trades copied automatically into my account",
+                "Have my personal account professionally managed",
+                "Pass a prop firm evaluation challenge",
+                "Get an instant funded trading account",
+                "I need guidance – help me choose the right path"
+              ]}
+              required
+            />
+          )}
           <SelectField
             name="source"
             label="How did you hear about Smart Profits Trader?"
