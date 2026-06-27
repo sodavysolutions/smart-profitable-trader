@@ -1,4 +1,9 @@
-import * as nodemailer from "nodemailer";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const nodemailer = require("nodemailer") as {
+  createTransport: (opts: unknown) => {
+    sendMail: (opts: unknown) => Promise<unknown>;
+  };
+};
 import { prisma } from "@/lib/prisma";
 
 type MessagePayload = {
