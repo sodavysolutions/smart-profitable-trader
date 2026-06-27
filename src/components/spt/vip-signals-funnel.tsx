@@ -17,9 +17,9 @@ import {
 
 const applyHref = "/spt/apply?service=vip-signals";
 const whatsappHref =
-  "https://wa.me/2347087970133?text=Hello%20Smart%20Profitable%20Trader%20team%2C%20I%E2%80%99m%20interested%20in%20joining%20the%20VIP%20Signal%20Group.%20Please%20send%20me%20the%20details%2C%20payment%20steps%2C%20risk%20guidance%2C%20and%20how%20to%20get%20started.";
+  "https://wa.me/2347087970133?text=Hello%20Smart%20Profits%20Trader%20team%2C%20I%E2%80%99m%20interested%20in%20joining%20the%20VIP%20Signal%20Group.%20Please%20send%20me%20the%20details%2C%20payment%20steps%2C%20risk%20guidance%2C%20and%20how%20to%20get%20started.";
 const whatsappAiHref =
-  "https://wa.me/2347087970133?text=Hello%20Smart%20Profitable%20Trader%20AI%20Agent%2C%20I%E2%80%99m%20interested%20in%20the%20VIP%20Signal%20Group.%20Please%20help%20me%20understand%20how%20it%20works%2C%20the%20price%2C%20risk%2C%20recommended%20capital%2C%20and%20how%20to%20get%20started.";
+  "https://wa.me/2347087970133?text=Hello%20Smart%20Profits%20Trader%20AI%20Agent%2C%20I%E2%80%99m%20interested%20in%20the%20VIP%20Signal%20Group.%20Please%20help%20me%20understand%20how%20it%20works%2C%20the%20price%2C%20risk%2C%20recommended%20capital%2C%20and%20how%20to%20get%20started.";
 
 function MarketBackdrop({ variant = "light" }: { variant?: "light" | "navy" | "gold" }) {
   const stroke = variant === "navy" ? "rgba(32,199,111,0.2)" : variant === "gold" ? "rgba(180,128,30,0.22)" : "rgba(7,20,39,0.09)";

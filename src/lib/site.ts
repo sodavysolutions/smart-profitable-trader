@@ -12,7 +12,12 @@ function normalizePublicSiteUrl(value?: string) {
   try {
     const parsed = new URL(normalized);
 
-    if (parsed.hostname === "smartprofitstrader.com" || parsed.hostname === "www.smartprofitstrader.com") {
+    if (
+      parsed.hostname === "smartprofitstrader.com" ||
+      parsed.hostname === "www.smartprofitstrader.com" ||
+      parsed.hostname === "smart-profitable-trader.vercel.app" ||
+      parsed.hostname.endsWith(".vercel.app")
+    ) {
       return CANONICAL_PUBLIC_SITE_URL;
     }
   } catch {

@@ -15,9 +15,9 @@ import {
 
 const applyHref = "/spt/apply?service=copy-trading";
 const whatsappHref =
-  "https://wa.me/2347087970133?text=Hello%20Smart%20Profitable%20Trader%20team%2C%20I%E2%80%99m%20interested%20in%20the%20Copy%20Trading%20service.%20Please%20send%20me%20the%20full%20details%2C%20requirements%2C%20and%20how%20to%20get%20started";
+  "https://wa.me/2347087970133?text=Hello%20Smart%20Profits%20Trader%20team%2C%20I%E2%80%99m%20interested%20in%20the%20Copy%20Trading%20service.%20Please%20send%20me%20the%20full%20details%2C%20requirements%2C%20and%20how%20to%20get%20started";
 const floatingWhatsappHref =
-  "https://wa.me/2347087970133?text=Hello%20Smart%20Profitable%20Trader%20AI%20Agent%2C%20I%E2%80%99m%20interested%20in%20Copy%20Trading.%20Please%20help%20me%20understand%20how%20it%20works%2C%20the%20requirements%2C%20risk%2C%20and%20how%20to%20get%20started";
+  "https://wa.me/2347087970133?text=Hello%20Smart%20Profits%20Trader%20AI%20Agent%2C%20I%E2%80%99m%20interested%20in%20Copy%20Trading.%20Please%20help%20me%20understand%20how%20it%20works%2C%20the%20requirements%2C%20risk%2C%20and%20how%20to%20get%20started";
 
 function PrimaryCTA({ children = "Apply to Join Copy Trading" }: { children?: React.ReactNode }) {
   return (
