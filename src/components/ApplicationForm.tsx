@@ -34,12 +34,13 @@ const evaluationPropFirmOptions = ["Hola Prime", "FTMO", "FundingPips", "Fxify",
 const instantFundedProviderOptions = ["iFunds", "Tentrade", "I have not chosen yet", "I need guidance"];
 const generalInvestmentOptions = ["Below $100", "$100 - $299", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above", "I need guidance"];
 const copyInvestmentOptions = ["Below $300", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above"];
-const profitGoalOptions = ["5%", "10%", "15%", "20%", "30%", "I need guidance on realistic expectations"];
+const profitGoalOptions = ["5% – 8% per month (steady, low risk)", "10% – 15% per month (moderate growth)", "20% – 30% per month (ambitious)", "I need guidance on realistic expectations"];
 const riskStyleOptions = [
-  "Conservative trader - I prefer lower risk and slower growth",
-  "Medium risk trader - I want balanced growth and account protection",
-  "High risk trader - I can tolerate higher risk for faster growth"
+  "Conservative – Protect my capital first, grow slowly",
+  "Moderate – Balanced growth with controlled drawdowns",
+  "Aggressive – Maximise returns, I accept higher risk"
 ];
+const howHeardOptions = ["Instagram", "Facebook", "YouTube", "WhatsApp group", "Referral from a friend", "Google Search", "TikTok", "Other"];
 
 export function ApplicationForm({ initialService = "general", thankYouPath = "/thank-you" }: { initialService?: string; thankYouPath?: string }) {
   const router = useRouter();
@@ -83,7 +84,7 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
       const result = await response.json().catch(() => null);
 
       if (response.ok) {
-        router.push(thankYouPath);
+        router.push(`${thankYouPath}?service=${encodeURIComponent(service)}`);
         return;
       }
 
@@ -104,6 +105,8 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
         Trading involves risk. Results are not guaranteed. Your answers help us understand your goals, experience, capital level, and risk profile so we can guide you toward a suitable Smart Profits Trader option.
       </p>
 
+      <p className="text-xs text-slate-500">Fields marked <span className="font-bold text-red-500">*</span> are required.</p>
+
       <FormSection title="Personal Information">
         <div className="grid gap-4 md:grid-cols-2">
           <Field name="fullName" label="Full Name" placeholder="Enter your full name" autoComplete="name" required />
@@ -115,13 +118,18 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
 
       <FormSection title="Trading Background">
         <div className="grid gap-4">
-          <SelectField name="service" label="Service Interested In" value={service} onChange={setService} options={serviceOptions} required helper={serviceSummary} />
-          <RadioGroup name="tradingExperienceYesNo" label="Do you have experience with trading?" options={["Yes", "No"]} required />
-          <RadioGroup name="experienceRating" label="How would you rate your trading experience?" options={["1 - Total newbie", "2 - Average knowledge", "3 - Experienced trader"]} required />
+          <SelectField name="service" label="Which Smart Profits Trader service are you applying for?" value={service} onChange={setService} options={serviceOptions} required helper={serviceSummary} />
+          <RadioGroup name="tradingExperienceYesNo" label="Have you traded financial markets before (forex, stocks, crypto, indices)?" options={["Yes", "No"]} required />
+          <RadioGroup
+            name="experienceRating"
+            label="How would you rate your current trading knowledge?"
+            options={["Complete beginner – I have never traded", "Some knowledge – I understand the basics", "Experienced – I trade regularly"]}
+            required
+          />
           <RadioGroup
             name="automatedTradingExperience"
-            label="Do you have experience with automated trading, EAs, bots, or copy trading?"
-            options={["Yes, I have used automated trading before", "I have heard about it but never used it", "No, this is new to me"]}
+            label="Have you used automated trading tools before (EAs, bots, copy trading, signals)?"
+            options={["Yes – I have used them before", "I know about them but never used one", "No – this is completely new to me"]}
             required
           />
         </div>
@@ -131,24 +139,49 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
         <div className="grid gap-4">
           <SelectField
             name="investmentAmount"
-            label="How much are you willing to trade with?"
+            label="How much capital are you working with or willing to start with?"
             options={service.includes("Copy Trading") || service.includes("Personal Account") ? copyInvestmentOptions : generalInvestmentOptions}
             required
-            helper={service.includes("Copy Trading") || service.includes("Personal Account") ? "Recommended minimum for Copy Trading / Personal Account Management is $300." : "For Copy Trading and Personal Account Management, our recommended minimum starting capital is $300."}
+            helper={service.includes("Copy Trading") || service.includes("Personal Account") ? "Minimum recommended starting capital for Copy Trading / Personal Account Management is $300." : "For Copy Trading and Personal Account Management, the recommended minimum is $300."}
           />
-          <SelectField name="expectedMonthlyProfitGoal" label="What is your expected monthly profit target goal?" options={profitGoalOptions} required helper="Profit is not guaranteed. This helps us understand your expectations and guide you properly." />
+          <SelectField
+            name="expectedMonthlyProfitGoal"
+            label="What monthly return are you targeting?"
+            options={profitGoalOptions}
+            required
+            helper="Trading results are never guaranteed. This helps us set realistic expectations and recommend the right approach for you."
+          />
           <RadioGroup
             name="hasExistingTradingAccount"
-            label="Do you have an existing trading account?"
-            options={["Yes, I already have a broker trading account", "No, I need help creating one", "I have a prop firm account", "I am not sure what account I need"]}
+            label="Do you currently have a live trading or prop firm account?"
+            options={["Yes – I have a broker account", "Yes – I have a prop firm account", "No – I need help setting one up", "I am not sure what I need"]}
             required
           />
-          <RadioGroup name="riskStyle" label="How would you classify your risk style?" options={riskStyleOptions} required helper="This helps us recommend a suitable trading path. High risk does not mean reckless trading." />
+          <RadioGroup
+            name="riskStyle"
+            label="How would you describe your approach to risk?"
+            options={riskStyleOptions}
+            required
+            helper="There is no wrong answer. This helps us match you with the right strategy and service level."
+          />
           <SelectField
             name="mainGoal"
-            label="What is your main goal right now?"
-            options={["I want trading signals", "I want copy trading", "I want my personal account managed", "I want to pass a prop firm evaluation", "I want an instant funded account", "I want to know the best option for me"]}
+            label="What is the primary outcome you want from joining Smart Profits Trader?"
+            options={[
+              "Receive daily trading signals I can act on",
+              "Have my trades copied automatically into my account",
+              "Have my personal account professionally managed",
+              "Pass a prop firm evaluation challenge",
+              "Get an instant funded trading account",
+              "I need guidance – help me choose the right path"
+            ]}
             required
+          />
+          <SelectField
+            name="source"
+            label="How did you hear about Smart Profits Trader?"
+            options={howHeardOptions}
+            helper="This helps us understand where our community is coming from."
           />
         </div>
       </FormSection>
@@ -272,9 +305,21 @@ function Field({
   const id = `application-${name}`;
 
   return (
-    <label htmlFor={id} className="grid gap-1 text-sm font-medium text-slate-700">
-      {label}
-      <input id={id} name={name} type={type} required={required} autoComplete={autoComplete} inputMode={inputMode} placeholder={placeholder} className="rounded-md border border-slate-200 px-3 py-3 text-base outline-none transition focus:border-profit-500 focus:ring-2 focus:ring-profit-100" />
+    <label htmlFor={id} className="grid gap-1.5 text-sm font-semibold text-slate-800">
+      <span>
+        {label}
+        {required && <span className="ml-1 text-red-500">*</span>}
+      </span>
+      <input
+        id={id}
+        name={name}
+        type={type}
+        required={required}
+        autoComplete={autoComplete}
+        inputMode={inputMode}
+        placeholder={placeholder}
+        className="rounded-md border-2 border-slate-300 bg-white px-3 py-3 text-base text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-profit-500 focus:ring-2 focus:ring-profit-100"
+      />
       {helper && <span className="text-xs font-normal leading-5 text-slate-500">{helper}</span>}
     </label>
   );
@@ -300,8 +345,11 @@ function SelectField({
   const id = `application-${name}`;
 
   return (
-    <label htmlFor={id} className="grid gap-1 text-sm font-medium text-slate-700">
-      {label}
+    <label htmlFor={id} className="grid gap-1.5 text-sm font-semibold text-slate-800">
+      <span>
+        {label}
+        {required && <span className="ml-1 text-red-500">*</span>}
+      </span>
       <select
         id={id}
         name={name}
@@ -309,10 +357,10 @@ function SelectField({
         value={value}
         onChange={onChange ? (event) => onChange(event.target.value) : undefined}
         defaultValue={value ? undefined : ""}
-        className="rounded-md border border-slate-200 bg-white px-3 py-3 text-base outline-none transition focus:border-profit-500 focus:ring-2 focus:ring-profit-100"
+        className="rounded-md border-2 border-slate-300 bg-white px-3 py-3 text-base text-slate-900 outline-none transition focus:border-profit-500 focus:ring-2 focus:ring-profit-100"
       >
         <option value="" disabled>
-          Select an option
+          — Select an option —
         </option>
         {options.map((option) => {
           const item = typeof option === "string" ? { value: option, label: option } : option;
@@ -331,10 +379,13 @@ function SelectField({
 function RadioGroup({ name, label, options, required = false, helper }: { name: string; label: string; options: string[]; required?: boolean; helper?: string }) {
   return (
     <fieldset className="grid gap-2">
-      <legend className="text-sm font-medium text-slate-700">{label}</legend>
+      <legend className="text-sm font-semibold text-slate-800">
+        {label}
+        {required && <span className="ml-1 text-red-500">*</span>}
+      </legend>
       <div className="grid gap-2 sm:grid-cols-2">
         {options.map((option, index) => (
-          <label key={option} className="flex min-h-12 items-start gap-3 rounded-md border border-slate-200 bg-white p-3 text-sm font-medium leading-5 text-slate-700">
+          <label key={option} className="flex min-h-12 cursor-pointer items-start gap-3 rounded-md border-2 border-slate-300 bg-white p-3 text-sm font-medium leading-5 text-slate-700 transition hover:border-profit-400 hover:bg-profit-50 has-[:checked]:border-profit-500 has-[:checked]:bg-profit-50">
             <input name={name} type="radio" value={option} required={required && index === 0} className="mt-0.5 h-4 w-4 border-slate-300 text-profit-500 focus:ring-profit-500" />
             <span>{option}</span>
           </label>
