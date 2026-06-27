@@ -283,7 +283,7 @@ export default async function SPTAdminSettingsPage({ searchParams }: { searchPar
           </form>
           <form action={syncAllGoogleSheetsData}>
             <input type="hidden" name="google_sheets_sync_enabled" value={googleSheetsSnapshot.enabled ? "on" : ""} />
-            <button className="rounded-md border border-navy-950 px-4 py-2 text-sm font-bold text-navy-950 disabled:opacity-50" onClick="this.disabled=true;this.textContent='Syncing… this may take up to 60s'">Sync All Data to Google Sheets</button>
+            <button className="rounded-md border border-navy-950 px-4 py-2 text-sm font-bold text-navy-950">Sync All Data to Google Sheets</button>
           </form>
         </div>
         <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
