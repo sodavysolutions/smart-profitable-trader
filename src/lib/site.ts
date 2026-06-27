@@ -1,12 +1,25 @@
 const DEFAULT_PUBLIC_SITE_URL = "https://www.smartprofitstrader.com";
+const CANONICAL_PUBLIC_SITE_URL = "https://www.smartprofitstrader.com";
 
 function normalizePublicSiteUrl(value?: string) {
-  if (!value) return DEFAULT_PUBLIC_SITE_URL;
+  if (!value) return CANONICAL_PUBLIC_SITE_URL;
 
   const trimmed = value.trim();
-  if (!trimmed) return DEFAULT_PUBLIC_SITE_URL;
+  if (!trimmed) return CANONICAL_PUBLIC_SITE_URL;
 
-  return trimmed.replace(/\/+$/, "");
+  const normalized = trimmed.replace(/\/+$/, "");
+
+  try {
+    const parsed = new URL(normalized);
+
+    if (parsed.hostname === "smartprofitstrader.com" || parsed.hostname === "www.smartprofitstrader.com") {
+      return CANONICAL_PUBLIC_SITE_URL;
+    }
+  } catch {
+    return normalized;
+  }
+
+  return normalized;
 }
 
 export const publicSiteUrl = normalizePublicSiteUrl(
@@ -18,4 +31,3 @@ export const emailAssetUrls = {
   founder: `${publicSiteUrl}/email-assets/founder/solomon-dee-founder.jpg`,
   testimonial: `${publicSiteUrl}/email-assets/testimonials/testimonial-smartprofit-algo.jpg`
 } as const;
-
