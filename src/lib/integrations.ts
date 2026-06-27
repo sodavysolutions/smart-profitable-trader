@@ -144,6 +144,12 @@ export async function sendSendyTransactionalEmail(
   const fromName = process.env.SENDY_FROM_NAME ?? "Smart Profits Trader";
 
   if (!smtpHost || !smtpUser || !smtpPass || !fromEmail) {
+    console.warn("[SES SMTP] Missing credentials:", {
+      smtpHost: !!smtpHost,
+      smtpUser: !!smtpUser,
+      smtpPass: !!smtpPass,
+      fromEmail: !!fromEmail
+    });
     return {
       ok: false,
       provider: "sendy",
@@ -153,6 +159,8 @@ export async function sendSendyTransactionalEmail(
       response: "SES SMTP credentials are not configured (SES_SMTP_HOST, SES_SMTP_USER, SES_SMTP_PASS)."
     };
   }
+
+  console.log("[SES SMTP] Attempting to send to:", payload.email, "via", smtpHost, "port", smtpPort);
 
   try {
     const transporter = nodemailer.createTransport({
@@ -181,6 +189,7 @@ export async function sendSendyTransactionalEmail(
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown SMTP error.";
+    console.error("[SES SMTP] Send failed:", message);
     return {
       ok: false,
       provider: "sendy",
