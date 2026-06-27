@@ -456,7 +456,7 @@ export const googleSheetTabNames = Object.values(rowConfigs).map((config) => con
 function getGoogleSheetsConfig() {
   return {
     clientEmail: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-    privateKey: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    privateKey: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(/\\n/g, "\n").replace(/\r\n/g, "\n").trim(),
     spreadsheetId: process.env.GOOGLE_SHEETS_SPREADSHEET_ID,
     projectId: process.env.GOOGLE_SHEETS_PROJECT_ID,
     privateKeyId: process.env.GOOGLE_SHEETS_PRIVATE_KEY_ID
@@ -540,7 +540,12 @@ async function getAccessToken() {
     })
   );
   const unsignedToken = `${header}.${claimSet}`;
-  const signature = crypto.createSign("RSA-SHA256").update(unsignedToken).sign(config.privateKey, "base64url");
+  const privateKeyObj = crypto.createPrivateKey({
+    key: config.privateKey,
+    format: "pem",
+    type: "pkcs8"
+  });
+  const signature = crypto.createSign("RSA-SHA256").update(unsignedToken).sign(privateKeyObj, "base64url");
   const response = await fetch(TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
