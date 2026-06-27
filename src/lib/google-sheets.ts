@@ -456,7 +456,16 @@ export const googleSheetTabNames = Object.values(rowConfigs).map((config) => con
 function getGoogleSheetsConfig() {
   return {
     clientEmail: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-    privateKey: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(/\\n/g, "\n").replace(/\r\n/g, "\n").trim(),
+    privateKey: (() => {
+      const raw = process.env.GOOGLE_SHEETS_PRIVATE_KEY;
+      if (!raw) return undefined;
+      // If it doesn't start with a PEM header it's base64-encoded — decode it
+      if (!raw.trim().startsWith("-----")) {
+        return Buffer.from(raw.trim(), "base64").toString("utf8");
+      }
+      // Otherwise normalise escape sequences
+      return raw.replace(/\\n/g, "\n").replace(/\r\n/g, "\n").trim();
+    })(),
     spreadsheetId: process.env.GOOGLE_SHEETS_SPREADSHEET_ID,
     projectId: process.env.GOOGLE_SHEETS_PROJECT_ID,
     privateKeyId: process.env.GOOGLE_SHEETS_PRIVATE_KEY_ID
