@@ -53,6 +53,16 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
   // If a specific service was passed in, lock it — no need to ask the user
   const isServiceLocked = initialService !== "general" && Boolean(serviceMap[initialService]);
 
+  // Auto-derive mainGoal from service so the hidden field always satisfies validation
+  const derivedMainGoal = useMemo(() => {
+    if (service.includes("VIP Signal")) return "Receive daily trading signals I can act on";
+    if (service.includes("Copy Trading")) return "Have my trades copied automatically into my account";
+    if (service.includes("Personal Account")) return "Have my personal account professionally managed";
+    if (service.includes("Evaluation")) return "Pass a prop firm evaluation challenge";
+    if (service.includes("Instant Funded")) return "Get an instant funded trading account";
+    return "";
+  }, [service]);
+
   const serviceSummary = useMemo(() => {
     if (service.includes("VIP Signal")) return "Tell us how you plan to use the signals and whether you already trade gold.";
     if (service.includes("Copy Trading")) return "We will confirm your broker, platform, capital level, and copy trading readiness.";
@@ -178,7 +188,9 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
             required
             helper="There is no wrong answer. This helps us match you with the right strategy and service level."
           />
-          {!isServiceLocked && (
+          {isServiceLocked ? (
+            <input type="hidden" name="mainGoal" value={derivedMainGoal} />
+          ) : (
             <SelectField
               name="mainGoal"
               label="What is the primary outcome you want from joining Smart Profits Trader?"
