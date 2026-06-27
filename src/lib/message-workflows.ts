@@ -306,28 +306,27 @@ export async function sendApplicationAcknowledgement(applicationId: string) {
     message: plainText,
     applicationId: application.id,
     send: async () => {
-      const directEmail = await sendSendyTransactionalEmail({
-        recipient: application.fullName,
-        email: application.email,
-        name: application.fullName,
-        title: subject,
-        body: htmlMessage,
-        tags: [buildServiceTag(application.service), "application"]
-      });
+      const [directEmail] = await Promise.all([
+        sendSendyTransactionalEmail({
+          recipient: application.fullName,
+          email: application.email,
+          name: application.fullName,
+          title: subject,
+          body: htmlMessage,
+          tags: [buildServiceTag(application.service), "application"]
+        }),
+        addSendySubscriber({
+          recipient: application.fullName,
+          email: application.email,
+          name: application.fullName,
+          title: subject,
+          body: htmlMessage,
+          listId: resolveProspectListId(application.service),
+          tags: [buildServiceTag(application.service), "application"]
+        })
+      ]);
 
-      if (directEmail.configured && directEmail.ok) {
-        return directEmail;
-      }
-
-      return addSendySubscriber({
-        recipient: application.fullName,
-        email: application.email,
-        name: application.fullName,
-        title: subject,
-        body: htmlMessage,
-        listId: resolveProspectListId(application.service),
-        tags: [buildServiceTag(application.service), "application"]
-      });
+      return directEmail;
     }
   });
 }
@@ -366,28 +365,27 @@ export async function sendWelcomeWorkflow(customerId: string) {
     message: plainText,
     customerId: customer.id,
     send: async () => {
-      const directEmail = await sendSendyTransactionalEmail({
-        recipient: customer.fullName,
-        email: customer.email,
-        name: customer.fullName,
-        title: subject,
-        body: htmlMessage,
-        tags: [customer.customerType.toLowerCase(), "welcome"]
-      });
+      const [directEmail] = await Promise.all([
+        sendSendyTransactionalEmail({
+          recipient: customer.fullName,
+          email: customer.email,
+          name: customer.fullName,
+          title: subject,
+          body: htmlMessage,
+          tags: [customer.customerType.toLowerCase(), "welcome"]
+        }),
+        addSendySubscriber({
+          recipient: customer.fullName,
+          email: customer.email,
+          name: customer.fullName,
+          title: subject,
+          body: htmlMessage,
+          listId: process.env.SENDY_LIST_ID_CLIENTS,
+          tags: [customer.customerType.toLowerCase(), "welcome"]
+        })
+      ]);
 
-      if (directEmail.configured && directEmail.ok) {
-        return directEmail;
-      }
-
-      return addSendySubscriber({
-        recipient: customer.fullName,
-        email: customer.email,
-        name: customer.fullName,
-        title: subject,
-        body: htmlMessage,
-        listId: process.env.SENDY_LIST_ID_CLIENTS,
-        tags: [customer.customerType.toLowerCase(), "welcome"]
-      });
+      return directEmail;
     }
   });
 }
