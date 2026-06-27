@@ -132,7 +132,12 @@ export async function sendSendyTransactionalEmail(
 ): Promise<IntegrationResult> {
   const config = await getIntegrationConfig();
 
-  if (!config.sendyTransactionalEndpoint || !config.sendyApiKey) {
+  // Derive the transactional endpoint from base URL if not explicitly set
+  const endpoint =
+    config.sendyTransactionalEndpoint ||
+    (config.sendyBaseUrl ? `${config.sendyBaseUrl}/api/transactional/send-email` : null);
+
+  if (!endpoint || !config.sendyApiKey) {
     return {
       ok: false,
       provider: "sendy",
@@ -143,27 +148,35 @@ export async function sendSendyTransactionalEmail(
     };
   }
 
-  const response = await fetch(config.sendyTransactionalEndpoint, {
+  // Sendy transactional API uses form-urlencoded with api_key in the body
+  const fromEmail = process.env.SENDY_FROM_EMAIL ?? process.env.ADMIN_EMAIL ?? "";
+  const fromName = process.env.SENDY_FROM_NAME ?? "Smart Profits Trader";
+
+  const formBody = new URLSearchParams({
+    api_key: config.sendyApiKey,
+    to: payload.email.trim().toLowerCase(),
+    from_name: fromName,
+    from_email: fromEmail,
+    reply_to: fromEmail,
+    subject: payload.title,
+    html_text: payload.body,
+    plain_text: payload.body.replace(/<[^>]+>/g, " "),
+    tags: payload.tags?.join(",") ?? ""
+  });
+
+  const response = await fetch(endpoint, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${config.sendyApiKey}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      to: payload.email.trim().toLowerCase(),
-      name: payload.name?.trim() || payload.recipient.trim(),
-      subject: payload.title,
-      html: payload.body,
-      text: payload.body.replace(/<[^>]+>/g, " "),
-      tags: payload.tags ?? []
-    }),
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: formBody.toString(),
     cache: "no-store"
   });
 
   const text = (await response.text()).trim();
+  // Sendy returns "Email sent!" on success
+  const ok = response.ok || text.toLowerCase().includes("email sent");
 
   return {
-    ok: response.ok,
+    ok,
     provider: "sendy",
     configured: true,
     action: "transactional_email",

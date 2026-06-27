@@ -172,14 +172,10 @@ const evaluationBenefits = [
 ] as const;
 
 const recommendedPropFirms = [
-  ["FundingPips", "https://app.fundingpips.com/register?referral_code=64d6c082"],
+  ["Hola Prime", "https://www.holaprime.com"],
   ["FTMO", "https://trader.ftmo.com/?affiliates=dDWEICNovYoncFqgzCop"],
-  ["FundedNext", "https://fundednext.com/?fpr=solomon79"],
-  ["E8 Markets", "https://e8markets.com/a/B16909D2"],
-  ["Blueberry Funded", "https://blueberryfunded.com/?utm_source=affiliate&ref=9026"],
-  ["Blue Guardian", "https://blueguardian.com/?afmc=1sql"],
-  ["Atlas Funded", "https://checkout.atlasfunded.com/ref/2186/"],
-  ["Tentrade", "https://cabinet.10tradefx.com/links/go/4596"]
+  ["FundingPips", "https://app.fundingpips.com/register?referral_code=64d6c082"],
+  ["Fxify", "https://trader.fxify.com/purchasechallenge?affiliateId=8259"]
 ] as const;
 
 const evaluationFitItems = [

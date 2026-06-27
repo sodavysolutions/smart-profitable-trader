@@ -2,6 +2,12 @@ import { CommunicationChannel, CommunicationStatus, type CommunicationLog, type 
 import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { addSendySubscriber, sendSendyTransactionalEmail, sendSmsMessage, sendWhatsAppMessage } from "@/lib/integrations";
 import { prisma } from "@/lib/prisma";
+import {
+  buildEmailHtml,
+  buildApplicationAcknowledgementBody,
+  buildWelcomeBody,
+  buildPaymentAcknowledgementBody
+} from "@/lib/email-templates";
 
 type TemplateContext = Record<string, string | number | null | undefined>;
 export type EventKey = "birthday" | "christmas" | "new_year" | "eid" | "independence_day";
@@ -143,6 +149,15 @@ function buildServiceTag(service: string) {
     .replace(/^-|-$/g, "");
 }
 
+function resolveProspectListId(service: string): string | undefined {
+  const s = service.toLowerCase();
+  if (s.includes("vip signal")) return process.env.SENDY_LIST_ID_VIP_SIGNALS;
+  if (s.includes("copy trading") || s.includes("personal account")) return process.env.SENDY_LIST_ID_COPY_TRADING;
+  if (s.includes("instant funded")) return process.env.SENDY_LIST_ID_INSTANT_FUNDED;
+  if (s.includes("evaluation")) return process.env.SENDY_LIST_ID_EVALUATION;
+  return undefined;
+}
+
 function monthDayKey(date: Date) {
   const month = `${date.getMonth() + 1}`.padStart(2, "0");
   const day = `${date.getDate()}`.padStart(2, "0");
@@ -267,28 +282,36 @@ export async function sendApplicationAcknowledgement(applicationId: string) {
     throw new Error("Application not found for acknowledgement workflow.");
   }
 
-  const template =
-    settings.message_template_form_acknowledgement ??
-    "Hello {{fullName}}, we received your {{service}} application and our team will review it shortly.";
+  const companyName = settings.company_name ?? "Smart Profits Trader";
+  const subject = "We received your Smart Profits Trader application";
 
-  const message = interpolateTemplate(template, {
-    fullName: application.fullName,
-    service: application.service,
-    companyName: settings.company_name ?? "Smart Profits Trader"
+  const bodyHtml = buildApplicationAcknowledgementBody(application.fullName, application.service, companyName);
+  const htmlMessage = buildEmailHtml({
+    preheader: `Hi ${application.fullName.split(" ")[0]}, we have received your ${application.service} application.`,
+    badge: "Application Received",
+    title: "We received your application",
+    subtitle: `Thank you for applying for the ${application.service} service.`,
+    bodyHtml,
+    cta: {
+      label: "Chat With Us on WhatsApp",
+      href: "https://wa.me/2347087970133"
+    }
   });
+
+  const plainText = `Hi ${application.fullName}, we received your ${application.service} application. Our team will review it and be in touch shortly.`;
 
   return dispatchLifecycleMessage({
     recipient: application.email,
-    subject: "We received your Smart Profits Trader application",
-    message,
+    subject,
+    message: plainText,
     applicationId: application.id,
     send: async () => {
       const directEmail = await sendSendyTransactionalEmail({
         recipient: application.fullName,
         email: application.email,
         name: application.fullName,
-        title: "We received your Smart Profits Trader application",
-        body: message,
+        title: subject,
+        body: htmlMessage,
         tags: [buildServiceTag(application.service), "application"]
       });
 
@@ -300,8 +323,9 @@ export async function sendApplicationAcknowledgement(applicationId: string) {
         recipient: application.fullName,
         email: application.email,
         name: application.fullName,
-        title: "Sendy list subscription",
-        body: message,
+        title: subject,
+        body: htmlMessage,
+        listId: resolveProspectListId(application.service),
         tags: [buildServiceTag(application.service), "application"]
       });
     }
@@ -318,28 +342,36 @@ export async function sendWelcomeWorkflow(customerId: string) {
     throw new Error("Customer not found for welcome workflow.");
   }
 
-  const template =
-    settings.message_template_welcome ??
-    "Hello {{fullName}}, welcome to {{companyName}}. Your {{serviceType}} profile is now active in our trading ecosystem.";
+  const companyName = settings.company_name ?? "Smart Profits Trader";
+  const subject = `Welcome to ${companyName}`;
 
-  const message = interpolateTemplate(template, {
-    fullName: customer.fullName,
-    companyName: settings.company_name ?? "Smart Profits Trader",
-    serviceType: customer.customerType
+  const bodyHtml = buildWelcomeBody(customer.fullName, customer.customerType, companyName);
+  const htmlMessage = buildEmailHtml({
+    preheader: `Welcome to ${companyName}, ${customer.fullName.split(" ")[0]}. Your account is now active.`,
+    badge: "Welcome",
+    title: `Welcome to ${companyName}`,
+    subtitle: `Your ${customer.customerType} profile is now active.`,
+    bodyHtml,
+    cta: {
+      label: "Chat With Us on WhatsApp",
+      href: "https://wa.me/2347087970133"
+    }
   });
+
+  const plainText = `Hello ${customer.fullName}, welcome to ${companyName}. Your ${customer.customerType} profile is now active in our trading ecosystem.`;
 
   return dispatchLifecycleMessage({
     recipient: customer.email,
-    subject: "Welcome to Smart Profits Trader",
-    message,
+    subject,
+    message: plainText,
     customerId: customer.id,
     send: async () => {
       const directEmail = await sendSendyTransactionalEmail({
         recipient: customer.fullName,
         email: customer.email,
         name: customer.fullName,
-        title: "Welcome to Smart Profits Trader",
-        body: message,
+        title: subject,
+        body: htmlMessage,
         tags: [customer.customerType.toLowerCase(), "welcome"]
       });
 
@@ -351,8 +383,9 @@ export async function sendWelcomeWorkflow(customerId: string) {
         recipient: customer.fullName,
         email: customer.email,
         name: customer.fullName,
-        title: "Welcome to Smart Profits Trader",
-        body: message,
+        title: subject,
+        body: htmlMessage,
+        listId: process.env.SENDY_LIST_ID_CLIENTS,
         tags: [customer.customerType.toLowerCase(), "welcome"]
       });
     }
@@ -372,30 +405,43 @@ export async function sendPaymentAcknowledgement(paymentId: string) {
     return null;
   }
 
-  const template =
-    settings.message_template_payment_acknowledgement ??
-    "Hello {{fullName}}, we have recorded your payment for {{serviceType}}. Thank you for choosing {{companyName}}.";
+  const companyName = settings.company_name ?? "Smart Profits Trader";
+  const subject = `Payment received — ${companyName}`;
+  const amountStr = payment.amount.toString();
 
-  const message = interpolateTemplate(template, {
-    fullName: payment.customer.fullName,
-    companyName: settings.company_name ?? "Smart Profits Trader",
-    serviceType: payment.serviceType,
-    amount: payment.amount.toString(),
-    currency: payment.currency
+  const bodyHtml = buildPaymentAcknowledgementBody(
+    payment.customer.fullName,
+    payment.serviceType,
+    amountStr,
+    payment.currency,
+    companyName
+  );
+  const htmlMessage = buildEmailHtml({
+    preheader: `We received your payment of ${payment.currency} ${amountStr} for ${payment.serviceType}.`,
+    badge: "Payment Received",
+    title: "Payment confirmed",
+    subtitle: `Thank you for your payment for ${payment.serviceType}.`,
+    bodyHtml,
+    cta: {
+      label: "Chat With Us on WhatsApp",
+      href: "https://wa.me/2347087970133"
+    }
   });
+
+  const plainText = `Hello ${payment.customer.fullName}, we have recorded your payment of ${payment.currency} ${amountStr} for ${payment.serviceType}. Thank you for choosing ${companyName}.`;
 
   return dispatchLifecycleMessage({
     recipient: payment.customer.email,
-    subject: "Payment received by Smart Profits Trader",
-    message,
+    subject,
+    message: plainText,
     customerId: payment.customerId,
     send: async () =>
       sendSendyTransactionalEmail({
         recipient: payment.customer!.fullName,
         email: payment.customer!.email,
         name: payment.customer!.fullName,
-        title: "Payment received by Smart Profits Trader",
-        body: message,
+        title: subject,
+        body: htmlMessage,
         tags: ["payment", buildServiceTag(payment.serviceType)]
       })
   });
