@@ -600,13 +600,18 @@ function quoteSheetName(tabName: string) {
 }
 
 async function applySheetFormatting(sheetId: number, columnCount: number) {
-  // Brand colours: navy #071F3D, green #16A34A, light row #F0F6FF
-  const navy = { red: 7 / 255, green: 31 / 255, blue: 61 / 255 };
-  const white = { red: 1, green: 1, blue: 1 };
-  const lightRow = { red: 240 / 255, green: 246 / 255, blue: 255 / 255 };
+  // Brand colours
+  const navy     = { red: 7 / 255,   green: 31 / 255,  blue: 61 / 255  }; // #071F3D
+  const white    = { red: 1,          green: 1,          blue: 1          };
+  const lightRow = { red: 240 / 255,  green: 246 / 255,  blue: 255 / 255  }; // #F0F6FF
+  const green    = { red: 22 / 255,   green: 163 / 255,  blue: 74 / 255   }; // #16A34A
+  const lightGreen = { red: 220 / 255, green: 252 / 255, blue: 231 / 255  }; // #DCFCE7
+  const lightRed   = { red: 254 / 255, green: 226 / 255, blue: 226 / 255  }; // #FEE2E2
+  const lightYellow = { red: 254 / 255, green: 249 / 255, blue: 195 / 255 }; // #FEF9C3
+  const borderColor = { red: 203 / 255, green: 213 / 255, blue: 225 / 255 }; // #CBD5E1
 
-  const requests: unknown[] = [
-    // Header row — navy background, white bold text, 11pt
+  const baseRequests: unknown[] = [
+    // ── Header row: navy bg, white bold text, 11pt ──
     {
       repeatCell: {
         range: { sheetId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount },
@@ -616,80 +621,149 @@ async function applySheetFormatting(sheetId: number, columnCount: number) {
             textFormat: { foregroundColor: white, bold: true, fontSize: 11 },
             horizontalAlignment: "LEFT",
             verticalAlignment: "MIDDLE",
-            wrapStrategy: "CLIP"
+            wrapStrategy: "CLIP",
+            padding: { top: 8, bottom: 8, left: 10, right: 10 }
           }
         },
-        fields: "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment,verticalAlignment,wrapStrategy)"
+        fields: "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment,verticalAlignment,wrapStrategy,padding)"
       }
     },
-    // Freeze header row
+    // ── Freeze header ──
     {
       updateSheetProperties: {
         properties: { sheetId, gridProperties: { frozenRowCount: 1 } },
         fields: "gridProperties.frozenRowCount"
       }
     },
-    // Header row height 40px
+    // ── Header row height 44px ──
     {
       updateDimensionProperties: {
         range: { sheetId, dimension: "ROWS", startIndex: 0, endIndex: 1 },
-        properties: { pixelSize: 40 },
+        properties: { pixelSize: 44 },
         fields: "pixelSize"
       }
     },
-    // Set minimum column widths (200px for most, 260px for first ID column)
+    // ── Data row height 32px ──
+    {
+      updateDimensionProperties: {
+        range: { sheetId, dimension: "ROWS", startIndex: 1, endIndex: 1000 },
+        properties: { pixelSize: 32 },
+        fields: "pixelSize"
+      }
+    },
+    // ── ID column: 240px ──
     {
       updateDimensionProperties: {
         range: { sheetId, dimension: "COLUMNS", startIndex: 0, endIndex: 1 },
-        properties: { pixelSize: 260 },
+        properties: { pixelSize: 240 },
         fields: "pixelSize"
       }
     },
+    // ── Date columns (index 1 & 2): 160px ──
     {
       updateDimensionProperties: {
-        range: { sheetId, dimension: "COLUMNS", startIndex: 1, endIndex: columnCount },
-        properties: { pixelSize: 180 },
+        range: { sheetId, dimension: "COLUMNS", startIndex: 1, endIndex: 3 },
+        properties: { pixelSize: 160 },
         fields: "pixelSize"
       }
     },
-    // Alternating row colours — white / light navy
+    // ── All other columns: 190px ──
     {
-      addBanding: {
-        bandedRange: {
-          range: { sheetId, startRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount },
-          rowProperties: {
-            headerColor: navy,
-            firstBandColor: white,
-            secondBandColor: lightRow
-          }
-        }
+      updateDimensionProperties: {
+        range: { sheetId, dimension: "COLUMNS", startIndex: 3, endIndex: columnCount },
+        properties: { pixelSize: 190 },
+        fields: "pixelSize"
       }
     },
-    // Outer border on entire used range
+    // ── Inner grid borders on data area ──
     {
       updateBorders: {
-        range: { sheetId, startRowIndex: 0, startColumnIndex: 0, endColumnIndex: columnCount },
-        outerBorder: {
-          style: "SOLID_MEDIUM",
-          color: navy
-        }
+        range: { sheetId, startRowIndex: 1, endRowIndex: 1000, startColumnIndex: 0, endColumnIndex: columnCount },
+        bottom: { style: "SOLID", color: borderColor },
+        innerHorizontal: { style: "SOLID", color: borderColor },
+        innerVertical: { style: "SOLID", color: borderColor }
+      }
+    },
+    // ── Heavy bottom border under header ──
+    {
+      updateBorders: {
+        range: { sheetId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount },
+        bottom: { style: "SOLID_MEDIUM", color: green }
+      }
+    },
+    // ── Conditional: ACTIVE / SUCCESS / APPROVED → light green text ──
+    {
+      addConditionalFormatRule: {
+        rule: {
+          ranges: [{ sheetId, startRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount }],
+          booleanRule: {
+            condition: { type: "TEXT_CONTAINS", values: [{ userEnteredValue: "ACTIVE" }] },
+            format: { backgroundColor: lightGreen, textFormat: { foregroundColor: green, bold: true } }
+          }
+        },
+        index: 0
+      }
+    },
+    {
+      addConditionalFormatRule: {
+        rule: {
+          ranges: [{ sheetId, startRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount }],
+          booleanRule: {
+            condition: { type: "TEXT_CONTAINS", values: [{ userEnteredValue: "SUCCESS" }] },
+            format: { backgroundColor: lightGreen, textFormat: { foregroundColor: green, bold: true } }
+          }
+        },
+        index: 1
+      }
+    },
+    // ── Conditional: FAILED / INACTIVE / REJECTED → light red ──
+    {
+      addConditionalFormatRule: {
+        rule: {
+          ranges: [{ sheetId, startRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount }],
+          booleanRule: {
+            condition: { type: "TEXT_CONTAINS", values: [{ userEnteredValue: "FAILED" }] },
+            format: { backgroundColor: lightRed, textFormat: { foregroundColor: { red: 185 / 255, green: 28 / 255, blue: 28 / 255 }, bold: true } }
+          }
+        },
+        index: 2
+      }
+    },
+    // ── Conditional: PENDING / REVIEW → light yellow ──
+    {
+      addConditionalFormatRule: {
+        rule: {
+          ranges: [{ sheetId, startRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount }],
+          booleanRule: {
+            condition: { type: "TEXT_CONTAINS", values: [{ userEnteredValue: "PENDING" }] },
+            format: { backgroundColor: lightYellow, textFormat: { foregroundColor: { red: 133 / 255, green: 77 / 255, blue: 14 / 255 }, bold: true } }
+          }
+        },
+        index: 3
       }
     }
   ];
 
-  // addBanding fails if one already exists — wrap so it doesn't break the sync
-  try {
-    await sheetsRequest(":batchUpdate", {
-      method: "POST",
-      body: JSON.stringify({ requests })
-    });
-  } catch {
-    // Retry without addBanding in case it already exists
-    await sheetsRequest(":batchUpdate", {
-      method: "POST",
-      body: JSON.stringify({ requests: requests.filter((r) => !(r as Record<string, unknown>).addBanding) })
-    }).catch(() => { /* formatting is best-effort */ });
-  }
+  // Apply base formatting
+  await sheetsRequest(":batchUpdate", {
+    method: "POST",
+    body: JSON.stringify({ requests: baseRequests })
+  }).catch((err) => console.warn(`Sheet formatting warning (sheetId ${sheetId}):`, err));
+
+  // Apply banding separately — fails if already exists, safe to ignore
+  await sheetsRequest(":batchUpdate", {
+    method: "POST",
+    body: JSON.stringify({
+      requests: [{
+        addBanding: {
+          bandedRange: {
+            range: { sheetId, startRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount },
+            rowProperties: { firstBandColor: white, secondBandColor: lightRow }
+          }
+        }
+      }]
+    })
+  }).catch(() => { /* banding already exists — skip silently */ });
 }
 
 async function ensureSheetTab(config: RowConfig) {
