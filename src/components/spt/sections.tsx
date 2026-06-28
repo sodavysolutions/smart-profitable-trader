@@ -214,14 +214,18 @@ export function SPTHeroSection() {
       <div className="page-shell py-7 sm:py-10">
         <div className="relative overflow-hidden rounded-[28px] border border-white bg-white/72 px-4 py-12 shadow-[0_30px_90px_rgba(15,35,70,0.14)] backdrop-blur md:px-10 md:py-16 lg:px-16">
           <div className="mx-auto max-w-4xl text-center">
-            <h1 className="text-4xl font-semibold leading-tight tracking-normal text-navy-950 sm:text-5xl lg:text-6xl">
-              Choose a More Structured Forex Trading Path
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-profit-200 bg-profit-50 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-profit-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-profit-500" /> Algo-Powered Trading Ecosystem
+            </div>
+            <h1 className="text-4xl font-bold leading-tight tracking-tight text-navy-950 sm:text-5xl lg:text-6xl">
+              Trade with a System.{" "}
+              <span className="text-profit-600">Not Just a Strategy.</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
-              Smart Profits Trader helps you choose between VIP signals, managed account support, and prop firm account guidance, all backed by a clearer trading process and risk-aware execution.
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
+              Smart Profits Trader gives you algo-powered signals, copy trading, and prop firm support — all structured around your goal, your risk tolerance, and your account type.
             </p>
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-500">
-              Start with the path that fits your goal, then apply for a review so our team can recommend the best next step.
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-500">
+              Pick your path below, apply in 2 minutes, and our team will recommend your best next step.
             </p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link href="/spt/apply" className="inline-flex items-center justify-center gap-2 rounded-md bg-navy-950 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-navy-950/15 transition hover:-translate-y-0.5">
