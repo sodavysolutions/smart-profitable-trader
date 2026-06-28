@@ -58,6 +58,9 @@ export function SPTNavbar() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
+          <Link href="/spt/smart-money-blueprint" className="inline-flex items-center justify-center gap-1.5 rounded-md border border-profit-500/40 bg-profit-50 px-4 py-2.5 text-sm font-bold text-profit-600 transition hover:bg-profit-100">
+            🎁 Free Blueprint
+          </Link>
           <Link href="/spt/apply" className="funnel-header-cta inline-flex items-center justify-center rounded-md bg-profit-500 px-4 py-2.5 text-sm font-bold text-navy-950 shadow-[0_12px_30px_rgba(32,199,111,0.25)] hover:bg-profit-600 hover:text-white">
             Apply Now
           </Link>
@@ -99,6 +102,9 @@ export function SPTNavbar() {
             ))}
           </div>
           <div className="mt-4 grid gap-3">
+            <Link href="/spt/smart-money-blueprint" onClick={closeMenu} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-profit-500/40 bg-profit-50 px-5 py-3 text-sm font-bold text-profit-600">
+              🎁 Free Blueprint — Download Now
+            </Link>
             <Link href="/spt/apply" onClick={closeMenu} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950 shadow-[0_12px_30px_rgba(32,199,111,0.25)]">
               Apply Now <ArrowRight size={16} />
             </Link>

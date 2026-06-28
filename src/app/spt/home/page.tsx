@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SPTHomepage } from "@/components/spt/sections";
+import { BlueprintPopup } from "@/components/spt/BlueprintPopup";
 
 export const metadata: Metadata = {
   title: "Smart Profits Trader | Algo-Powered Trading Ecosystem",
@@ -18,5 +19,10 @@ export const metadata: Metadata = {
 };
 
 export default function SPTHomePage() {
-  return <SPTHomepage />;
+  return (
+    <>
+      <SPTHomepage />
+      <BlueprintPopup />
+    </>
+  );
 }
