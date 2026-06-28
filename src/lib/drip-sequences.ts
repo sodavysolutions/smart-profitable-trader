@@ -371,9 +371,9 @@ export const SIGNALS_SEQUENCE: DripEmail[] = [
     title: "Hear From Our Subscribers",
     body:
       p(`{firstName}, here's what a few subscribers have shared with me recently.`) +
-      p(`${bold('"This is the first trading service where I actually feel like I know what's happening with my money. Transparent, consistent, and the signals are real." — James, UK')}.`) +
-      p(`${bold('"I was sceptical at first. 8 months later I have a funded $50K prop account earning $3,250/month alongside my signals account. I wish I had started sooner." — Amara, Nigeria')}.`) +
-      p(`${bold('"Solomon's team treats you like an investor, not just another subscriber. They actually care about your results." — Priya, Canada')}.`) +
+      p(`${bold(`"This is the first trading service where I actually feel like I know what's happening with my money. Transparent, consistent, and the signals are real." — James, UK`)}.`) +
+      p(`${bold(`"I was sceptical at first. 8 months later I have a funded $50K prop account earning $3,250/month alongside my signals account. I wish I had started sooner." — Amara, Nigeria`)}.`) +
+      p(`${bold(`"Solomon's team treats you like an investor, not just another subscriber. They actually care about your results." — Priya, Canada`)}.`) +
       p(`This is the community you'd be joining. Apply below.`),
     ctaLabel: "Join the Community",
     ctaUrl: APPLY_URL,
