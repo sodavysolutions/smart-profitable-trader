@@ -386,6 +386,30 @@ model Setting {
   updatedAt DateTime @updatedAt
 }
 
+enum DripCategory {
+  SIGNALS
+  PROP_FIRM
+  COPY_TRADING
+  GENERAL
+}
+
+model DripSubscriber {
+  id               String       @id @default(cuid())
+  email            String       @unique
+  fullName         String
+  phone            String?
+  category         DripCategory
+  emailsSent       Int          @default(0)
+  nextEmailAt      DateTime
+  subscribedAt     DateTime     @default(now())
+  unsubscribed     Boolean      @default(false)
+  unsubscribeToken String       @unique @default(cuid())
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([nextEmailAt, unsubscribed, emailsSent])
+}
+
 model SyncLog {
   id           String     @id @default(cuid())
   recordType   String

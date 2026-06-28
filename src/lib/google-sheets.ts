@@ -600,24 +600,25 @@ function quoteSheetName(tabName: string) {
 }
 
 async function applySheetFormatting(sheetId: number, columnCount: number) {
-  // Brand colours
-  const navy     = { red: 7 / 255,   green: 31 / 255,  blue: 61 / 255  }; // #071F3D
-  const white    = { red: 1,          green: 1,          blue: 1          };
-  const lightRow = { red: 240 / 255,  green: 246 / 255,  blue: 255 / 255  }; // #F0F6FF
-  const green    = { red: 22 / 255,   green: 163 / 255,  blue: 74 / 255   }; // #16A34A
-  const lightGreen = { red: 220 / 255, green: 252 / 255, blue: 231 / 255  }; // #DCFCE7
-  const lightRed   = { red: 254 / 255, green: 226 / 255, blue: 226 / 255  }; // #FEE2E2
-  const lightYellow = { red: 254 / 255, green: 249 / 255, blue: 195 / 255 }; // #FEF9C3
-  const borderColor = { red: 203 / 255, green: 213 / 255, blue: 225 / 255 }; // #CBD5E1
+  // Brand colours — lighter palette
+  const navy       = { red: 7 / 255,   green: 31 / 255,  blue: 61 / 255  }; // #071F3D (text / accents)
+  const headerBg   = { red: 30 / 255,  green: 58 / 255,  blue: 95 / 255  }; // #1E3A5F (lighter navy for header)
+  const green      = { red: 22 / 255,  green: 163 / 255,  blue: 74 / 255  }; // #16A34A
+  const white      = { red: 1,          green: 1,          blue: 1          };
+  const lightRow   = { red: 240 / 255,  green: 247 / 255,  blue: 255 / 255  }; // #F0F7FF
+  const lightGreen  = { red: 220 / 255, green: 252 / 255,  blue: 231 / 255  }; // #DCFCE7
+  const lightRed    = { red: 254 / 255, green: 226 / 255,  blue: 226 / 255  }; // #FEE2E2
+  const lightYellow = { red: 254 / 255, green: 249 / 255,  blue: 195 / 255  }; // #FEF9C3
+  const borderColor = { red: 226 / 255, green: 232 / 255,  blue: 240 / 255  }; // #E2E8F0
 
   const baseRequests: unknown[] = [
-    // ── Header row: navy bg, white bold text, 11pt ──
+    // ── Header row: lighter navy bg (#1E3A5F), white bold text, 11pt ──
     {
       repeatCell: {
         range: { sheetId, startRowIndex: 0, endRowIndex: 1, startColumnIndex: 0, endColumnIndex: columnCount },
         cell: {
           userEnteredFormat: {
-            backgroundColor: navy,
+            backgroundColor: headerBg,
             textFormat: { foregroundColor: white, bold: true, fontSize: 11 },
             horizontalAlignment: "LEFT",
             verticalAlignment: "MIDDLE",

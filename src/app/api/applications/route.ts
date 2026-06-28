@@ -4,6 +4,7 @@ import { applicationSchema } from "@/lib/validation";
 import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { prisma } from "@/lib/prisma";
 import { normalizeText } from "@/lib/spt-admin-helpers";
+import { getAdminSession } from "@/lib/spt-admin-auth";
 
 export async function POST(request: Request) {
   try {
@@ -79,6 +80,11 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const applications = await prisma.application.findMany({
     orderBy: { createdAt: "desc" },
     take: 100

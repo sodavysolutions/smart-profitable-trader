@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { readableEnum } from "@/lib/spt-admin-format";
+import { getAdminSession } from "@/lib/spt-admin-auth";
 
 export async function GET() {
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const [leads, customers, expenses, profitShares, subscriptions, payments, applications] = await Promise.all([
     prisma.lead.findMany({ orderBy: { createdAt: "desc" } }),
     prisma.customer.findMany({ orderBy: { createdAt: "desc" } }),

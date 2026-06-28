@@ -440,10 +440,10 @@ export function AboutFounderSection() {
   return (
     <section id="founder" className="page-shell py-16">
       <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="overflow-hidden rounded-[28px] bg-gradient-to-br from-blue-100 to-emerald-50 p-3 shadow-[0_24px_70px_rgba(15,35,70,0.12)]">
-          <Image src="/brand/founder-portrait.png" alt="Solomon David, founder of Smart Profits Trader" width={900} height={1200} className="h-[520px] w-full rounded-[22px] object-cover object-top max-sm:h-[420px]" />
+        <div className="min-w-0 overflow-hidden rounded-[28px] bg-gradient-to-br from-blue-100 to-emerald-50 p-3 shadow-[0_24px_70px_rgba(15,35,70,0.12)]">
+          <Image src="/brand/founder-portrait.png" alt="Solomon David, founder of Smart Profits Trader" width={900} height={1200} className="h-[420px] w-full rounded-[22px] object-cover object-top sm:h-[480px] lg:h-[520px]" />
         </div>
-        <div>
+        <div className="min-w-0">
           <p className="text-sm font-bold uppercase tracking-[0.16em] text-profit-600">About the Founder</p>
           <h2 className="mt-4 text-3xl font-semibold text-navy-950 sm:text-4xl">Solomon David</h2>
           <p className="mt-2 text-lg font-semibold text-slate-700">Entrepreneur, digital marketing strategist, and trading systems builder</p>

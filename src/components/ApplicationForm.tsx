@@ -333,7 +333,7 @@ function Field({
   const id = `application-${name}`;
 
   return (
-    <label htmlFor={id} className="grid gap-1.5 text-sm font-semibold text-slate-800">
+    <label htmlFor={id} className="grid min-w-0 gap-1.5 text-sm font-semibold text-slate-800">
       <span>
         {label}
         {required && <span className="ml-1 text-red-500">*</span>}
@@ -346,7 +346,7 @@ function Field({
         autoComplete={autoComplete}
         inputMode={inputMode}
         placeholder={placeholder}
-        className="rounded-md border-2 border-slate-300 bg-white px-3 py-3 text-base text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-profit-500 focus:ring-2 focus:ring-profit-100"
+        className="w-full rounded-md border-2 border-slate-300 bg-white px-3 py-3 text-base text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-profit-500 focus:ring-2 focus:ring-profit-100"
       />
       {helper && <span className="text-xs font-normal leading-5 text-slate-500">{helper}</span>}
     </label>
@@ -373,7 +373,7 @@ function SelectField({
   const id = `application-${name}`;
 
   return (
-    <label htmlFor={id} className="grid gap-1.5 text-sm font-semibold text-slate-800">
+    <label htmlFor={id} className="grid min-w-0 gap-1.5 text-sm font-semibold text-slate-800">
       <span>
         {label}
         {required && <span className="ml-1 text-red-500">*</span>}
@@ -385,7 +385,7 @@ function SelectField({
         value={value}
         onChange={onChange ? (event) => onChange(event.target.value) : undefined}
         defaultValue={value ? undefined : ""}
-        className="rounded-md border-2 border-slate-300 bg-white px-3 py-3 text-base text-slate-900 outline-none transition focus:border-profit-500 focus:ring-2 focus:ring-profit-100"
+        className="w-full rounded-md border-2 border-slate-300 bg-white px-3 py-3 text-base text-slate-900 outline-none transition focus:border-profit-500 focus:ring-2 focus:ring-profit-100"
       >
         <option value="" disabled>
           — Select an option —
