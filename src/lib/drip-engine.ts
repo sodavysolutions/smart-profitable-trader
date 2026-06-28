@@ -8,7 +8,23 @@ import { prisma } from "@/lib/prisma";
 import { buildEmailHtml } from "@/lib/email-templates";
 import { DRIP_SEQUENCES, DRIP_SCHEDULE_HOURS } from "@/lib/drip-sequences";
 import { DripCategory } from "@prisma/client";
+import { addSendySubscriber } from "@/lib/integrations";
 import nodemailer from "nodemailer";
+
+/** Maps drip category to the right Sendy list ID env var + tags */
+function resolveSendyList(category: DripCategory): { listId: string | undefined; tags: string[] } {
+  switch (category) {
+    case "SIGNALS":
+      return { listId: process.env.SENDY_LIST_ID_VIP_SIGNALS, tags: ["vip-signals", "blueprint-lead"] };
+    case "COPY_TRADING":
+      return { listId: process.env.SENDY_LIST_ID_COPY_TRADING ?? process.env.SENDY_LIST_ID, tags: ["copy-trading", "blueprint-lead"] };
+    case "PROP_FIRM":
+      return { listId: process.env.SENDY_LIST_ID_EVALUATION ?? process.env.SENDY_LIST_ID, tags: ["prop-firm", "blueprint-lead"] };
+    case "GENERAL":
+    default:
+      return { listId: process.env.SENDY_LIST_ID, tags: ["general", "blueprint-lead"] };
+  }
+}
 
 const SITE_URL = "https://www.smartprofitstrader.com";
 const FROM_NAME = "Solomon Dee | Smart Profits Trader";
@@ -152,7 +168,7 @@ export async function enrollDripSubscriber({
   const now = new Date();
 
   // Upsert — if they re-subscribe, restart from email 1
-  return prisma.dripSubscriber.upsert({
+  const subscriber = await prisma.dripSubscriber.upsert({
     where: { email },
     create: {
       email,
@@ -160,7 +176,7 @@ export async function enrollDripSubscriber({
       phone,
       category,
       emailsSent: 0,
-      nextEmailAt: now, // send email 1 immediately
+      nextEmailAt: now,
       subscribedAt: now,
     },
     update: {
@@ -173,4 +189,20 @@ export async function enrollDripSubscriber({
       unsubscribed: false,
     },
   });
+
+  // Add to the right Sendy prospect list with category tag
+  const { listId, tags } = resolveSendyList(category);
+  if (listId) {
+    await addSendySubscriber({
+      recipient: fullName,
+      email,
+      name: fullName,
+      title: "Blueprint opt-in",
+      body: "",
+      listId,
+      tags,
+    }).catch((err) => console.error("[Drip enroll] Sendy sync failed:", err));
+  }
+
+  return subscriber;
 }
