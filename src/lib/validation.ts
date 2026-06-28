@@ -13,6 +13,7 @@ import {
   SubscriptionType
 } from "@prisma/client";
 import { z } from "zod";
+import { isDisposableEmail } from "@/lib/email-guard";
 
 const optionalText = z.string().trim().max(500).optional().or(z.literal(""));
 const optionalDate = z.string().optional().or(z.literal(""));
@@ -29,9 +30,15 @@ const approvedServices = [
 
 const optionalApplicationText = z.string().trim().max(2000).optional().or(z.literal(""));
 
+const realEmail = z
+  .string()
+  .trim()
+  .email("Enter a valid email address.")
+  .refine((v) => !isDisposableEmail(v), "Please use a real email address — temporary or disposable emails are not accepted.");
+
 export const applicationSchema = z.object({
   fullName: z.string().trim().min(2, "Enter the applicant's name."),
-  email: z.string().trim().email("Enter a valid email address."),
+  email: realEmail,
   phoneWhatsapp: z.string().trim().min(5, "Enter a phone or WhatsApp number.").max(30),
   locationAddress: z.string().trim().min(2, "Enter the applicant's location.").max(180),
   phone: z.string().trim().min(5).max(30).optional().or(z.literal("")),
@@ -110,7 +117,7 @@ export const customerUpdateSchema = z.object({
 
 export const customerCreateSchema = z.object({
   fullName: z.string().trim().min(2, "Enter the customer's name."),
-  email: z.string().trim().email("Enter a valid email address."),
+  email: realEmail,
   phone: z.string().trim().max(30).optional().or(z.literal("")),
   whatsapp: z.string().trim().max(30).optional().or(z.literal("")),
   country: z.string().trim().max(80).optional().or(z.literal("")),
