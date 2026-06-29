@@ -1,49 +1,56 @@
 /**
  * POST /api/telegram/bot-webhook
- * Telegram sends updates here when events happen in the VIP group.
- * We use this to capture user_ids when subscribers join via the invite link.
- *
- * Register once by visiting:
- *   GET /api/telegram/register-webhook
+ * Handles all Telegram bot updates:
+ *   - Conversation flow (subscribe via bot)
+ *   - New member joined VIP group (capture user_id for removal tracking)
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { handleBotUpdate } from "@/lib/bot-conversation";
 
 const VIP_CHAT_ID = process.env.TELEGRAM_VIP_CHAT_ID ?? "-1002722586879";
 
 export async function POST(req: NextRequest) {
   const update = await req.json();
 
-  // New member joined the VIP group
-  const newMembers = update?.message?.new_chat_members ?? update?.chat_member?.new_chat_member ? [update.chat_member.new_chat_member] : [];
+  // New member joined the VIP group — capture their user_id
+  const newMembers =
+    update?.message?.new_chat_members ??
+    (update?.chat_member?.new_chat_member ? [update.chat_member.new_chat_member.user] : []);
 
-  for (const member of newMembers) {
-    if (member.is_bot) continue;
+  const chatId = String(
+    update?.message?.chat?.id ?? update?.chat_member?.chat?.id ?? ""
+  );
 
-    const telegramUserId = String(member.id);
-    const telegramUsername = member.username ?? null;
+  if (newMembers.length > 0 && chatId === VIP_CHAT_ID) {
+    for (const member of newMembers) {
+      if (member?.is_bot) continue;
+      const telegramUserId = String(member.id);
 
-    // Try to match to an active subscription by username or recent invite
-    // Since we don't have the username on file (we use phone), we match the most recent
-    // ACTIVE subscription that doesn't yet have a telegramUserId set
-    const chatId = String(update?.message?.chat?.id ?? update?.chat_member?.chat?.id ?? "");
-    if (chatId !== VIP_CHAT_ID) continue;
-
-    // Find the most recently activated subscription without a telegramUserId
-    const sub = await prisma.vipSubscription.findFirst({
-      where: { status: "ACTIVE", telegramUserId: null },
-      orderBy: { startDate: "desc" },
-    });
-
-    if (sub) {
-      await prisma.vipSubscription.update({
-        where: { id: sub.id },
-        data: { telegramUserId },
+      // Match to subscription: first try botChatId (most reliable), then fallback to most recent active
+      const sub = await prisma.vipSubscription.findFirst({
+        where: {
+          status: "ACTIVE",
+          telegramUserId: null,
+          OR: [{ botChatId: telegramUserId }, { botChatId: null }],
+        },
+        orderBy: { startDate: "desc" },
       });
-      console.log(`[TGBot] Linked Telegram user ${telegramUserId} (@${telegramUsername}) to subscription ${sub.id}`);
+
+      if (sub) {
+        await prisma.vipSubscription.update({
+          where: { id: sub.id },
+          data: { telegramUserId },
+        });
+      }
     }
+    return NextResponse.json({ ok: true });
   }
+
+  // All other updates: handle via conversation engine
+  // (DMs to the bot, button presses, /start, /status, /help etc.)
+  await handleBotUpdate(update);
 
   return NextResponse.json({ ok: true });
 }

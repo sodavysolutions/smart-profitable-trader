@@ -6,6 +6,7 @@
 import { prisma } from "@/lib/prisma";
 import { buildEmailHtml } from "@/lib/email-templates";
 import { createVipInviteLink, removeVipMember } from "@/lib/telegram-bot";
+import { sendBotInviteLink } from "@/lib/bot-conversation";
 import nodemailer from "nodemailer";
 
 const SITE_URL = "https://www.smartprofitstrader.com";
@@ -51,8 +52,18 @@ export async function activateVipSubscription(subscriptionId: string) {
     },
   });
 
-  // Send welcome email with invite link
   const firstName = sub.name.split(" ")[0];
+
+  // Send invite link via Telegram bot DM (if they subscribed through the bot)
+  if (sub.botChatId) {
+    try {
+      await sendBotInviteLink(sub.botChatId, inviteLink, sub.name);
+    } catch (err) {
+      console.error("[VIP] Bot DM failed:", err);
+    }
+  }
+
+  // Send welcome email with invite link
   const linkSection = inviteLink
     ? `<div style="margin:20px 0;padding:20px;background:#f0fdf6;border-radius:8px;text-align:center;">
         <p style="margin:0 0 12px;font-weight:bold;">Your VIP Group Access Link</p>

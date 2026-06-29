@@ -423,6 +423,13 @@ enum VipSubStatus {
   CANCELLED
 }
 
+model BotSession {
+  chatId    String   @id
+  step      String   @default("idle")
+  data      Json     @default("{}")
+  updatedAt DateTime @updatedAt
+}
+
 model VipSubscription {
   id              String           @id @default(cuid())
   name            String
@@ -434,6 +441,7 @@ model VipSubscription {
   cryptoTxHash    String?
   amountUSD       Float            @default(50)
   status          VipSubStatus     @default(PENDING)
+  botChatId       String?
   inviteLink      String?
   startDate       DateTime?
   endDate         DateTime?
