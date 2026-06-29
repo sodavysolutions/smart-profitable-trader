@@ -9,7 +9,7 @@ const sptLinks = [
   { href: "/spt/home", label: "Home", shortLabel: "Home" },
   { href: "/spt/home#how-it-works", label: "How It Works", shortLabel: "How It Works" },
   { href: "/spt/home#trading-solutions", label: "Trading Solutions", shortLabel: "Trading Solutions" },
-  { href: "/spt/home#smart-profit-algo", label: "Smart Profit Algo", shortLabel: "Smart Profit Algo" },
+  { href: "/spt/holaprime", label: "Get Funded", shortLabel: "Get Funded" },
   { href: "/spt/home#founder", label: "Meet the Founder", shortLabel: "Founder" },
   { href: "/spt/home#faq", label: "FAQ", shortLabel: "FAQ" }
 ];

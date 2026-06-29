@@ -172,7 +172,7 @@ const evaluationBenefits = [
 ] as const;
 
 const recommendedPropFirms = [
-  ["Hola Prime", "https://www.holaprime.com"],
+  ["Hola Prime ⭐", "https://holaprime.com?affiliateId=smartprofitsalgo"],
   ["FTMO", "https://trader.ftmo.com/?affiliates=dDWEICNovYoncFqgzCop"],
   ["FundingPips", "https://app.fundingpips.com/register?referral_code=64d6c082"],
   ["Fxify", "https://trader.fxify.com/purchasechallenge?affiliateId=8259"]
@@ -900,6 +900,18 @@ function EvaluationManagementFunnel() {
               Chat With Us Before Choosing a Prop Firm
             </Link>
           </div>
+          {/* HolaPrime featured banner */}
+          <Link href="/spt/holaprime" className="group mt-2 mb-4 flex items-center justify-between gap-4 rounded-xl border-2 border-profit-500 bg-gradient-to-r from-profit-500/10 to-transparent p-5 transition hover:bg-profit-500/15">
+            <div>
+              <span className="inline-block rounded-full bg-profit-500 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-navy-950 mb-1.5">Recommended Partner</span>
+              <h3 className="font-bold text-navy-950">Hola Prime — Our #1 Recommended Prop Firm</h3>
+              <p className="mt-0.5 text-sm text-slate-600">From $50 · Up to $200K funded · 80/20 profit split · EA-friendly</p>
+            </div>
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950 transition group-hover:bg-profit-600 group-hover:text-white">
+              Get Started <ArrowRight size={15} />
+            </span>
+          </Link>
+
           <div className="grid gap-3 sm:grid-cols-2">
             {recommendedPropFirms.map(([name, href]) => (
               <Link key={name} href={href} target="_blank" rel="noreferrer" className="funnel-card group rounded-md border border-slate-200 bg-white p-5 shadow-sm hover:border-profit-500">

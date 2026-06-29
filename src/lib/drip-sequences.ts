@@ -18,6 +18,8 @@ export const BLUEPRINT_DOWNLOAD_URL =
   "https://docs.google.com/document/d/1xcId6yW0WU41skGRcoS630kB7sxHKmdd/export?format=pdf";
 
 export const APPLY_URL = "https://www.smartprofitstrader.com/spt/apply";
+export const HOLAPRIME_URL = "https://holaprime.com?affiliateId=smartprofitsalgo";
+export const HOLAPRIME_PAGE_URL = "https://www.smartprofitstrader.com/spt/holaprime";
 
 export type DripEmail = {
   subject: string;
@@ -594,8 +596,8 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`Step 2: We set up the EA on your MT5 demo account for Phase 1 of the challenge. Trading begins. We target completion in 15 days.`) +
       p(`Step 3: Phase 1 passed. Phase 2 begins. Same process. Phase 2 passed — your $10K account is now funded.`) +
       p(`Step 4: Month 1 of live trading on the funded account. At 10% return, you receive ${highlight("$650")} — 13x your total investment. This is the starting point of your prop trading business.`),
-    ctaLabel: "Start With a $50 Evaluation",
-    ctaUrl: APPLY_URL,
+    ctaLabel: "Get Your HolaPrime Account — From $50",
+    ctaUrl: HOLAPRIME_PAGE_URL,
   },
   {
     subject: "What separates our clients from DIY prop traders",
