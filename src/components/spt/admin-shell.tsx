@@ -14,6 +14,7 @@ import {
   Receipt,
   Search,
   Settings,
+  ShieldCheck,
   Users,
   UserRoundCheck
 } from "lucide-react";
@@ -21,6 +22,7 @@ import type { UserRole } from "@prisma/client";
 
 const navItems = [
   { href: "/spt/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/spt/admin/vip-subscriptions", label: "VIP Subscriptions", icon: ShieldCheck },
   { href: "/spt/admin/leads", label: "Lead Pipeline", icon: Megaphone },
   { href: "/spt/admin/customers", label: "Customer Records", icon: Users },
   { href: "/spt/admin/applications", label: "Applications", icon: ClipboardList },

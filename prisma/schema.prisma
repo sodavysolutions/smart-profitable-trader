@@ -410,6 +410,44 @@ model DripSubscriber {
   @@index([nextEmailAt, unsubscribed, emailsSent])
 }
 
+enum VipPaymentMethod {
+  PAYSTACK
+  CRYPTO
+}
+
+enum VipSubStatus {
+  PENDING
+  PENDING_CRYPTO
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+model VipSubscription {
+  id              String           @id @default(cuid())
+  name            String
+  email           String
+  phone           String
+  telegramUserId  String?
+  paymentMethod   VipPaymentMethod
+  paystackRef     String?
+  cryptoTxHash    String?
+  amountUSD       Float            @default(50)
+  status          VipSubStatus     @default(PENDING)
+  inviteLink      String?
+  startDate       DateTime?
+  endDate         DateTime?
+  reminder7Sent   Boolean          @default(false)
+  reminder3Sent   Boolean          @default(false)
+  reminder1Sent   Boolean          @default(false)
+  removalNotified Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([status, endDate])
+  @@index([email])
+}
+
 model SyncLog {
   id           String     @id @default(cuid())
   recordType   String
