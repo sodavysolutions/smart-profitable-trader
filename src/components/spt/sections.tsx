@@ -40,11 +40,11 @@ const offers: Array<{
 }> = [
   {
     title: "Smart Profits Trader VIP Signal Service",
-    subtitle: "Premium trading signals for serious traders",
-    copy: "Get structured market alerts supported by our Smart Profit Algo process, weekly optimization reviews, and risk-managed trade planning.",
+    subtitle: "Real-time algo-powered signals — $50/month",
+    copy: "Get real-time trade alerts with entry, TP, and SL delivered straight to your Telegram. Powered by the Smart Profit Algo. Join in minutes.",
     bestFor: ["Traders who want guided alerts", "Beginners who need structure", "Busy people who trade manually", "People who want a disciplined signal flow"],
-    cta: "Explore VIP Signals",
-    href: "/spt/vip-signals",
+    cta: "Join VIP Signals — $50/month",
+    href: "/spt/vip",
     icon: Signal
   },
   {
@@ -84,7 +84,7 @@ const ecosystem = [
 ] as const;
 
 const tradingPathCards = [
-  ["I want trading signals", "Best for newer or busy traders who want guided market alerts.", "VIP Signals", "/spt/vip-signals", Signal],
+  ["I want trading signals", "Best for newer or busy traders who want guided market alerts.", "Join VIP Signals — $50/mo", "/spt/vip", Signal],
   ["I want my account managed", "Best for clients who prefer copy trading or personal account support.", "Managed Account", "/spt/copy-trading", Copy],
   ["I want prop firm support", "Best for funded accounts, instant funding, or evaluation challenges.", "Prop Firm Support", "/spt/evaluation", Target]
 ] as const;
@@ -392,7 +392,10 @@ export function OfferCardsSection() {
                 <div className="grid h-12 w-12 place-items-center rounded-2xl bg-navy-950 text-profit-500">
                   <Icon size={22} />
                 </div>
-                <Link href={offer.href} className="inline-flex items-center justify-center gap-2 rounded-md bg-navy-950 px-4 py-2 text-sm font-bold text-white">
+                <Link
+                  href={offer.href}
+                  className={`inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-bold ${offer.href === "/spt/vip" ? "bg-profit-500 text-navy-950 shadow-[0_8px_20px_rgba(32,199,111,0.3)]" : "bg-navy-950 text-white"}`}
+                >
                   {offer.cta} <ArrowRight size={15} />
                 </Link>
               </div>
@@ -586,7 +589,7 @@ export function SPTFooter() {
         <p>Smart Profits Trader by Laptop Lifestyle Income. Trading involves risk and results are not guaranteed.</p>
         <div className="flex flex-wrap gap-4">
           {[
-            ["VIP Signals", "/spt/vip-signals"],
+            ["VIP Signals", "/spt/vip"],
             ["Copy Trading", "/spt/copy-trading"],
             ["Instant Funded", "/spt/instant-funded"],
             ["Evaluation", "/spt/evaluation"],

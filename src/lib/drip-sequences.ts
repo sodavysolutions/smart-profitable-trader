@@ -18,6 +18,7 @@ export const BLUEPRINT_DOWNLOAD_URL =
   "https://docs.google.com/document/d/1xcId6yW0WU41skGRcoS630kB7sxHKmdd/export?format=pdf";
 
 export const APPLY_URL = "https://www.smartprofitstrader.com/spt/apply";
+export const VIP_SIGNALS_URL = "https://www.smartprofitstrader.com/spt/vip";
 export const HOLAPRIME_URL = "https://holaprime.com?affiliateId=smartprofitsalgo";
 export const HOLAPRIME_PAGE_URL = "https://www.smartprofitstrader.com/spt/holaprime";
 
@@ -160,8 +161,8 @@ export const SIGNALS_SEQUENCE: DripEmail[] = [
       p(`Getting started is straightforward: you fill in a short application, we review it and get on a quick call to ensure we're a good fit, then we onboard you and connect you to our signal channel. Most people are set up and receiving signals within 48 hours.`) +
       p(`You can start with as little as $200. You don't need to know how to trade. You just need to be ready to follow the system.`) +
       p(`Click below to apply. Spots are limited — we onboard in small batches to ensure every subscriber gets proper attention.`),
-    ctaLabel: "Apply for VIP Signals",
-    ctaUrl: APPLY_URL,
+    ctaLabel: "Join VIP Signals — $50/month →",
+    ctaUrl: VIP_SIGNALS_URL,
   },
   // ── EMAILS 11–20 (every 2 days) ──────────────────────────────────────────
   {
@@ -276,8 +277,8 @@ export const SIGNALS_SEQUENCE: DripEmail[] = [
       p(`Here's what happens: you fill out a short form telling us your goals and current situation. We review it and if there's a strong fit, we book a quick 15-minute call to answer your questions. Then we onboard you, connect you to the signal channel, and you're live within 48 hours.`) +
       p(`There's no pressure and no obligation at the application stage. It's a conversation. We genuinely only take on clients we believe the system can help.`) +
       p(`If you're ready to stop wondering and start building — click below.`),
-    ctaLabel: "Apply for VIP Signals",
-    ctaUrl: APPLY_URL,
+    ctaLabel: "Join VIP Signals — $50/month →",
+    ctaUrl: VIP_SIGNALS_URL,
   },
   // ── EMAILS 21–30 (every 3 days) ──────────────────────────────────────────
   {
@@ -290,8 +291,8 @@ export const SIGNALS_SEQUENCE: DripEmail[] = [
       p(`Not because the opportunity isn't real. But because the gap between ${bold("intention")} and ${bold("action")} feels enormous. There's always a reason to wait. Not enough capital yet. Not enough time. Need to learn more first.`) +
       p(`Meanwhile, the people who did start six months ago are now running funded accounts earning thousands per month.`) +
       p(`The best time to start was six months ago. The second best time is today.`),
-    ctaLabel: "Apply Now",
-    ctaUrl: APPLY_URL,
+    ctaLabel: "Subscribe Now — $50/month →",
+    ctaUrl: VIP_SIGNALS_URL,
   },
   {
     subject: "What's the worst that can happen?",
@@ -326,8 +327,8 @@ export const SIGNALS_SEQUENCE: DripEmail[] = [
       p(`This isn't about exclusivity for its own sake. It's about fit. When we onboard a subscriber, we commit time to getting them set up properly, answering questions, and supporting their progress. We can only do that well for a limited number of people at a time.`) +
       p(`We're looking for people who are serious, coachable, and committed to following the system. Not people who will second-guess every signal or disappear after the first losing trade.`) +
       p(`If you're reading this, you've already demonstrated you're serious — you downloaded the blueprint, you've been reading these emails, you understand the system. The application is the next logical step. We'd love to see it.`),
-    ctaLabel: "Submit Your Application",
-    ctaUrl: APPLY_URL,
+    ctaLabel: "Join VIP Signals — $50/month →",
+    ctaUrl: VIP_SIGNALS_URL,
   },
   {
     subject: "A personal message from Solomon",
@@ -339,8 +340,8 @@ export const SIGNALS_SEQUENCE: DripEmail[] = [
       p(`I didn't start with capital or connections. I started where most of you are — trying to figure out how to build income beyond a salary, in a system that doesn't teach you how money actually works. Trading gave me that pathway, but only once I stopped guessing and built a real system.`) +
       p(`Smart Profits Trader exists because I believe everyone deserves access to a structured, algo-powered approach to building wealth through markets — not just people with $100K to invest and access to hedge funds.`) +
       p(`The Smart Money Blueprint you downloaded is that system, democratised. I hope you use it. And I hope you let us help you execute it.`),
-    ctaLabel: "Apply to Work With Us",
-    ctaUrl: APPLY_URL,
+    ctaLabel: "Join VIP Signals — $50/month →",
+    ctaUrl: VIP_SIGNALS_URL,
   },
   {
     subject: "You've been thinking about this for a while now",
@@ -363,8 +364,8 @@ export const SIGNALS_SEQUENCE: DripEmail[] = [
       p(`We're currently working through a new intake batch for VIP Signals. We onboard in small groups so each new subscriber gets proper attention during setup. Once this batch is full, the next intake won't open for several weeks.`) +
       p(`If you've been on the fence, this is the window to act. I can't hold a spot without an application submitted.`) +
       p(`The application takes 3 minutes. If we're a good fit, we'll get on a short call this week to answer your questions and get you started.`),
-    ctaLabel: "Apply Before This Batch Closes",
-    ctaUrl: APPLY_URL,
+    ctaLabel: "Join VIP Signals — $50/month →",
+    ctaUrl: VIP_SIGNALS_URL,
   },
   {
     subject: "What our long-term subscribers say",
@@ -377,8 +378,8 @@ export const SIGNALS_SEQUENCE: DripEmail[] = [
       p(`${bold(`"I was sceptical at first. 8 months later I have a funded $50K prop account earning $3,250/month alongside my signals account. I wish I had started sooner." — Amara, Nigeria`)}.`) +
       p(`${bold(`"Solomon's team treats you like an investor, not just another subscriber. They actually care about your results." — Priya, Canada`)}.`) +
       p(`This is the community you'd be joining. Apply below.`),
-    ctaLabel: "Join the Community",
-    ctaUrl: APPLY_URL,
+    ctaLabel: "Join VIP Signals Group — $50/month →",
+    ctaUrl: VIP_SIGNALS_URL,
   },
   {
     subject: "One last thing before I stop emailing you",
@@ -390,8 +391,8 @@ export const SIGNALS_SEQUENCE: DripEmail[] = [
       p(`Over the past several weeks I've shared everything about how our VIP signals service works — the algo, the risk management, real subscriber results, and the full blueprint for building $10,000+/month in trading income.`) +
       p(`You now have all the information you need to make a decision. There are only two options: apply and find out if this is right for you, or close this chapter and move on.`) +
       p(`If you ever decide you're ready — the application is always open at the link below. I'd love to help you build what the blueprint describes. The door isn't closing permanently. But the discounted onboarding we offer new applicants from this sequence ends today.`),
-    ctaLabel: "Apply — Final Chance at Intro Pricing",
-    ctaUrl: APPLY_URL,
+    ctaLabel: "Join VIP Signals — Subscribe Now →",
+    ctaUrl: VIP_SIGNALS_URL,
   },
 ];
 
