@@ -41,6 +41,34 @@ export default async function VipSubscriptionsPage() {
     revalidatePath("/spt/admin/vip-subscriptions");
   }
 
+  async function addManual(formData: FormData) {
+    "use server";
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const phone = formData.get("phone") as string;
+    const telegramUserId = (formData.get("telegramUserId") as string) || null;
+    const startDateStr = formData.get("startDate") as string;
+    const days = parseInt((formData.get("days") as string) || "30", 10);
+
+    const startDate = startDateStr ? new Date(startDateStr) : new Date();
+    const endDate = new Date(startDate.getTime() + days * 24 * 3600 * 1000);
+
+    await prisma.vipSubscription.create({
+      data: {
+        name,
+        email,
+        phone,
+        telegramUserId: telegramUserId || null,
+        paymentMethod: "PAYSTACK",
+        status: "ACTIVE",
+        startDate,
+        endDate,
+        amountUSD: 50,
+      },
+    });
+    revalidatePath("/spt/admin/vip-subscriptions");
+  }
+
   function formatDate(d: Date | null) {
     if (!d) return "—";
     return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
@@ -48,9 +76,10 @@ export default async function VipSubscriptionsPage() {
 
   function daysLeft(endDate: Date | null) {
     if (!endDate) return null;
-    const diff = Math.ceil((endDate.getTime() - Date.now()) / (24 * 3600 * 1000));
-    return diff;
+    return Math.ceil((endDate.getTime() - Date.now()) / (24 * 3600 * 1000));
   }
+
+  const todayISO = new Date().toISOString().slice(0, 10);
 
   return (
     <SPTAdminShell title="VIP Subscriptions" role="SUPER_ADMIN">
@@ -70,6 +99,49 @@ export default async function VipSubscriptionsPage() {
             </div>
           ))}
         </div>
+
+        {/* ── Add existing member ─────────────────────────────────── */}
+        <section>
+          <h2 className="mb-3 text-base font-bold text-navy-950">➕ Add Existing Member</h2>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+            <p className="mb-4 text-sm text-slate-500">
+              Use this to manually add someone who already paid (cash, WhatsApp, etc.) so the bot tracks their days and sends reminders automatically.
+              If you have their Telegram user ID, enter it so they can be auto-removed on expiry. Otherwise leave it blank — they can link it later with <code className="rounded bg-slate-100 px-1">/register</code> in the bot.
+            </p>
+            <form action={addManual} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-600">Full Name *</label>
+                <input name="name" required placeholder="John Doe" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-green-500 focus:outline-none" />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-600">Email *</label>
+                <input name="email" type="email" required placeholder="john@email.com" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-green-500 focus:outline-none" />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-600">Phone *</label>
+                <input name="phone" required placeholder="+234..." className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-green-500 focus:outline-none" />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-600">Telegram User ID <span className="text-slate-400">(optional)</span></label>
+                <input name="telegramUserId" placeholder="e.g. 123456789" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-green-500 focus:outline-none" />
+                <p className="mt-0.5 text-xs text-slate-400">They can find it by messaging @userinfobot on Telegram</p>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-600">Start Date *</label>
+                <input name="startDate" type="date" required defaultValue={todayISO} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-green-500 focus:outline-none" />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-600">Duration (days) *</label>
+                <input name="days" type="number" required defaultValue="30" min="1" max="365" className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-green-500 focus:outline-none" />
+              </div>
+              <div className="sm:col-span-2 lg:col-span-3">
+                <button type="submit" className="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-green-700">
+                  ➕ Add Member & Start Tracking
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
 
         {/* Pending crypto approvals */}
         {pendingCrypto.length > 0 && (
@@ -101,10 +173,7 @@ export default async function VipSubscriptionsPage() {
                       <td className="px-4 py-3">
                         <form action={approveCrypto}>
                           <input type="hidden" name="id" value={s.id} />
-                          <button
-                            type="submit"
-                            className="rounded-lg bg-green-600 px-4 py-1.5 text-xs font-bold text-white hover:bg-green-700"
-                          >
+                          <button type="submit" className="rounded-lg bg-green-600 px-4 py-1.5 text-xs font-bold text-white hover:bg-green-700">
                             ✓ Approve
                           </button>
                         </form>
@@ -120,7 +189,7 @@ export default async function VipSubscriptionsPage() {
         {/* Active subscriptions */}
         <section>
           <h2 className="mb-3 text-base font-bold text-navy-950">✅ Active Subscriptions ({active.length})</h2>
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
             <table className="w-full text-sm">
               <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
                 <tr>
@@ -158,9 +227,9 @@ export default async function VipSubscriptionsPage() {
                       </td>
                       <td className="px-4 py-3 text-xs">
                         {s.telegramUserId ? (
-                          <span className="text-green-600 font-semibold">✓ {s.telegramUserId}</span>
+                          <span className="font-semibold text-green-600">✓ Linked</span>
                         ) : (
-                          <span className="text-slate-400">Pending join</span>
+                          <span className="text-slate-400">Not linked</span>
                         )}
                       </td>
                       <td className="px-4 py-3">
@@ -182,7 +251,7 @@ export default async function VipSubscriptionsPage() {
           </div>
         </section>
 
-        {/* All other records */}
+        {/* History */}
         {others.length > 0 && (
           <section>
             <h2 className="mb-3 text-base font-bold text-navy-950">History ({others.length})</h2>

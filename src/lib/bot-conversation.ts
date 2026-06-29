@@ -227,6 +227,56 @@ async function handleTxHash(chatId: string, text: string, data: SessionData) {
   );
 }
 
+async function handleRegisterEmail(chatId: string, text: string) {
+  const email = text.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    await sendMessage(chatId, "That doesn't look like a valid email. Please enter the email you used when subscribing.");
+    return;
+  }
+
+  // Find an active subscription with this email that isn't yet linked
+  const sub = await prisma.vipSubscription.findFirst({
+    where: { email, status: "ACTIVE" },
+    orderBy: { startDate: "desc" },
+  });
+
+  if (!sub) {
+    await sendMessage(chatId,
+      `❌ No active subscription found for <b>${email}</b>.\n\n` +
+      `• Check the email you subscribed with\n` +
+      `• If you haven't subscribed yet, type /start\n` +
+      `• For help, contact: wa.me/2347087970133`
+    );
+    await resetSession(chatId);
+    return;
+  }
+
+  if (sub.telegramUserId && sub.telegramUserId !== chatId) {
+    await sendMessage(chatId, `This subscription is already linked to another Telegram account. Contact support if this is a mistake.`);
+    await resetSession(chatId);
+    return;
+  }
+
+  // Link their Telegram user ID
+  await prisma.vipSubscription.update({
+    where: { id: sub.id },
+    data: { telegramUserId: chatId, botChatId: chatId },
+  });
+
+  await resetSession(chatId);
+
+  const daysLeft = sub.endDate
+    ? Math.ceil((sub.endDate.getTime() - Date.now()) / (24 * 3600 * 1000))
+    : null;
+
+  await sendMessage(chatId,
+    `✅ <b>Successfully linked!</b>\n\n` +
+    `Your Telegram is now connected to your SPT VIP subscription.\n` +
+    (daysLeft !== null ? `📅 Your access expires in <b>${daysLeft} days</b> (${sub.endDate?.toDateString()}).\n` : "") +
+    `\nYou'll receive renewal reminders here automatically. Type /status anytime to check your subscription.`
+  );
+}
+
 // ── Main router ───────────────────────────────────────────────────────────────
 
 export async function handleBotUpdate(update: Record<string, unknown>) {
@@ -290,9 +340,18 @@ export async function handleBotUpdate(update: Record<string, unknown>) {
       `<b>SPT VIP Bot Commands</b>\n\n` +
       `/start — Subscribe to VIP Signals ($50/month)\n` +
       `/status — Check your subscription status\n` +
+      `/register — Link your Telegram to an existing subscription\n` +
       `/help — Show this message\n\n` +
       `For support, contact us on WhatsApp: wa.me/2347087970133`
     );
+    return;
+  }
+
+  if (text === "/register") {
+    await sendMessage(chatId,
+      `To link your Telegram to your existing subscription, reply with the <b>email address</b> you used when subscribing.`
+    );
+    await setSession(chatId, "register_email", {});
     return;
   }
 
@@ -307,6 +366,8 @@ export async function handleBotUpdate(update: Record<string, unknown>) {
     await handlePhone(chatId, text, data);
   } else if (step === "ask_tx_hash") {
     await handleTxHash(chatId, text, data);
+  } else if (step === "register_email") {
+    await handleRegisterEmail(chatId, text);
   } else {
     // Unknown state
     await sendMessage(chatId,
