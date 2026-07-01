@@ -92,7 +92,8 @@ export default async function SPTAdminDashboardPage() {
     if (isSchemaMismatchError(error)) {
       schemaNotice = getSchemaMismatchMessage("Dashboard");
     } else {
-      throw error;
+      const msg = error instanceof Error ? error.message : String(error);
+      schemaNotice = `Dashboard data could not load: ${msg}`;
     }
   }
 

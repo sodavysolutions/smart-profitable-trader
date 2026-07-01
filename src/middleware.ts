@@ -24,7 +24,10 @@ async function isValidToken(token: string, secret: string): Promise<boolean> {
 
   // Sign the raw body string (base64url text) — matches Node.js HMAC in spt-admin-auth.ts
   const bodyBytes = new TextEncoder().encode(body);
-  const rawSig = Uint8Array.from(atob(signature.replace(/-/g, "+").replace(/_/g, "/")), (c) => c.charCodeAt(0));
+  // Re-add base64 padding that Node.js base64url strips before calling atob
+  const b64 = signature.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
+  const rawSig = Uint8Array.from(atob(padded), (c) => c.charCodeAt(0));
 
   const computed = new Uint8Array(await crypto.subtle.sign("HMAC", key, bodyBytes));
 
