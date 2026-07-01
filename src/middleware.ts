@@ -48,7 +48,9 @@ async function isAuthenticated(request: NextRequest): Promise<boolean> {
 
     // Also verify expiry from the payload
     const body = token.split(".")[0];
-    const decoded = atob(body.replace(/-/g, "+").replace(/_/g, "/"));
+    const b64body = body.replace(/-/g, "+").replace(/_/g, "/");
+    const paddedBody = b64body + "=".repeat((4 - (b64body.length % 4)) % 4);
+    const decoded = atob(paddedBody);
     const payload = JSON.parse(decoded);
     return payload.exp && payload.exp > Math.floor(Date.now() / 1000);
   } catch {
