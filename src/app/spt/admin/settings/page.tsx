@@ -52,7 +52,7 @@ const defaultSettingValues: Record<string, string> = {
   company_name: "Smart Profits Trader",
   whatsapp_number: "+2347087970133",
   logo_url: "/images/smart-profits-trader-logo.png",
-  default_admin_email: "sodavysolutions@gmail.com",
+  default_admin_email: "info@smartprofitstrader.com",
   sendy_api_url: "",
   sendy_api_key: "",
   sendy_list_id: "",
