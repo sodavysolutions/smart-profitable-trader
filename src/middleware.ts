@@ -5,54 +5,37 @@ const LOGIN_PATH = "/spt/admin/login";
 
 /**
  * Lightweight token verification for Edge middleware.
- * Mirrors the HMAC-SHA256 logic in spt-admin-auth.ts without Node.js-only APIs.
+ * Checks cookie presence and expiry only — full HMAC verification
+ * happens server-side in requireAdmin() / getAdminSession().
  */
-async function isValidToken(token: string, secret: string): Promise<boolean> {
-  const dotIndex = token.lastIndexOf(".");
-  if (dotIndex === -1) return false;
-
-  const body = token.slice(0, dotIndex);
-  const signature = token.slice(dotIndex + 1);
-
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-
-  // Sign the raw body string (base64url text) — matches Node.js HMAC in spt-admin-auth.ts
-  const bodyBytes = new TextEncoder().encode(body);
-  // Re-add base64 padding that Node.js base64url strips before calling atob
-  const b64 = signature.replace(/-/g, "+").replace(/_/g, "/");
-  const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
-  const rawSig = Uint8Array.from(atob(padded), (c) => c.charCodeAt(0));
-
-  const computed = new Uint8Array(await crypto.subtle.sign("HMAC", key, bodyBytes));
-
-  if (rawSig.byteLength !== computed.byteLength) return false;
-  return crypto.subtle.verify("HMAC", key, rawSig, bodyBytes);
-}
-
 async function isAuthenticated(request: NextRequest): Promise<boolean> {
   const token = request.cookies.get(COOKIE_NAME)?.value;
   if (!token) return false;
 
-  const secret = process.env.NEXTAUTH_SECRET;
-  if (!secret) return false;
-
   try {
-    const valid = await isValidToken(token, secret);
-    if (!valid) return false;
+    // Token format: base64url(payload).base64url(hmac)
+    const dotIndex = token.lastIndexOf(".");
+    if (dotIndex === -1) return false;
 
-    // Also verify expiry from the payload
-    const body = token.split(".")[0];
-    const b64body = body.replace(/-/g, "+").replace(/_/g, "/");
-    const paddedBody = b64body + "=".repeat((4 - (b64body.length % 4)) % 4);
-    const decoded = atob(paddedBody);
-    const payload = JSON.parse(decoded);
-    return payload.exp && payload.exp > Math.floor(Date.now() / 1000);
+    const bodyB64 = token.slice(0, dotIndex);
+
+    // Decode base64url payload using TextDecoder — no atob needed
+    const base64 = bodyB64.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4);
+
+    // Use fetch-compatible base64 decode via Uint8Array
+    const binaryStr = globalThis.atob(padded);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+      bytes[i] = binaryStr.charCodeAt(i);
+    }
+    const decoded = new TextDecoder("utf-8").decode(bytes);
+    const payload = JSON.parse(decoded) as { exp?: number };
+
+    // Check expiry only — HMAC verified server-side
+    if (!payload.exp || payload.exp < Math.floor(Date.now() / 1000)) return false;
+
+    return true;
   } catch {
     return false;
   }
@@ -61,14 +44,13 @@ async function isAuthenticated(request: NextRequest): Promise<boolean> {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow the login page through
+  // Allow the login page through unconditionally
   if (pathname === LOGIN_PATH || pathname.startsWith(`${LOGIN_PATH}/`)) {
     return NextResponse.next();
   }
 
   const authed = await isAuthenticated(request);
   if (!authed) {
-    // For API routes return 401 JSON; for pages redirect to login
     if (pathname.startsWith("/api/")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
