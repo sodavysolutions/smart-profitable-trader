@@ -48,8 +48,8 @@ export function SPTAdminShell({
 }) {
   return (
     <main className="min-h-screen bg-slate-100 text-slate-900">
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 bg-navy-950 p-5 text-white lg:block">
-        <Link href="/spt/admin/dashboard" className="mb-8 flex items-center gap-3">
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 flex-col bg-navy-950 p-5 text-white lg:flex">
+        <Link href="/spt/admin/dashboard" className="mb-6 flex shrink-0 items-center gap-3">
           <span className="grid h-14 w-14 place-items-center overflow-hidden rounded-xl bg-white p-1.5 shadow-sm">
             <Image src="/images/smart-profits-trader-logo.png" alt="Smart Profits Trader logo" width={160} height={160} className="h-full w-full object-contain" />
           </span>
@@ -58,7 +58,7 @@ export function SPTAdminShell({
             <span className="block text-xs uppercase tracking-[0.14em] text-profit-500">Admin Workspace</span>
           </span>
         </Link>
-        <nav className="space-y-1">
+        <nav className="flex-1 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -69,7 +69,7 @@ export function SPTAdminShell({
             );
           })}
         </nav>
-        <div className="absolute bottom-5 left-5 right-5 rounded-md border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
+        <div className="mt-4 shrink-0 rounded-md border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
           <div className="font-semibold text-white">Admin access</div>
           <p className="mt-1 leading-5">Role: {String(role).replaceAll("_", " ")}</p>
         </div>
