@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FloatingChatWidget } from "@/components/spt/floating-chat-widget";
 import {
   ArrowRight,
   BarChart3,
@@ -706,7 +707,7 @@ export function VipSignalsFunnelPage() {
       <VipSignalsTrustSection />
       <VipSignalsFinalCTA />
       <VipSignalsFooter />
-      <FloatingWhatsAppButton />
+      <FloatingChatWidget />
     </main>
   );
 }

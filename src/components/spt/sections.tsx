@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
+import { FloatingChatWidget } from "@/components/spt/floating-chat-widget";
 import {
   ArrowRight,
   BarChart3,
@@ -612,6 +613,7 @@ export function SPTPageShell({ children }: { children: React.ReactNode }) {
       <SPTNavbar />
       {children}
       <SPTFooter />
+      <FloatingChatWidget />
     </main>
   );
 }

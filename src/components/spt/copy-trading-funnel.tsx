@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FloatingChatWidget } from "@/components/spt/floating-chat-widget";
 import {
   ArrowRight,
   Bot,
@@ -434,7 +435,7 @@ export function CopyTradingFunnelPage() {
       <CopyTradingTrustSection />
       <CopyTradingFinalCTA />
       <CopyTradingFooter />
-      <FloatingWhatsAppButton />
+      <FloatingChatWidget />
     </main>
   );
 }

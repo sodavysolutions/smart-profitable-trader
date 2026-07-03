@@ -1,0 +1,411 @@
+{
+  "name": "SPT AI Agent — Smart Profits Trader",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "node-001",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300],
+      "webhookId": "spt-agent-webhook-v1",
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "SPT Agent Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "v1",
+              "name": "chatId",
+              "value": "={{ $json.message?.chat?.id?.toString() ?? '' }}",
+              "type": "string"
+            },
+            {
+              "id": "v2",
+              "name": "userMessage",
+              "value": "={{ $json.message?.text ?? '' }}",
+              "type": "string"
+            },
+            {
+              "id": "v3",
+              "name": "firstName",
+              "value": "={{ $json.message?.from?.first_name ?? 'Friend' }}",
+              "type": "string"
+            },
+            {
+              "id": "v4",
+              "name": "username",
+              "value": "={{ $json.message?.from?.username ?? '' }}",
+              "type": "string"
+            },
+            {
+              "id": "v5",
+              "name": "telegramUserId",
+              "value": "={{ $json.message?.from?.id?.toString() ?? '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-002",
+      "name": "Extract Message Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "model": "claude-3-5-haiku-20241022",
+        "options": {
+          "maxTokens": 1024,
+          "temperature": 0.7
+        }
+      },
+      "id": "node-003",
+      "name": "Claude Haiku",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.2,
+      "position": [640, 520],
+      "credentials": {
+        "anthropicApi": {
+          "id": "",
+          "name": "Anthropic API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionKey": "=spt_{{ $('Extract Message Data').item.json.chatId }}",
+        "contextWindowLength": 20
+      },
+      "id": "node-004",
+      "name": "Chat Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [640, 720]
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "={{ $('Extract Message Data').item.json.userMessage }}",
+        "options": {
+          "systemMessage": "You are the Smart Profits Trader (SPT) AI Assistant — a knowledgeable, friendly, and professional guide for everything related to Smart Profits Trader.\n\nYour job: help users understand SPT's services, guide them through onboarding, collect their information, and direct them to the right next step.\n\n## YOUR PERSONALITY\n- Friendly, warm, and professional\n- Use simple language — many users are Nigerian\n- Keep messages SHORT. This is Telegram, not email.\n- Use emojis to make it engaging 📊💰✅🚀\n- Never send a wall of text. Max 2-3 short paragraphs per reply.\n- Be encouraging — many users are new to trading\n\n---\n\n## SPT SERVICES\n\n### 1. BROKER ACCOUNTS (Retail Trading)\nHelp users open a personal broker account to start trading or connect to our algo.\n\nBrokers (minimum $10 deposit, all free to open):\n• CapitalXtend — best for Nigeria: https://capitalxtendng.com/register?referral=2288\n• Valatex: https://ma.valetax.com/p/1970836\n• Exness: https://clicks.pipaffiliates.com/c?c=1253173&l=en&p=1\n\nNo SPT fee — we earn affiliate commission automatically.\nAfter they open: collect broker name + account ID/number.\n\n---\n\n### 2. PROP FIRM — EVALUATION (HolaPrime)\nBest for: investors who want low entry cost and are patient (30 days).\nMust pass a 2-phase trading challenge. SPT's algo does the trading.\nTimeline: Phase 1 (15 days) + Phase 2 (15 days) = ~30 days total\nProfit split after passing: 65% investor / 35% SPT\nHolaPrime pass rate: ~35% — be honest about this.\nHolaPrime link: https://holaprime.com?affiliateId=smartprofitsalgo\n\nSPT SERVICE FEES (paid to SPT before starting — NOT to HolaPrime):\n• $10,000 account → $25 upfront + $25 after passing = $50 total to SPT\n• $15,000 account → $30 upfront + $30 after passing = $60 total to SPT\n• $25,000 account → $50 upfront + $50 after passing = $100 total to SPT\n• $50,000 account → $100 upfront + $100 after passing = $200 total to SPT\n• $100,000 account → $150 upfront + $150 after passing = $300 total to SPT\n• $200,000 account → $200 upfront + $200 after passing = $400 total to SPT\n\nNote: HolaPrime's own challenge purchase fee is separate, paid directly to HolaPrime.\n\n---\n\n### 3. PROP FIRM — INSTANT FUNDED (iFunds)\nBest for: investors who want to start trading immediately, no challenge.\nFunded from day 1. No daily drawdown. EAs/algos allowed.\nProfit split: 65% investor / 35% SPT (investor pays SPT setup fee)\n             50% investor / 50% SPT (SPT covers setup fee)\niFunds link: https://ifunds.io/?ref=vhDR3gs1018MYe2ea\n\nCOMPLETE COSTS (iFunds fee + SPT setup fee):\n• $2,500 account → $250 (iFunds) + $50 (SPT) = $300 total | Split: 65/35\n• $5,000 account → $400 (iFunds) + $50 (SPT) = $450 total | Split: 65/35\n• $10,000 account → $700 (iFunds) + $100 (SPT) = $800 total | Split: 65/35\n• $25,000 account → $1,600 (iFunds) + $200 (SPT) = $1,800 total | Split: 65/35\n• $50,000 account → $3,000 (iFunds) + $450 (SPT) = $3,450 total | Split: 65/35\n• $85,000 account → $5,000 (iFunds) + $800 (SPT) = $5,800 total | Split: 65/35\n\niFunds features: No challenge, instant access, no daily drawdown, no time limits, payouts within 24 hours.\n\n---\n\n### 4. VIP SIGNALS ($50/month)\nReal-time algo-powered Gold & Forex signals — entry, TP, and SL — delivered directly in Telegram.\nPrice: $50 USD/month (≈ ₦80,000 for Nigeria)\nSubscribe: https://www.smartprofitstrader.com/spt/vip\n\n---\n\n### 5. PERSONAL TRADING (SPT manages your broker account)\nSPT's algo trades your own personal broker account on your behalf.\nMinimum: $5,000 funded in broker account\nProfit split: 50% investor / 50% SPT\nNo upfront SPT fee — split applies only to profits.\nRequirement: Fund your broker account + share MT5 details with SPT.\n\n---\n\n## PAYMENT METHODS (for SPT fees)\n• Nigeria Naira — bank transfer: Tell user Solomon will send bank details. Tag [ALERT_SOLOMON].\n• USDT/USDC TRC20 (Tron network): TNZUoUMagqyktuHbjJLGfwG1mL2N7GiwVM\n• USDT/USDC BEP20 (Binance Smart Chain): 0x00b6cb559b7b581f49282595b872e47589c51e70\n\nApprox rate: $1 ≈ ₦1,600 (always note this is approximate)\nAfter paying: user should send payment proof/screenshot. You cannot confirm payment — only Solomon can.\n\n---\n\n## BUDGET-BASED RECOMMENDATIONS\nWhen a user mentions their budget:\n• Under $50 → VIP Signals ($50/month) — start with signals\n• $50–$299 → Open broker account + VIP Signals ($50/month)\n• $300–$449 → iFunds $2,500 Instant Funded ($300 total)\n• $450–$799 → iFunds $5,000 Instant Funded ($450 total) ✅ best value entry\n• $800–$4,999 → iFunds $10,000 Instant Funded ($800 total) ✅ sweet spot\n• $5,000+ → Personal Trading (SPT manages your account) — FLAG AS HIGH VALUE\n• $10,000+ → Also eligible for HolaPrime Evaluation (lower cost, 30-day process)\n• Large budgets ($5,000+) → ALWAYS tag [ALERT_SOLOMON]\n\n---\n\n## MT5 DETAILS COLLECTION\nWhen a user is ready to connect their broker or prop firm account to SPT's algo:\nCollect these ONE AT A TIME:\n1. MT5 Login ID\n2. MT5 Password\n3. MT5 Server name (e.g. ICMarkets-Demo, Exness-Real, etc.)\n\nAfter collecting all 3, confirm receipt and say: \"Solomon will connect the algo to your account within 24 hours. You'll be notified once it's live. 🚀\"\n\nAlways tag [ALERT_SOLOMON] with the full MT5 details.\n\n---\n\n## ⚡ TAGGING SYSTEM (CRITICAL — follow exactly)\n\n### [ALERT_SOLOMON] tag\nAdd this tag on its own line at the VERY TOP of your response when:\n- User budget is $5,000 or more (high value lead)\n- MT5 details have been collected (include all 3 details)\n- User submits payment proof or says they've paid\n- User asks to speak to Solomon or a human\n- Something you cannot confidently answer\n- Any urgent situation\n\nFORMAT:\n[ALERT_SOLOMON]\nReason: {brief reason}\nUser: {firstName} (@{username}) | Chat: {chatId}\nDetails: {relevant info}\n---\n{your normal reply to the user below the ---}\n\n### [LOG_LEAD] tag\nAdd this tag on its own line at the VERY TOP of your response (after [ALERT_SOLOMON] if both apply) when you have BOTH the user's name AND phone number:\n\nFORMAT:\n[LOG_LEAD]\nNAME:{full name}|PHONE:{phone number}|INTEREST:{what they want}|BUDGET:{budget if known}\n---\n{your normal reply to the user below the ---}\n\nBOTH tags together:\n[ALERT_SOLOMON]\nReason: ...\n...\n[LOG_LEAD]\nNAME:...|PHONE:...|INTEREST:...|BUDGET:...\n---\n{reply to user}\n\nIMPORTANT: Everything ABOVE the --- is internal. Everything BELOW the --- is what gets sent to the user. If no tags needed, just write your reply directly with no --- separator.\n\n---\n\n## CONVERSATION OPENER\nWhen someone sends /start or says hello:\nReply warmly and show the main menu:\n\n\"👋 Welcome to <b>Smart Profits Trader</b>!\n\nI'm your AI assistant. Here's how I can help you:\n\n📊 <b>Open a broker account</b> — start trading (from $10)\n🏦 <b>Prop firm account</b> — trade with firm's money\n👑 <b>VIP Signals</b> — real-time trade signals ($50/month)\n🤖 <b>Connect your algo</b> — let SPT's algo trade for you\n💼 <b>Personal trading</b> — SPT manages your account (from $5,000)\n\nWhat are you interested in? Or tell me your budget and I'll suggest the best option for you! 💪\"\n\n---\n\n## IMPORTANT RULES\n1. Never guarantee profits. Trading involves risk — mention this when relevant.\n2. Be honest: HolaPrime evaluation has a ~35% pass rate. Don't oversell it.\n3. Never confirm a payment as received — only Solomon can verify.\n4. Keep messages concise. If you need to explain a lot, break it into multiple short messages.\n5. If unsure about anything, offer to connect with Solomon rather than guess.\n6. Always be warm and encouraging — help people feel confident in their decision.\n7. For Nigerian users asking about Naira amounts, use ₦1,600 per $1 as approximate rate.\n8. If the user seems to be testing the bot or asks meta questions, respond naturally."
+        }
+      },
+      "id": "node-005",
+      "name": "SPT AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "p1",
+              "name": "rawOutput",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "p2",
+              "name": "hasAlertSolomon",
+              "value": "={{ $json.output.startsWith('[ALERT_SOLOMON]') || $json.output.includes('\\n[ALERT_SOLOMON]') }}",
+              "type": "boolean"
+            },
+            {
+              "id": "p3",
+              "name": "hasLogLead",
+              "value": "={{ $json.output.includes('[LOG_LEAD]') }}",
+              "type": "boolean"
+            },
+            {
+              "id": "p4",
+              "name": "cleanResponse",
+              "value": "={{ (() => { const out = $json.output; const sepIdx = out.lastIndexOf('---'); if (sepIdx !== -1 && (out.includes('[ALERT_SOLOMON]') || out.includes('[LOG_LEAD]'))) { return out.substring(sepIdx + 3).trim(); } return out.trim(); })() }}",
+              "type": "string"
+            },
+            {
+              "id": "p5",
+              "name": "alertBlock",
+              "value": "={{ (() => { const out = $json.output; const start = out.indexOf('[ALERT_SOLOMON]'); if (start === -1) return ''; const end = out.includes('---') ? out.lastIndexOf('---') : out.length; return out.substring(start, end).replace('[ALERT_SOLOMON]', '').trim(); })() }}",
+              "type": "string"
+            },
+            {
+              "id": "p6",
+              "name": "logLine",
+              "value": "={{ (() => { const out = $json.output; const start = out.indexOf('[LOG_LEAD]'); if (start === -1) return ''; const lineEnd = out.indexOf('\\n', start + 10); const line = lineEnd !== -1 ? out.substring(start + 10, lineEnd) : out.substring(start + 10); return line.trim(); })() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-006",
+      "name": "Parse Agent Output",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [880, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.hasAlertSolomon }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-007",
+      "name": "Alert Solomon?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1100, 160]
+    },
+    {
+      "parameters": {
+        "chatId": "7943880190",
+        "text": "=🚨 <b>SPT Agent Alert</b>\n\n{{ $('Parse Agent Output').item.json.alertBlock }}\n\n👤 <b>User:</b> {{ $('Extract Message Data').item.json.firstName }} (@{{ $('Extract Message Data').item.json.username }})\n🆔 <b>Chat ID:</b> {{ $('Extract Message Data').item.json.chatId }}\n⏰ <b>Time:</b> {{ new Date().toLocaleString('en-NG', {timeZone: 'Africa/Lagos'}) }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "node-008",
+      "name": "Alert Solomon on Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1320, 80],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "SPT Agent Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.hasLogLead }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-009",
+      "name": "Log Lead?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1100, 380]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "l1",
+              "name": "leadName",
+              "value": "={{ (() => { const m = $('Parse Agent Output').item.json.logLine.match(/NAME:([^|]+)/); return m ? m[1].trim() : ''; })() }}",
+              "type": "string"
+            },
+            {
+              "id": "l2",
+              "name": "leadPhone",
+              "value": "={{ (() => { const m = $('Parse Agent Output').item.json.logLine.match(/PHONE:([^|]+)/); return m ? m[1].trim() : ''; })() }}",
+              "type": "string"
+            },
+            {
+              "id": "l3",
+              "name": "leadInterest",
+              "value": "={{ (() => { const m = $('Parse Agent Output').item.json.logLine.match(/INTEREST:([^|]+)/); return m ? m[1].trim() : ''; })() }}",
+              "type": "string"
+            },
+            {
+              "id": "l4",
+              "name": "leadBudget",
+              "value": "={{ (() => { const m = $('Parse Agent Output').item.json.logLine.match(/BUDGET:([^|]+)/); return m ? m[1].trim() : ''; })() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-010",
+      "name": "Parse Lead Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1320, 380]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Z19olsasds5Klu4ywHzibkTAt2RXZSgRBBFtE-dx5x0",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ new Date().toLocaleDateString('en-GB') }}",
+            "Name": "={{ $('Parse Lead Data').item.json.leadName }}",
+            "Phone": "={{ $('Parse Lead Data').item.json.leadPhone }}",
+            "Email": "",
+            "Telegram ID": "={{ $('Extract Message Data').item.json.telegramUserId }}",
+            "Interest": "={{ $('Parse Lead Data').item.json.leadInterest }}",
+            "Budget": "={{ $('Parse Lead Data').item.json.leadBudget }}",
+            "Broker": "",
+            "Broker Account ID": "",
+            "Prop Firm": "",
+            "Account Size": "",
+            "MT5 Login": "",
+            "MT5 Password": "",
+            "MT5 Server": "",
+            "Payment Status": "New Lead",
+            "Notes": "TG: @{{ $('Extract Message Data').item.json.username }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "node-011",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [1540, 380],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "",
+          "name": "Google Sheets"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Extract Message Data').item.json.chatId }}",
+        "text": "={{ $('Parse Agent Output').item.json.cleanResponse }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "node-012",
+      "name": "Send Reply to User",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1100, 580],
+      "credentials": {
+        "telegramApi": {
+          "id": "",
+          "name": "SPT Agent Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [{ "node": "Extract Message Data", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extract Message Data": {
+      "main": [
+        [{ "node": "SPT AI Agent", "type": "main", "index": 0 }]
+      ]
+    },
+    "Claude Haiku": {
+      "ai_languageModel": [
+        [{ "node": "SPT AI Agent", "type": "ai_languageModel", "index": 0 }]
+      ]
+    },
+    "Chat Memory": {
+      "ai_memory": [
+        [{ "node": "SPT AI Agent", "type": "ai_memory", "index": 0 }]
+      ]
+    },
+    "SPT AI Agent": {
+      "main": [
+        [{ "node": "Parse Agent Output", "type": "main", "index": 0 }]
+      ]
+    },
+    "Parse Agent Output": {
+      "main": [
+        [
+          { "node": "Alert Solomon?", "type": "main", "index": 0 },
+          { "node": "Log Lead?", "type": "main", "index": 0 },
+          { "node": "Send Reply to User", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Alert Solomon?": {
+      "main": [
+        [{ "node": "Alert Solomon on Telegram", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Log Lead?": {
+      "main": [
+        [{ "node": "Parse Lead Data", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Parse Lead Data": {
+      "main": [
+        [{ "node": "Log to Google Sheets", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1.0.0",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [{ "name": "SPT" }]
+}
