@@ -1,136 +1,365 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
-  BadgeDollarSign,
+  BarChart3,
   Bell,
-  ChartNoAxesCombined,
+  Briefcase,
+  ChevronRight,
   ClipboardList,
   CreditCard,
   LayoutDashboard,
   LineChart,
   LogOut,
-  Megaphone,
   MessageSquare,
-  Bot,
-  Receipt,
   Search,
   Settings,
-  ShieldCheck,
+  TrendingUp,
+  UserRoundCheck,
   Users,
-  UserRoundCheck
 } from "lucide-react";
 import type { UserRole } from "@prisma/client";
+import { clsx } from "clsx";
+
+// ── Sidebar nav definition ────────────────────────────────────────────────────
 
 const navItems = [
-  { href: "/spt/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/spt/admin/vip-subscriptions", label: "VIP Subscriptions", icon: ShieldCheck },
-  { href: "/spt/admin/leads", label: "Lead Pipeline", icon: Megaphone },
-  { href: "/spt/admin/chatbot-leads", label: "AI Agent Leads", icon: Bot },
-  { href: "/spt/admin/chatbot-conversations", label: "Conversations", icon: MessageSquare },
-  { href: "/spt/admin/customers", label: "Customer Records", icon: Users },
-  { href: "/spt/admin/applications", label: "Applications", icon: ClipboardList },
-  { href: "/spt/admin/subscriptions", label: "Subscription Center", icon: Bell },
-  { href: "/spt/admin/account-progress", label: "Account Tracking", icon: LineChart },
-  { href: "/spt/admin/profit-share", label: "Profit Share", icon: BadgeDollarSign },
-  { href: "/spt/admin/payments", label: "Payments", icon: CreditCard },
-  { href: "/spt/admin/expenses", label: "Business Expenses", icon: Receipt },
-  { href: "/spt/admin/reminders", label: "Reminders", icon: Bell },
-  { href: "/spt/admin/communications", label: "Message Center", icon: MessageSquare },
-  { href: "/spt/admin/reports", label: "Business Reports", icon: ChartNoAxesCombined },
-  { href: "/spt/admin/settings", label: "Workspace Settings", icon: Settings }
+  {
+    href: "/spt/admin/dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    href: "/spt/admin/leads",
+    label: "Leads",
+    pageTitle: "Leads & Conversations",
+    icon: MessageSquare,
+  },
+  {
+    href: "/spt/admin/applications",
+    label: "Applications",
+    icon: ClipboardList,
+  },
+  {
+    href: "/spt/admin/customers",
+    label: "Customers",
+    icon: Users,
+  },
+  {
+    href: "/spt/admin/subscriptions",
+    label: "Subscriptions",
+    icon: Bell,
+  },
+  {
+    href: "/spt/admin/accounts",
+    label: "Accounts",
+    pageTitle: "Trading Accounts",
+    icon: LineChart,
+  },
+  {
+    href: "/spt/admin/finance",
+    label: "Finance",
+    icon: CreditCard,
+  },
+  {
+    href: "/spt/admin/reminders",
+    label: "Reminders",
+    icon: Bell,
+  },
+  {
+    href: "/spt/admin/settings",
+    label: "Settings",
+    icon: Settings,
+  },
 ];
+
+// ── Source badge ──────────────────────────────────────────────────────────────
+
+export function SourceBadge({ source }: { source: string }) {
+  const map: Record<string, { label: string; style: string }> = {
+    FORM:         { label: "Website Form",  style: "bg-blue-50 text-blue-700 ring-blue-200" },
+    AI_CHATBOT:   { label: "AI Chatbot",    style: "bg-violet-50 text-violet-700 ring-violet-200" },
+    WHATSAPP:     { label: "WhatsApp",      style: "bg-emerald-50 text-emerald-700 ring-emerald-200" },
+    TELEGRAM:     { label: "Telegram",      style: "bg-sky-50 text-sky-700 ring-sky-200" },
+    MANUAL:       { label: "Manual",        style: "bg-slate-50 text-slate-700 ring-slate-200" },
+    REFERRAL:     { label: "Referral",      style: "bg-amber-50 text-amber-700 ring-amber-200" },
+    CAMPAIGN:     { label: "Campaign",      style: "bg-pink-50 text-pink-700 ring-pink-200" },
+  };
+  const entry = map[source?.toUpperCase()] ?? { label: source ?? "Unknown", style: "bg-slate-50 text-slate-600 ring-slate-200" };
+  return (
+    <span className={clsx("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1", entry.style)}>
+      {entry.label}
+    </span>
+  );
+}
+
+// ── Admin shell ───────────────────────────────────────────────────────────────
+
+function SidebarLink({ href, label, icon: Icon }: { href: string; label: string; icon: React.ElementType }) {
+  const pathname = usePathname();
+  const active = pathname === href || pathname.startsWith(href + "/");
+  return (
+    <Link
+      href={href}
+      className={clsx(
+        "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
+        active
+          ? "bg-white/12 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+          : "text-slate-400 hover:bg-white/8 hover:text-white"
+      )}
+    >
+      <span
+        className={clsx(
+          "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors",
+          active ? "bg-profit-500 text-white shadow-sm" : "bg-white/6 text-slate-400 group-hover:bg-white/10 group-hover:text-white"
+        )}
+      >
+        <Icon size={15} />
+      </span>
+      {label}
+      {active && <ChevronRight size={13} className="ml-auto opacity-60" />}
+    </Link>
+  );
+}
 
 export function SPTAdminShell({
   children,
   title,
-  role
+  role,
 }: {
   children: React.ReactNode;
   title: string;
   role: UserRole | string;
 }) {
+  const pathname = usePathname();
+
   return (
-    <main className="min-h-screen bg-slate-100 text-slate-900">
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 flex-col bg-navy-950 p-5 text-white lg:flex">
-        <Link href="/spt/admin/dashboard" className="mb-6 flex shrink-0 items-center gap-3">
-          <span className="grid h-14 w-14 place-items-center overflow-hidden rounded-xl bg-white p-1.5 shadow-sm">
-            <Image src="/images/smart-profits-trader-logo.png" alt="Smart Profits Trader logo" width={160} height={160} className="h-full w-full object-contain" />
+    <main className="min-h-screen bg-[#F1F5F9] text-slate-900">
+      {/* ── Desktop sidebar ───────────────────────────────────────────────── */}
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col lg:flex"
+        style={{ background: "linear-gradient(180deg, #0A1A3C 0%, #0d2251 50%, #0A1A3C 100%)" }}>
+        {/* Logo */}
+        <Link
+          href="/spt/admin/dashboard"
+          className="flex shrink-0 items-center gap-3 border-b border-white/8 px-5 py-5"
+        >
+          <span className="grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-white/10 p-1.5 shadow ring-1 ring-white/10">
+            <Image
+              src="/images/smart-profits-trader-logo.png"
+              alt="SPT"
+              width={80}
+              height={80}
+              className="h-full w-full object-contain"
+            />
           </span>
-          <span className="leading-tight">
-            <span className="block font-semibold">Smart Profits Trader</span>
-            <span className="block text-xs uppercase tracking-[0.14em] text-profit-500">Admin Workspace</span>
-          </span>
+          <div className="min-w-0">
+            <p className="truncate text-[13px] font-bold leading-tight text-white">Smart Profits Trader</p>
+            <p className="text-[10px] uppercase tracking-widest text-profit-400">Admin</p>
+          </div>
         </Link>
-        <nav className="flex-1 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link key={item.href} href={item.href} className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white">
-                <Icon size={18} />
-                {item.label}
-              </Link>
-            );
-          })}
+
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+          {navItems.map((item) => (
+            <SidebarLink key={item.href} href={item.href} label={item.label} icon={item.icon} />
+          ))}
         </nav>
-        <div className="mt-4 shrink-0 rounded-md border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
-          <div className="font-semibold text-white">Admin access</div>
-          <p className="mt-1 leading-5">Role: {String(role).replaceAll("_", " ")}</p>
+
+        {/* Role pill */}
+        <div className="shrink-0 border-t border-white/8 px-4 py-4">
+          <div className="flex items-center gap-2.5 rounded-xl bg-white/6 px-3 py-2.5">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-profit-500 text-white">
+              <UserRoundCheck size={14} />
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-[11px] font-semibold text-white">Admin</p>
+              <p className="text-[10px] text-slate-400">{String(role).replaceAll("_", " ")}</p>
+            </div>
+          </div>
         </div>
       </aside>
-      <section className="lg:pl-72">
-        <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 backdrop-blur">
-          <div className="flex min-h-20 flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+
+      {/* ── Main content ──────────────────────────────────────────────────── */}
+      <section className="lg:pl-64">
+        {/* Top bar */}
+        <header className="sticky top-0 z-10 border-b border-slate-200/80 bg-white/95 backdrop-blur-sm">
+          <div className="flex min-h-[64px] items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+            {/* Breadcrumb + title */}
             <div>
-              <p className="text-sm font-medium text-profit-600">Smart Profits Trader</p>
-              <h1 className="text-2xl font-semibold tracking-normal text-navy-950">{title}</h1>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-profit-600">
+                Smart Profits Trader
+              </p>
+              <h1 className="text-xl font-bold tracking-tight text-navy-950">{title}</h1>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="hidden h-10 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 sm:flex">
-                <Search size={17} className="text-slate-400" />
-                <span className="text-sm text-slate-500">Search CRM records</span>
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <div className="hidden h-9 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-400 sm:flex">
+                <Search size={15} />
+                <span>Search…</span>
               </div>
-              <button className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white text-slate-600">
-                <Bell size={18} />
+              <button className="relative grid h-9 w-9 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50">
+                <Bell size={16} />
               </button>
               <form action="/api/spt/admin/logout" method="post">
-                <button className="inline-flex h-10 items-center gap-2 rounded-md bg-navy-950 px-3 text-sm font-semibold text-white">
-                  <LogOut size={16} />
-                  Logout
+                <button className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-600 hover:bg-slate-50">
+                  <LogOut size={14} />
+                  <span className="hidden sm:inline">Logout</span>
                 </button>
               </form>
             </div>
           </div>
-          <nav className="flex gap-2 overflow-x-auto border-t border-slate-100 px-4 py-2 lg:hidden">
+
+          {/* Mobile nav */}
+          <nav className="flex gap-1.5 overflow-x-auto border-t border-slate-100 px-4 pb-2 pt-1.5 lg:hidden">
             {navItems.map((item) => {
               const Icon = item.icon;
+              const active = pathname === item.href || pathname.startsWith(item.href + "/");
               return (
-                <Link key={item.href} href={item.href} className="inline-flex items-center gap-2 whitespace-nowrap rounded-md bg-slate-100 px-3 py-2 text-sm font-semibold text-navy-950">
-                  <Icon size={16} />
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={clsx(
+                    "inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors",
+                    active
+                      ? "bg-navy-950 text-white"
+                      : "bg-slate-100 text-navy-950 hover:bg-slate-200"
+                  )}
+                >
+                  <Icon size={13} />
                   {item.label}
                 </Link>
               );
             })}
           </nav>
         </header>
+
+        {/* Page content */}
         <div className="px-4 py-6 sm:px-6 lg:px-8">{children}</div>
       </section>
     </main>
   );
 }
 
-export function AdminMetricCard({ label, value, helper }: { label: string; value: string | number; helper?: string }) {
+// ── Metric card ───────────────────────────────────────────────────────────────
+
+export function AdminMetricCard({
+  label,
+  value,
+  helper,
+  icon: Icon = TrendingUp,
+  trend,
+}: {
+  label: string;
+  value: string | number;
+  helper?: string;
+  icon?: React.ElementType;
+  trend?: "up" | "down" | "neutral";
+}) {
   return (
-    <section className="rounded-md border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-sm font-medium text-slate-500">{label}</p>
-          <p className="mt-2 text-3xl font-semibold text-navy-950">{value}</p>
-          {helper && <p className="mt-2 text-sm font-semibold text-profit-600">{helper}</p>}
+    <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
+          <p className="mt-2 text-3xl font-bold tabular-nums text-navy-950">{value}</p>
+          {helper && (
+            <p className={clsx(
+              "mt-1.5 text-xs font-semibold",
+              trend === "down" ? "text-red-600" : "text-profit-600"
+            )}>
+              {helper}
+            </p>
+          )}
         </div>
-        <div className="grid h-11 w-11 place-items-center rounded-md bg-slate-100 text-navy-950">
-          <UserRoundCheck size={21} />
-        </div>
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-950/5 text-navy-950">
+          <Icon size={18} />
+        </span>
       </div>
-    </section>
+    </div>
+  );
+}
+
+// ── Section card wrapper ───────────────────────────────────────────────────────
+
+export function AdminCard({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={clsx("rounded-2xl border border-slate-200/80 bg-white shadow-sm", className)}>
+      {children}
+    </div>
+  );
+}
+
+export function AdminCardHeader({
+  title,
+  subtitle,
+  action,
+}: {
+  title: string;
+  subtitle?: string;
+  action?: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-100 px-5 py-4">
+      <div>
+        <h2 className="text-base font-bold text-navy-950">{title}</h2>
+        {subtitle && <p className="mt-0.5 text-sm text-slate-500">{subtitle}</p>}
+      </div>
+      {action}
+    </div>
+  );
+}
+
+export function AdminCardBody({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <div className={clsx("p-5", className)}>{children}</div>;
+}
+
+// ── Tab bar (client) ──────────────────────────────────────────────────────────
+
+export function AdminTabBar({
+  tabs,
+  activeTab,
+  paramName = "tab",
+}: {
+  tabs: { value: string; label: string; count?: number }[];
+  activeTab: string;
+  paramName?: string;
+}) {
+  const pathname = usePathname();
+  return (
+    <div className="flex gap-0.5 overflow-x-auto rounded-xl border border-slate-200 bg-slate-100 p-1">
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.value;
+        const url = `${pathname}?${paramName}=${tab.value}`;
+        return (
+          <Link
+            key={tab.value}
+            href={url}
+            className={clsx(
+              "flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold whitespace-nowrap transition-all",
+              isActive
+                ? "bg-white text-navy-950 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            )}
+          >
+            {tab.label}
+            {tab.count !== undefined && (
+              <span className={clsx(
+                "rounded-full px-1.5 py-0.5 text-[10px] font-bold tabular-nums",
+                isActive ? "bg-navy-950 text-white" : "bg-slate-200 text-slate-600"
+              )}>
+                {tab.count}
+              </span>
+            )}
+          </Link>
+        );
+      })}
+    </div>
   );
 }

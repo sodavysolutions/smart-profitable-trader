@@ -26,6 +26,30 @@ enum LeadStatus {
   LOST
 }
 
+enum LeadSource {
+  FORM
+  AI_CHATBOT
+  WHATSAPP
+  TELEGRAM
+  MANUAL
+  REFERRAL
+  CAMPAIGN
+}
+
+enum LeadSourceChannel {
+  WEBSITE
+  WHATSAPP
+  TELEGRAM
+  ADMIN
+}
+
+enum LeadType {
+  PROSPECT
+  APPLICATION
+  CHATBOT_CONTACT
+  CUSTOMER_UPSELL
+}
+
 enum CustomerType {
   VIP_SIGNALS
   COPY_TRADING
@@ -145,7 +169,13 @@ model Lead {
   city            String?
   serviceInterest String
   leadSource      String?
+  source          LeadSource?
+  sourceChannel   LeadSourceChannel?
+  leadType        LeadType?
+  conversationId  String?
+  lastInteractionAt DateTime?
   campaign        String?
+  tags            String[]
   status          LeadStatus         @default(NEW)
   assignedToId    String?
   assignedTo      User?              @relation("AssignedLead", fields: [assignedToId], references: [id])
