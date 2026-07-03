@@ -5,7 +5,7 @@ import { X, MessageCircle, ChevronDown } from "lucide-react";
 
 const WHATSAPP_LINK =
   process.env.NEXT_PUBLIC_WHATSAPP_AI_LINK ??
-  "https://wa.me/2347087970133?text=Hello%20Smart%20Profits%20Trader%20AI%20Agent%2C%20I%20need%20help%20choosing%20the%20right%20trading%20service.";
+  "https://wa.me/2347087970133?text=Hello%20SPT%20Support%20Team%2C%20I%20need%20help%20choosing%20the%20right%20trading%20service.";
 
 const TELEGRAM_LINK =
   process.env.NEXT_PUBLIC_TELEGRAM_BOT_LINK ?? "https://t.me/SmartProfitsTraderBot";
@@ -53,7 +53,7 @@ export function FloatingChatWidget() {
   const close = useCallback(() => setOpen(false), []);
 
   const handleWhatsApp = useCallback(() => {
-    trackEvent("whatsapp_ai_agent_clicked");
+    trackEvent("whatsapp_support_team_clicked");
     window.open(WHATSAPP_LINK, "_blank", "noopener,noreferrer");
   }, []);
 
@@ -77,7 +77,7 @@ export function FloatingChatWidget() {
       <div
         className="fixed bottom-5 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6"
         role="region"
-        aria-label="Chat with our AI Agent"
+        aria-label="Chat with the SPT Support Team"
       >
         {/* Expandable panel */}
         <div
@@ -97,7 +97,7 @@ export function FloatingChatWidget() {
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#16A34A]">
                 <MessageCircle size={14} className="text-white" />
               </span>
-              <span className="text-sm font-bold text-white">SPT AI Agent</span>
+              <span className="text-sm font-bold text-white">SPT Support Team</span>
             </div>
             <button
               onClick={close}
@@ -114,7 +114,7 @@ export function FloatingChatWidget() {
               Need help choosing the right trading service?
             </p>
             <p className="mt-1 text-[12px] leading-5 text-slate-500">
-              Chat with our AI agent on WhatsApp or Telegram — available 24/7.
+              Our support team is ready to help you choose the right trading service — available 24/7.
             </p>
 
             <div className="mt-4 flex flex-col gap-2">
@@ -127,8 +127,8 @@ export function FloatingChatWidget() {
                   <WhatsAppIcon size={18} />
                 </span>
                 <div>
-                  <p className="text-[13px] font-bold text-[#15803d]">WhatsApp AI Agent</p>
-                  <p className="text-[11px] text-slate-500">Chat on WhatsApp</p>
+                  <p className="text-[13px] font-bold text-[#15803d]">WhatsApp Support Team</p>
+                  <p className="text-[11px] text-slate-500">Chat with us on WhatsApp</p>
                 </div>
               </button>
 
@@ -141,14 +141,14 @@ export function FloatingChatWidget() {
                   <TelegramIcon size={18} />
                 </span>
                 <div>
-                  <p className="text-[13px] font-bold text-[#0369a1]">Telegram Bot</p>
-                  <p className="text-[11px] text-slate-500">Chat on Telegram</p>
+                  <p className="text-[13px] font-bold text-[#0369a1]">Telegram Support Team</p>
+                  <p className="text-[11px] text-slate-500">Chat with us on Telegram</p>
                 </div>
               </button>
             </div>
 
             <p className="mt-3 text-center text-[10px] text-slate-400">
-              Powered by Smart Profits Trader AI
+              SPT Support Team · Available 24/7
             </p>
           </div>
         </div>
@@ -157,7 +157,7 @@ export function FloatingChatWidget() {
         <button
           onClick={toggle}
           aria-expanded={open}
-          aria-label={open ? "Close chat widget" : "Chat with our AI Agent"}
+          aria-label={open ? "Close chat widget" : "Chat with the SPT Support Team"}
           className={[
             "flex items-center gap-2 rounded-full px-4 py-3 sm:px-5",
             "bg-[#0A1A3C] text-white font-bold text-[13px] sm:text-sm",
@@ -170,8 +170,8 @@ export function FloatingChatWidget() {
           ].join(" ")}
         >
           <MessageCircle size={18} className="shrink-0" />
-          <span className="hidden sm:inline">Chat With Our AI Agent</span>
-          <span className="sm:hidden">AI Agent</span>
+          <span className="hidden sm:inline">Chat With SPT Support Team</span>
+          <span className="sm:hidden">SPT Support</span>
           <ChevronDown
             size={15}
             className={[
