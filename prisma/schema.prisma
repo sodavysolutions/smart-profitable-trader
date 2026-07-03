@@ -468,3 +468,82 @@ model SyncLog {
   @@index([recordType, recordId])
   @@index([status, createdAt])
 }
+
+enum ChatbotLeadStatus {
+  NEW
+  ENGAGED
+  NEEDS_FOLLOW_UP
+  APPLICATION_SENT
+  APPLICATION_SUBMITTED
+  COPY_TRADING_VERIFICATION_PENDING
+  CONVERTED
+  LOST
+}
+
+enum ChatbotChannel {
+  WEBSITE_CHAT
+  WHATSAPP
+  TELEGRAM
+  OTHER
+}
+
+enum ChatbotConversationStatus {
+  OPEN
+  WAITING_FOR_USER
+  WAITING_FOR_ADMIN
+  CLOSED
+  CONVERTED
+}
+
+enum ChatbotSenderType {
+  USER
+  AI_AGENT
+  ADMIN
+  SYSTEM
+}
+
+enum ChatbotServiceInterest {
+  VIP_SIGNALS
+  COPY_TRADING
+  INSTANT_FUNDED
+  EVALUATION
+  PERSONAL_ACCOUNT_MANAGEMENT
+  NOT_SURE
+}
+
+model ChatbotContact {
+  id                String                  @id @default(cuid())
+  fullName          String?
+  email             String?
+  phoneWhatsapp     String?
+  serviceInterest   ChatbotServiceInterest?
+  sourcePage        String?
+  leadStatus        ChatbotLeadStatus       @default(NEW)
+  lastInteractionAt DateTime                @default(now())
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  conversations     ChatbotConversation[]
+}
+
+model ChatbotConversation {
+  id              String                    @id @default(cuid())
+  contactId       String?
+  contact         ChatbotContact?           @relation(fields: [contactId], references: [id])
+  channel         ChatbotChannel            @default(WEBSITE_CHAT)
+  sourcePage      String?
+  serviceInterest ChatbotServiceInterest?
+  summary         String?
+  status          ChatbotConversationStatus @default(OPEN)
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+  messages        ChatbotMessage[]
+}
+
+model ChatbotMessage {
+  id             String              @id @default(cuid())
+  conversationId String
+  conversation   ChatbotConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderType     ChatbotSenderType
+  message        String              @db.Text
+  createdAt      DateTime            @default(now())
+}
