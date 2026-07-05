@@ -19,15 +19,16 @@ const SERVICE_LABELS: Record<string, string> = {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { fullName, email, phone, whatsapp, country, dateOfBirth, accountSize, services } = body as {
+    type ServiceDetail = { broker: string; amount: string };
+    const { fullName, email, phone, whatsapp, country, dateOfBirth, services, details = {} } = body as {
       fullName: string;
       email: string;
       phone: string;
       whatsapp?: string;
       country: string;
       dateOfBirth: string;
-      accountSize?: string;
       services: string[];
+      details: Record<string, ServiceDetail>;
     };
 
     // --- Validation ---
@@ -36,6 +37,25 @@ export async function POST(request: NextRequest) {
     }
 
     const primaryService = services[0] as CustomerType;
+
+    // Build notes from service details
+    const detailNotes = Object.entries(details)
+      .filter(([, d]) => d.broker || d.amount)
+      .map(([svc, d]) => {
+        const label = SERVICE_LABELS[svc] ?? svc;
+        const parts = [];
+        if (d.broker) parts.push(`Broker/Firm: ${d.broker}`);
+        if (d.amount) parts.push(`Amount: ${d.amount}`);
+        return `${label} — ${parts.join(", ")}`;
+      })
+      .join("\n");
+
+    // Primary broker/amount from first service with details
+    const primaryDetail = details[services[0]];
+    const primaryBroker = primaryDetail?.broker || undefined;
+    const primaryAmount = primaryDetail?.amount
+      ? parseFloat(primaryDetail.amount.replace(/[^0-9.]/g, "")) || undefined
+      : undefined;
 
     // --- Save or update Customer ---
     const customer = await prisma.customer.upsert({
@@ -49,7 +69,9 @@ export async function POST(request: NextRequest) {
         dateOfBirth: new Date(dateOfBirth),
         customerType: primaryService,
         status: "PENDING_SETUP",
-        ...(accountSize ? { notes: `Account size: ${accountSize}` } : {}),
+        ...(primaryBroker ? { brokerOrPropFirm: primaryBroker } : {}),
+        ...(primaryAmount ? { initialCapital: primaryAmount } : {}),
+        ...(detailNotes ? { notes: detailNotes } : {}),
       },
       update: {
         fullName: fullName.trim(),
@@ -58,7 +80,9 @@ export async function POST(request: NextRequest) {
         country: country.trim(),
         dateOfBirth: new Date(dateOfBirth),
         customerType: primaryService,
-        ...(accountSize ? { notes: `Account size: ${accountSize}` } : {}),
+        ...(primaryBroker ? { brokerOrPropFirm: primaryBroker } : {}),
+        ...(primaryAmount ? { initialCapital: primaryAmount } : {}),
+        ...(detailNotes ? { notes: detailNotes } : {}),
       },
     });
 
@@ -151,11 +175,12 @@ export async function POST(request: NextRequest) {
     // --- WhatsApp welcome message ---
     const waPhone = whatsapp?.trim() || phone.trim();
     const serviceNames = services.map((s) => SERVICE_LABELS[s] ?? s).join(", ");
+    const detailSummary = detailNotes ? `\n\n${detailNotes}` : "";
 
     sendWhatsAppMessage({
       recipient: waPhone,
       title: `Welcome to Smart Profits Trader! 🎉`,
-      body: `Hi ${fullName.trim().split(" ")[0]}, you're now set up on our system.\n\n*Services:* ${serviceNames}\n\nOur team will be in touch shortly. For instant support, just reply to this message or chat with our AI agent anytime.\n\nWelcome aboard! 🚀`,
+      body: `Hi ${fullName.trim().split(" ")[0]}, you're now set up on our system.\n\n*Services:* ${serviceNames}${detailSummary}\n\nOur team will be in touch shortly. For instant support, just reply to this message or chat with our AI agent anytime.\n\nWelcome aboard! 🚀`,
     }).catch((err) => console.error("[Onboarding] WhatsApp error:", err));
 
     return NextResponse.json({ ok: true, customerId: customer.id });

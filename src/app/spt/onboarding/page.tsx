@@ -2,14 +2,42 @@
 
 import { useState } from "react";
 import { SPTPageShell } from "@/components/spt/sections";
-import { CheckCircle2, Loader2, User, Mail, Phone, Globe, Calendar, Layers, DollarSign } from "lucide-react";
+import { CheckCircle2, Loader2, User, Mail, Phone, Globe, Calendar, Layers, ChevronDown } from "lucide-react";
+
+// ── Config ───────────────────────────────────────────────────────────────────
 
 const SERVICES = [
-  { value: "COPY_TRADING",    label: "Copy Trading",            desc: "We trade on your behalf, 20% profit share" },
-  { value: "VIP_SIGNALS",     label: "VIP Signals",             desc: "Daily signals with entry, SL & TP" },
-  { value: "INSTANT_FUNDED",  label: "Instant Funded Accounts", desc: "Prop firm challenge coaching" },
-  { value: "EVALUATION",      label: "Evaluation Account",      desc: "Funded account evaluation support" },
+  { value: "COPY_TRADING",   label: "Copy Trading",            desc: "We trade on your behalf, 20% profit share" },
+  { value: "VIP_SIGNALS",    label: "VIP Signals",             desc: "Daily signals with entry, SL & TP" },
+  { value: "INSTANT_FUNDED", label: "Instant Funded Accounts", desc: "Get instantly funded via iFunds" },
+  { value: "EVALUATION",     label: "Evaluation / Prop Trading", desc: "Pass a prop firm challenge with our support" },
 ];
+
+const SERVICE_CONFIG: Record<string, {
+  brokerLabel: string;
+  brokers: string[];
+  amountLabel: string;
+  amounts: string[];
+}> = {
+  COPY_TRADING: {
+    brokerLabel: "Select your broker",
+    brokers: ["XM", "Valetax"],
+    amountLabel: "Investment amount",
+    amounts: ["$100", "$200", "$300", "$500", "$1,000", "$2,000", "$3,000", "$5,000"],
+  },
+  EVALUATION: {
+    brokerLabel: "Select your prop firm",
+    brokers: ["Blueberry Markets", "HolaPrime", "FXIFY"],
+    amountLabel: "Challenge account size",
+    amounts: ["$10,000", "$25,000", "$50,000", "$100,000", "$200,000"],
+  },
+  INSTANT_FUNDED: {
+    brokerLabel: "Provider",
+    brokers: ["iFunds"],
+    amountLabel: "Funded account size",
+    amounts: ["$10,000", "$25,000", "$50,000", "$100,000", "$200,000"],
+  },
+};
 
 const COUNTRIES = [
   "Nigeria","Ghana","Kenya","South Africa","Uganda","Tanzania","Rwanda","Ethiopia","Cameroon",
@@ -18,22 +46,126 @@ const COUNTRIES = [
   "France","Netherlands","UAE","Saudi Arabia","Qatar","Other"
 ];
 
+// ── Types ───────────────────────────────────────────────────────────────────
+
+type ServiceDetail = { broker: string; amount: string };
+
+type FormState = {
+  fullName: string;
+  email: string;
+  phone: string;
+  whatsapp: string;
+  country: string;
+  dateOfBirth: string;
+  services: string[];
+  details: Record<string, ServiceDetail>;
+};
+
+// ── Select helper ────────────────────────────────────────────────────────────
+
+function Select({
+  label, value, onChange, options, placeholder, required,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+  placeholder?: string;
+  required?: boolean;
+}) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-xs font-semibold text-[#0A1A3C]">{label}{required && " *"}</label>
+      <div className="relative">
+        <select
+          required={required}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-3 pl-4 pr-9 text-sm outline-none focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20"
+        >
+          <option value="">{placeholder ?? "Select…"}</option>
+          {options.map(o => <option key={o} value={o}>{o}</option>)}
+        </select>
+        <ChevronDown size={14} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+      </div>
+    </div>
+  );
+}
+
+// ── Service detail panel ─────────────────────────────────────────────────────
+
+function ServiceDetailPanel({
+  serviceValue, serviceLabel, detail, onChange,
+}: {
+  serviceValue: string;
+  serviceLabel: string;
+  detail: ServiceDetail;
+  onChange: (d: ServiceDetail) => void;
+}) {
+  const cfg = SERVICE_CONFIG[serviceValue];
+  if (!cfg) return null;
+
+  const isiFunds = serviceValue === "INSTANT_FUNDED";
+
+  return (
+    <div className="rounded-xl border-2 border-[#16A34A]/30 bg-green-50/60 p-4">
+      <p className="mb-3 text-xs font-bold uppercase tracking-widest text-[#15803d]">{serviceLabel}</p>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {isiFunds ? (
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-[#0A1A3C]">Provider</label>
+            <div className="flex h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-[#0A1A3C]">
+              iFunds
+            </div>
+          </div>
+        ) : (
+          <Select
+            label={cfg.brokerLabel}
+            value={detail.broker}
+            onChange={v => onChange({ ...detail, broker: v })}
+            options={cfg.brokers}
+            placeholder={`Choose ${serviceValue === "EVALUATION" ? "prop firm" : "broker"}`}
+            required
+          />
+        )}
+        <Select
+          label={cfg.amountLabel}
+          value={detail.amount}
+          onChange={v => onChange({ ...detail, amount: v })}
+          options={cfg.amounts}
+          placeholder="Select size"
+          required
+        />
+      </div>
+    </div>
+  );
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+
 export default function OnboardingPage() {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     fullName: "", email: "", phone: "", whatsapp: "",
-    country: "", dateOfBirth: "", accountSize: "", services: [] as string[],
+    country: "", dateOfBirth: "",
+    services: [],
+    details: {},
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [error, setError] = useState("");
 
   const toggleService = (val: string) => {
-    setForm(f => ({
-      ...f,
-      services: f.services.includes(val)
-        ? f.services.filter(s => s !== val)
-        : [...f.services, val],
-    }));
+    setForm(f => {
+      const active = f.services.includes(val);
+      const services = active ? f.services.filter(s => s !== val) : [...f.services, val];
+      const details = { ...f.details };
+      if (active) delete details[val];
+      else if (SERVICE_CONFIG[val]) details[val] = { broker: val === "INSTANT_FUNDED" ? "iFunds" : "", amount: "" };
+      return { ...f, services, details };
+    });
   };
+
+  const updateDetail = (svc: string, d: ServiceDetail) =>
+    setForm(f => ({ ...f, details: { ...f.details, [svc]: d } }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,13 +195,16 @@ export default function OnboardingPage() {
           </div>
           <h1 className="mt-6 text-3xl font-bold text-[#0A1A3C]">Welcome to Smart Profits Trader!</h1>
           <p className="mt-3 max-w-md text-slate-500 text-lg">
-            You're officially in the system. Check your email for your welcome message, and expect a WhatsApp message from us shortly.
+            You're officially in the system. Check your email and expect a WhatsApp message from us shortly.
           </p>
           <p className="mt-6 text-sm text-slate-400">Need help? Chat with us on WhatsApp or Telegram anytime.</p>
         </section>
       </SPTPageShell>
     );
   }
+
+  // Services that have additional detail panels
+  const detailServices = form.services.filter(s => SERVICE_CONFIG[s]);
 
   return (
     <SPTPageShell>
@@ -128,7 +263,7 @@ export default function OnboardingPage() {
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-semibold text-[#0A1A3C]">
-                WhatsApp Number <span className="text-slate-400 font-normal">(if different)</span>
+                WhatsApp <span className="text-slate-400 font-normal">(if different)</span>
               </label>
               <div className="relative">
                 <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -169,32 +304,10 @@ export default function OnboardingPage() {
             </div>
           </div>
 
-          {/* Account Size */}
-          <div>
-            <label className="mb-1.5 block text-sm font-semibold text-[#0A1A3C]">
-              Trading/Investment Capital <span className="text-slate-400 font-normal">(optional)</span>
-            </label>
-            <div className="relative">
-              <DollarSign size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <select
-                value={form.accountSize} onChange={e => setForm(f => ({ ...f, accountSize: e.target.value }))}
-                className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm outline-none focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20"
-              >
-                <option value="">Select amount</option>
-                <option value="Under $500">Under $500</option>
-                <option value="$500 – $1,000">$500 – $1,000</option>
-                <option value="$1,000 – $5,000">$1,000 – $5,000</option>
-                <option value="$5,000 – $10,000">$5,000 – $10,000</option>
-                <option value="$10,000 – $25,000">$10,000 – $25,000</option>
-                <option value="$25,000+">$25,000+</option>
-              </select>
-            </div>
-          </div>
-
           {/* Services */}
           <div>
             <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#0A1A3C]">
-              <Layers size={15} /> Services You Are Subscribed To * <span className="text-slate-400 font-normal">(select all that apply)</span>
+              <Layers size={15} /> Services * <span className="text-slate-400 font-normal">(select all that apply)</span>
             </label>
             <div className="grid gap-3 sm:grid-cols-2">
               {SERVICES.map(svc => {
@@ -205,9 +318,7 @@ export default function OnboardingPage() {
                     onClick={() => toggleService(svc.value)}
                     className={[
                       "flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all",
-                      checked
-                        ? "border-[#16A34A] bg-green-50"
-                        : "border-slate-200 bg-white hover:border-slate-300",
+                      checked ? "border-[#16A34A] bg-green-50" : "border-slate-200 bg-white hover:border-slate-300",
                     ].join(" ")}
                   >
                     <span className={[
@@ -225,6 +336,24 @@ export default function OnboardingPage() {
               })}
             </div>
           </div>
+
+          {/* Conditional service detail panels */}
+          {detailServices.length > 0 && (
+            <div className="space-y-4">
+              {detailServices.map(svc => {
+                const svcDef = SERVICES.find(s => s.value === svc);
+                return (
+                  <ServiceDetailPanel
+                    key={svc}
+                    serviceValue={svc}
+                    serviceLabel={svcDef?.label ?? svc}
+                    detail={form.details[svc] ?? { broker: "", amount: "" }}
+                    onChange={d => updateDetail(svc, d)}
+                  />
+                );
+              })}
+            </div>
+          )}
 
           {error && (
             <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
