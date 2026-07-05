@@ -63,6 +63,38 @@
     },
     {
       "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Z19olsasds5Klu4ywHzibkTAt2RXZSgRBBFtE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ new Date().toLocaleString('en-GB', { timeZone: 'Africa/Lagos' }) }}",
+            "Name": "={{ $('Extract Message').item.json.displayName }}",
+            "Phone": "={{ $('Extract Message').item.json.phoneNumber }}",
+            "Interest": "={{ $('Extract Message').item.json.messageText }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "g7h8i9j0-k1l2-3456-mnop-789012345678",
+      "name": "Log to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [900, 500]
+    },
+    {
+      "parameters": {
         "method": "POST",
         "url": "https://graph.facebook.com/v19.0/1260125930510410/messages",
         "sendHeaders": true,
@@ -70,7 +102,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer EAAhWXozMo1MBR4BG9FuS2hqsCAjdxfVBCrtTEF6E2v7vB3JkJ9HHfZA2bpXveXnTqmwttfdyewIgc7jmko5OtosxZCk5yWbAQuAUZBUpZCQ04rIXluhZADZBOu5aHoPQbZCvVZBH2jSbZCjnWL8F3WPKKONvKiZCZA6csCKgbgnnWZBmW8v7ZAZAJvT6FuEzPVk02ucgZDZDa"
+              "value": "Bearer YOUR_WHATSAPP_ACCESS_TOKEN_HERE"
             },
             {
               "name": "Content-Type",
@@ -80,7 +112,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('Extract Message').item.json.phoneNumber }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $json.output }}\"\n  }\n}"
+        "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $('Extract Message').item.json.phoneNumber, type: 'text', text: { body: $json.output } }) }}"
       },
       "id": "f6a7b8c9-d0e1-2345-fabc-678901234568",
       "name": "Send WhatsApp Reply",
@@ -102,7 +134,10 @@
     },
     "AI Agent": {
       "main": [
-        [{ "node": "Send WhatsApp Reply", "type": "main", "index": 0 }]
+        [
+          { "node": "Send WhatsApp Reply", "type": "main", "index": 0 },
+          { "node": "Log to Google Sheets", "type": "main", "index": 0 }
+        ]
       ]
     },
     "Groq Chat Model": {
