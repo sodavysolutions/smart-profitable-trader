@@ -1,0 +1,126 @@
+{
+  "name": "SPT WhatsApp AI Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-bot",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567891",
+      "name": "WhatsApp Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "whatsapp-bot"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body ?? $json;\nconst entry = body.entry?.[0];\nconst change = entry?.changes?.[0];\nconst value = change?.value;\nconst message = value?.messages?.[0];\nconst contact = value?.contacts?.[0];\n\n// Ignore status updates and non-text messages\nif (!message || message.type !== 'text') {\n  return [];\n}\n\nreturn [{\n  json: {\n    phoneNumber: message.from,\n    messageText: message.text.body,\n    messageId: message.id,\n    displayName: contact?.profile?.name || message.from,\n    sessionId: 'wa_' + message.from\n  }\n}];"
+      },
+      "id": "b2c3d4e5-f6a7-8901-bcde-f23456789013",
+      "name": "Extract Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messageText }}",
+        "options": {
+          "systemMessage": "You are the SPT Support Team — the friendly, knowledgeable human support team for Smart Profits Trader, a premium trading services company based in Nigeria.\n\nNever reveal that you are an AI or a bot. Always respond as a warm, professional human support agent who is part of the SPT team.\n\nOur three core services:\n\n1. *Copy Trading* — We trade on your behalf. You supply the capital, our expert traders manage it professionally. 20% profit share only when profitable — no monthly fees. Minimum investment: $500. Ideal for busy professionals who want to grow their money without trading themselves.\n\n2. *VIP Signals* — Daily high-quality trading signals with clear entry price, stop loss, and take profit levels. $97/month or $247/quarter (save 15%). Perfect for traders who want expert guidance.\n\n3. *Instant Funded Accounts* — We help you pass FTMO, MyForexFunds, and other prop firm challenges so you can trade with up to $200k of funded capital. You keep 70% of all profits after passing.\n\nHow to handle enquiries:\n- Greet warmly and ask how you can help\n- Explain the most relevant service clearly and concisely\n- Answer questions honestly\n- If they want to get started, collect their name and email\n- Direct them to smartprofitstrader.com for full details and payment\n- Keep responses short — WhatsApp messages should be easy to read\n- Use line breaks between key points, not long paragraphs\n- Use *bold* sparingly for emphasis (WhatsApp markdown)\n\nImportant:\n- Never guarantee specific profit amounts\n- Always acknowledge that trading involves risk\n- Be responsive, friendly, and professional\n- If asked something you cannot answer, say you will check with the team and they can email support@smartprofitstrader.com"
+        }
+      },
+      "id": "c3d4e5f6-a7b8-9012-cdef-345678901235",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "id": "d4e5f6a7-b8c9-0123-defa-456789012346",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [680, 140]
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Extract Message').item.json.sessionId }}"
+      },
+      "id": "e5f6a7b8-c9d0-1234-efab-567890123457",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [680, 460]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/1260125930510410/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAhWXozMo1MBR4BG9FuS2hqsCAjdxfVBCrtTEF6E2v7vB3JkJ9HHfZA2bpXveXnTqmwttfdyewIgc7jmko5OtosxZCk5yWbAQuAUZBUpZCQ04rIXluhZADZBOu5aHoPQbZCvVZBH2jSbZCjnWL8F3WPKKONvKiZCZA6csCKgbgnnWZBmW8v7ZAZAJvT6FuEzPVk02ucgZDZDa"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('Extract Message').item.json.phoneNumber }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $json.output }}\"\n  }\n}"
+      },
+      "id": "f6a7b8c9-d0e1-2345-fabc-678901234568",
+      "name": "Send WhatsApp Reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "WhatsApp Webhook": {
+      "main": [
+        [{ "node": "Extract Message", "type": "main", "index": 0 }]
+      ]
+    },
+    "Extract Message": {
+      "main": [
+        [{ "node": "AI Agent", "type": "main", "index": 0 }]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [{ "node": "Send WhatsApp Reply", "type": "main", "index": 0 }]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [{ "node": "AI Agent", "type": "ai_languageModel", "index": 0 }]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [{ "node": "AI Agent", "type": "ai_memory", "index": 0 }]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0
+}

@@ -1,12 +1,33 @@
 import { PrismaClient } from "@prisma/client";
 
 const requiredEnv = ["DATABASE_URL", "DIRECT_URL", "NEXTAUTH_SECRET", "NEXTAUTH_URL", "ADMIN_EMAIL", "ADMIN_PASSWORD"];
+
+// Revenue-critical: these gate real money movement and signal delivery, so a
+// missing key here is treated as a launch blocker, not just a warning.
+const criticalProviderEnv = {
+  "Paystack (VIP payments)": ["PAYSTACK_SECRET_KEY"],
+  "Telegram bot (VIP signal delivery)": ["TELEGRAM_BOT_TOKEN"]
+};
+
 const optionalProviderEnv = {
-  Sendy: ["SENDY_BASE_URL", "SENDY_API_KEY", "SENDY_LIST_ID"],
-  "Sendy transactional email": ["SENDY_TRANSACTIONAL_ENDPOINT"],
-  WhatsApp: ["WHATSAPP_API_TOKEN", "WHATSAPP_PHONE_NUMBER_ID"],
-  SMS: ["SMS_API_URL", "SMS_API_KEY", "SMS_SENDER_ID"],
-  "Google Sheets": ["GOOGLE_SHEETS_CLIENT_EMAIL", "GOOGLE_SHEETS_PRIVATE_KEY", "GOOGLE_SHEETS_SPREADSHEET_ID"]
+  // Sendy list delivery works if either the shared fallback list or at least
+  // one per-audience list is configured (see src/lib/drip-engine.ts and
+  // src/lib/message-workflows.ts).
+  Sendy: {
+    keys: ["SENDY_BASE_URL", "SENDY_API_KEY"],
+    anyOf: [
+      "SENDY_LIST_ID",
+      "SENDY_LIST_ID_VIP_SIGNALS",
+      "SENDY_LIST_ID_COPY_TRADING",
+      "SENDY_LIST_ID_EVALUATION",
+      "SENDY_LIST_ID_INSTANT_FUNDED",
+      "SENDY_LIST_ID_CLIENTS"
+    ]
+  },
+  "Sendy transactional email": { keys: ["SENDY_TRANSACTIONAL_ENDPOINT"] },
+  WhatsApp: { keys: ["WHATSAPP_API_TOKEN", "WHATSAPP_PHONE_NUMBER_ID"] },
+  SMS: { keys: ["SMS_API_URL", "SMS_API_KEY", "SMS_SENDER_ID"] },
+  "Google Sheets": { keys: ["GOOGLE_SHEETS_CLIENT_EMAIL", "GOOGLE_SHEETS_PRIVATE_KEY", "GOOGLE_SHEETS_SPREADSHEET_ID"] }
 };
 
 const tableChecks = {
@@ -67,9 +88,18 @@ if (isWeakPassword(process.env.ADMIN_PASSWORD)) {
   console.log("ADMIN_PASSWORD safety: ok");
 }
 
-printSection("Optional Integrations");
-for (const [label, keys] of Object.entries(optionalProviderEnv)) {
+printSection("Critical Integrations");
+for (const [label, keys] of Object.entries(criticalProviderEnv)) {
   const ready = keys.every((key) => Boolean(process.env[key]));
+  console.log(`${label}: ${ready ? "configured" : "MISSING"}`);
+  if (!ready) failed = true;
+}
+
+printSection("Optional Integrations");
+for (const [label, { keys, anyOf }] of Object.entries(optionalProviderEnv)) {
+  const keysReady = keys.every((key) => Boolean(process.env[key]));
+  const anyOfReady = !anyOf || anyOf.some((key) => Boolean(process.env[key]));
+  const ready = keysReady && anyOfReady;
   console.log(`${label}: ${ready ? "configured" : "not fully configured"}`);
   if (!ready) warned = true;
 }
