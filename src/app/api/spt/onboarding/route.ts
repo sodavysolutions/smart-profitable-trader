@@ -4,6 +4,7 @@ import { buildEmailHtml } from "@/lib/email-templates";
 import {
   sendSendyTransactionalEmail,
   sendWhatsAppMessage,
+  addSendySubscriber,
 } from "@/lib/integrations";
 import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import type { CustomerType } from "@prisma/client";
@@ -18,13 +19,14 @@ const SERVICE_LABELS: Record<string, string> = {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { fullName, email, phone, whatsapp, country, dateOfBirth, services } = body as {
+    const { fullName, email, phone, whatsapp, country, dateOfBirth, accountSize, services } = body as {
       fullName: string;
       email: string;
       phone: string;
       whatsapp?: string;
       country: string;
       dateOfBirth: string;
+      accountSize?: string;
       services: string[];
     };
 
@@ -47,6 +49,7 @@ export async function POST(request: NextRequest) {
         dateOfBirth: new Date(dateOfBirth),
         customerType: primaryService,
         status: "PENDING_SETUP",
+        ...(accountSize ? { notes: `Account size: ${accountSize}` } : {}),
       },
       update: {
         fullName: fullName.trim(),
@@ -55,6 +58,7 @@ export async function POST(request: NextRequest) {
         country: country.trim(),
         dateOfBirth: new Date(dateOfBirth),
         customerType: primaryService,
+        ...(accountSize ? { notes: `Account size: ${accountSize}` } : {}),
       },
     });
 
@@ -91,6 +95,17 @@ export async function POST(request: NextRequest) {
       "UPSERT",
       { force: true }
     ).catch((err) => console.error("[Onboarding] Sheets sync error:", err));
+
+    // --- Add to Sendy clients list ---
+    addSendySubscriber({
+      recipient: fullName.trim(),
+      name: fullName.trim(),
+      email: email.trim().toLowerCase(),
+      title: "Welcome",
+      body: "",
+      listId: process.env.SENDY_LIST_ID_CLIENTS,
+      tags: services,
+    }).catch((err) => console.error("[Onboarding] Sendy subscribe error:", err));
 
     // --- Welcome email ---
     const serviceList = services

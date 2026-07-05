@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SPTPageShell } from "@/components/spt/sections";
-import { CheckCircle2, Loader2, User, Mail, Phone, Globe, Calendar, Layers } from "lucide-react";
+import { CheckCircle2, Loader2, User, Mail, Phone, Globe, Calendar, Layers, DollarSign } from "lucide-react";
 
 const SERVICES = [
   { value: "COPY_TRADING",    label: "Copy Trading",            desc: "We trade on your behalf, 20% profit share" },
@@ -21,7 +21,7 @@ const COUNTRIES = [
 export default function OnboardingPage() {
   const [form, setForm] = useState({
     fullName: "", email: "", phone: "", whatsapp: "",
-    country: "", dateOfBirth: "", services: [] as string[],
+    country: "", dateOfBirth: "", accountSize: "", services: [] as string[],
   });
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [error, setError] = useState("");
@@ -166,6 +166,28 @@ export default function OnboardingPage() {
                   className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20"
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Account Size */}
+          <div>
+            <label className="mb-1.5 block text-sm font-semibold text-[#0A1A3C]">
+              Trading/Investment Capital <span className="text-slate-400 font-normal">(optional)</span>
+            </label>
+            <div className="relative">
+              <DollarSign size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <select
+                value={form.accountSize} onChange={e => setForm(f => ({ ...f, accountSize: e.target.value }))}
+                className="w-full appearance-none rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-sm outline-none focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20"
+              >
+                <option value="">Select amount</option>
+                <option value="Under $500">Under $500</option>
+                <option value="$500 – $1,000">$500 – $1,000</option>
+                <option value="$1,000 – $5,000">$1,000 – $5,000</option>
+                <option value="$5,000 – $10,000">$5,000 – $10,000</option>
+                <option value="$10,000 – $25,000">$10,000 – $25,000</option>
+                <option value="$25,000+">$25,000+</option>
+              </select>
             </div>
           </div>
 
