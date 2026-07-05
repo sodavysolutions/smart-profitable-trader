@@ -75,7 +75,7 @@ export function FloatingChatWidget() {
 
       {/* Widget container */}
       <div
-        className="fixed bottom-5 left-4 z-50 flex flex-col items-start gap-3 sm:bottom-6 sm:left-6"
+        className="fixed bottom-5 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6"
         role="region"
         aria-label="Chat with the SPT Support Team"
       >
@@ -84,7 +84,7 @@ export function FloatingChatWidget() {
           className={[
             "w-[300px] sm:w-[320px] overflow-hidden rounded-2xl border border-slate-200/80",
             "bg-white shadow-[0_20px_60px_rgba(10,26,60,0.18)]",
-            "transition-all duration-300 ease-out origin-bottom-left",
+            "transition-all duration-300 ease-out origin-bottom-right",
             open
               ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
               : "opacity-0 scale-95 translate-y-2 pointer-events-none",
