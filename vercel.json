@@ -1,1 +1,12 @@
-{}
+{
+  "crons": [
+    {
+      "path": "/api/cron/drip",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/vip-subscriptions",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}
