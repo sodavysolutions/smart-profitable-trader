@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { DeleteButton } from "@/components/spt/delete-button";
 import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { prisma } from "@/lib/prisma";
 import { normalizeDate, normalizeText } from "@/lib/spt-admin-helpers";
@@ -88,6 +89,13 @@ async function updateCustomer(formData: FormData) {
     }
   });
   await syncRecordToGoogleSheets("Customer", customer, "UPDATE");
+  revalidatePath("/spt/admin/customers");
+}
+
+async function deleteCustomer(id: string) {
+  "use server";
+  await requireAdmin();
+  await prisma.customer.delete({ where: { id } });
   revalidatePath("/spt/admin/customers");
 }
 
@@ -184,7 +192,10 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
         {!schemaNotice && customers.length ? (
           customers.slice(0, 10).map((customer) => (
             <Card key={customer.id}>
-              <SectionHeader title={customer.fullName} text={`${readableEnum(customer.customerType)} · ${customer.email}`} />
+              <div className="flex items-start justify-between">
+                <SectionHeader title={customer.fullName} text={`${readableEnum(customer.customerType)} · ${customer.email}`} />
+                <DeleteButton id={customer.id} onDelete={deleteCustomer} label="customer" />
+              </div>
               <form action={updateCustomer} className="grid gap-3">
                 <input type="hidden" name="id" value={customer.id} />
                 <div className="grid gap-3 md:grid-cols-3">

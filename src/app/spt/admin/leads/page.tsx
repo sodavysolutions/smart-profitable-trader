@@ -4,6 +4,7 @@ import { MessageSquare, Phone, Mail, Calendar, User, ArrowRight } from "lucide-r
 import { SPTAdminShell, SourceBadge, AdminCard, AdminCardHeader, AdminCardBody } from "@/components/spt/admin-shell";
 import { StatusBadge } from "@/components/UI";
 import { AddLeadButton } from "@/components/spt/add-lead-modal";
+import { DeleteButton } from "@/components/spt/delete-button";
 import { prisma } from "@/lib/prisma";
 import { readableEnum } from "@/lib/spt-admin-format";
 import { requireAdmin } from "@/lib/spt-admin-auth";
@@ -141,6 +142,13 @@ async function createLead(formData: FormData) {
   });
 
   await syncRecordToGoogleSheets("Lead", lead, "CREATE").catch(() => {});
+  revalidatePath("/spt/admin/leads");
+}
+
+async function deleteLead(id: string) {
+  "use server";
+  await requireAdmin();
+  await prisma.lead.delete({ where: { id } });
   revalidatePath("/spt/admin/leads");
 }
 
@@ -419,12 +427,15 @@ export default async function SPTAdminLeadsPage({
                         </div>
                       </td>
                       <td className="px-4 py-3.5">
-                        <Link
-                          href={`/spt/admin/leads/${lead.id}`}
-                          className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-navy-950 hover:bg-slate-200"
-                        >
-                          View <ArrowRight size={11} />
-                        </Link>
+                        <div className="flex items-center gap-2">
+                          <Link
+                            href={`/spt/admin/leads/${lead.id}`}
+                            className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-navy-950 hover:bg-slate-200"
+                          >
+                            View <ArrowRight size={11} />
+                          </Link>
+                          <DeleteButton id={lead.id} onDelete={deleteLead} label="lead" />
+                        </div>
                       </td>
                     </tr>
                   ))}

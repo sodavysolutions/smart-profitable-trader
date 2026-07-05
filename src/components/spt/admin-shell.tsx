@@ -7,6 +7,7 @@ import {
   BarChart3,
   Bell,
   Briefcase,
+  Bot,
   ChevronRight,
   ClipboardList,
   CreditCard,
@@ -62,6 +63,12 @@ const navItems = [
     href: "/spt/admin/finance",
     label: "Finance",
     icon: CreditCard,
+  },
+  {
+    href: "/spt/admin/chatbot-leads",
+    label: "AI Chatbot",
+    pageTitle: "AI Chatbot Leads",
+    icon: Bot,
   },
   {
     href: "/spt/admin/reminders",
