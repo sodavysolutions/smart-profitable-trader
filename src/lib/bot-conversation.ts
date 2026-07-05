@@ -245,7 +245,7 @@ async function handleRegisterEmail(chatId: string, text: string) {
       `❌ No active subscription found for <b>${email}</b>.\n\n` +
       `• Check the email you subscribed with\n` +
       `• If you haven't subscribed yet, type /start\n` +
-      `• For help, contact: wa.me/2347087970133`
+      `• For help, contact: wa.me/2349164753603`
     );
     await resetSession(chatId);
     return;
@@ -342,7 +342,7 @@ export async function handleBotUpdate(update: Record<string, unknown>) {
       `/status — Check your subscription status\n` +
       `/register — Link your Telegram to an existing subscription\n` +
       `/help — Show this message\n\n` +
-      `For support, contact us on WhatsApp: wa.me/2347087970133`
+      `For support, contact us on WhatsApp: wa.me/2349164753603`
     );
     return;
   }

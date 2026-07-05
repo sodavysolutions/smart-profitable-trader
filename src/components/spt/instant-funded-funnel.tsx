@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 
 const applyHref = "/spt/apply?service=instant-funded";
-const whatsappBaseUrl = "https://wa.me/2347087970133";
+const whatsappBaseUrl = "https://wa.me/2349164753603";
 const whatsappHref =
   `${whatsappBaseUrl}?text=Hello%20Smart%20Profits%20Trader%20team%2C%20I%27m%20interested%20in%20the%20Instant%20Funded%20Prop%20Trading%20service.%20Please%20send%20me%20the%20available%20account%20options%2C%20setup%20requirements%2C%20profit-share%20details%2C%20risk%20guidelines%2C%20and%20how%20to%20get%20started.`;
 const floatingWhatsappHref =

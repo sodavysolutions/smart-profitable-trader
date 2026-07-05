@@ -50,7 +50,7 @@ const settingFields: Array<{ key: string; label: string; multiline?: boolean }> 
 
 const defaultSettingValues: Record<string, string> = {
   company_name: "Smart Profits Trader",
-  whatsapp_number: "+2347087970133",
+  whatsapp_number: "+2349164753603",
   logo_url: "/images/smart-profits-trader-logo.png",
   default_admin_email: "info@smartprofitstrader.com",
   sendy_api_url: "",

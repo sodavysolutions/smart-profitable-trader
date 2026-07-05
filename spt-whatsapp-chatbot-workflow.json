@@ -63,6 +63,21 @@
     },
     {
       "parameters": {
+        "method": "POST",
+        "url": "https://smartprofitstrader.com/api/spt/chatbot/contact",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"platform\": \"WHATSAPP\", \"phoneNumber\": $json.phoneNumber, \"displayName\": $json.displayName, \"messageText\": $json.messageText } }}",
+        "options": {}
+      },
+      "id": "h8i9j0k1-l2m3-4567-nopq-890123456789",
+      "name": "Log Contact to DB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 520]
+    },
+    {
+      "parameters": {
         "operation": "append",
         "documentId": {
           "__rl": true,
@@ -112,7 +127,8 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ messaging_product: 'whatsapp', to: $('Extract Message').item.json.phoneNumber, type: 'text', text: { body: $json.output } }) }}"
+        "jsonBody": "={{ { \"messaging_product\": \"whatsapp\", \"to\": $('Extract Message').item.json.phoneNumber, \"type\": \"text\", \"text\": { \"body\": $json.output } } }}",
+        "options": {}
       },
       "id": "f6a7b8c9-d0e1-2345-fabc-678901234568",
       "name": "Send WhatsApp Reply",
@@ -129,7 +145,10 @@
     },
     "Extract Message": {
       "main": [
-        [{ "node": "AI Agent", "type": "main", "index": 0 }]
+        [
+          { "node": "AI Agent", "type": "main", "index": 0 },
+          { "node": "Log Contact to DB", "type": "main", "index": 0 }
+        ]
       ]
     },
     "AI Agent": {

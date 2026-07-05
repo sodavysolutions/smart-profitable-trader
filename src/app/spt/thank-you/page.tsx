@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SPTPageShell } from "@/components/spt/sections";
 
-const WHATSAPP_NUMBER = "2347087970133";
+const WHATSAPP_NUMBER = "2349164753603";
 const COUNTDOWN_SECONDS = 4;
 
 function ThankYouContent() {

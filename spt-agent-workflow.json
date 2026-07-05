@@ -344,6 +344,21 @@
           "name": "SPT Agent Bot"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://smartprofitstrader.com/api/spt/chatbot/contact",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"platform\": \"TELEGRAM\", \"phoneNumber\": $json.telegramUserId, \"displayName\": $json.firstName, \"messageText\": $json.userMessage } }}",
+        "options": {}
+      },
+      "id": "tg-log-contact-001",
+      "name": "Log Contact to DB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [640, 520]
     }
   ],
   "connections": {
@@ -354,7 +369,10 @@
     },
     "Extract Message Data": {
       "main": [
-        [{ "node": "SPT AI Agent", "type": "main", "index": 0 }]
+        [
+          { "node": "SPT AI Agent", "type": "main", "index": 0 },
+          { "node": "Log Contact to DB", "type": "main", "index": 0 }
+        ]
       ]
     },
     "Claude Haiku": {

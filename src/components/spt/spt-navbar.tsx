@@ -14,7 +14,7 @@ const sptLinks = [
   { href: "/spt/home#faq", label: "FAQ", shortLabel: "FAQ" }
 ];
 
-const whatsappUrl = "https://wa.me/2347087970133";
+const whatsappUrl = "https://wa.me/2349164753603";
 
 export function SPTNavbar() {
   const [isOpen, setIsOpen] = useState(false);

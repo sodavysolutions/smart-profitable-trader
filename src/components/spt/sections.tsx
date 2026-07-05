@@ -25,7 +25,7 @@ import {
 import { ApplicationForm } from "@/components/ApplicationForm";
 import { SPTNavbar } from "@/components/spt/spt-navbar";
 
-const whatsappUrl = "https://wa.me/2347087970133";
+const whatsappUrl = "https://wa.me/2349164753603";
 const evaluationWhatsappUrl = `${whatsappUrl}?text=${encodeURIComponent(
   "Hello Smart Profits Trader team, I'm interested in the Evaluation Prop Trading service. Please send me the recommended prop firms, account options, management process, risk guidelines, and how to get started."
 )}`;
