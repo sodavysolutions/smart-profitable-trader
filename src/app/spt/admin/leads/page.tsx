@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MessageSquare, Phone, Mail, Calendar, User, ArrowRight } from "lucide-react";
 import { SPTAdminShell, SourceBadge, AdminCard, AdminCardHeader, AdminCardBody } from "@/components/spt/admin-shell";
 import { StatusBadge } from "@/components/UI";
+import { AddLeadButton } from "@/components/spt/add-lead-modal";
 import { prisma } from "@/lib/prisma";
 import { readableEnum } from "@/lib/spt-admin-format";
 import { requireAdmin } from "@/lib/spt-admin-auth";
@@ -107,6 +108,40 @@ async function convertLead(formData: FormData) {
   await syncRecordToGoogleSheets("Lead", updatedLead, "UPDATE");
   revalidatePath("/spt/admin/leads");
   revalidatePath("/spt/admin/customers");
+}
+
+async function createLead(formData: FormData) {
+  "use server";
+  await requireAdmin();
+  const fullName = String(formData.get("fullName") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const phone = String(formData.get("phone") ?? "").trim() || undefined;
+  const country = String(formData.get("country") ?? "").trim() || undefined;
+  const serviceInterest = String(formData.get("serviceInterest") ?? "").trim();
+  const source = String(formData.get("source") ?? "MANUAL");
+  const status = String(formData.get("status") ?? "NEW") as LeadStatus;
+  const notes = String(formData.get("notes") ?? "").trim() || undefined;
+
+  if (!fullName || !email || !serviceInterest) throw new Error("Name, email and service are required.");
+
+  const lead = await prisma.lead.create({
+    data: {
+      fullName,
+      email,
+      phone,
+      whatsapp: phone,
+      country,
+      serviceInterest,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      source: source as any,
+      status,
+      notes,
+      leadSource: source,
+    },
+  });
+
+  await syncRecordToGoogleSheets("Lead", lead, "CREATE").catch(() => {});
+  revalidatePath("/spt/admin/leads");
 }
 
 // ── Tab definitions ─────────────────────────────────────────────────────────────
@@ -315,11 +350,7 @@ export default async function SPTAdminLeadsPage({
         <AdminCardHeader
           title={tab === "all" ? "All Leads" : (tabsWithCounts.find(t => t.value === tab)?.label ?? "Leads")}
           subtitle="Manage prospects, update status, add notes, and convert to customers."
-          action={
-            <button className="rounded-xl bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950 hover:bg-profit-400">
-              + Add Lead
-            </button>
-          }
+          action={<AddLeadButton onAdd={createLead} />}
         />
         <AdminCardBody className="p-0">
           {leads.length === 0 ? (
@@ -333,9 +364,7 @@ export default async function SPTAdminLeadsPage({
                   When prospects interact with your AI Agent, WhatsApp, Telegram, or website forms, their records will appear here.
                 </p>
               </div>
-              <button className="mt-2 rounded-xl bg-navy-950 px-4 py-2 text-sm font-bold text-white">
-                Add Lead Manually
-              </button>
+              <AddLeadButton onAdd={createLead} />
             </div>
           ) : (
             <div className="overflow-x-auto">
