@@ -2,6 +2,7 @@ import { BillingCycle, SubscriptionStatus, SubscriptionType } from "@prisma/clie
 import { revalidatePath } from "next/cache";
 import { Card, DataTable, EmptyState, InlineNotice, SectionHeader, StatusBadge } from "@/components/UI";
 import { SPTAdminShell } from "@/components/spt/admin-shell";
+import { DeleteButton } from "@/components/spt/delete-button";
 import { syncRecordToGoogleSheets } from "@/lib/google-sheets";
 import { prisma } from "@/lib/prisma";
 import { money, readableEnum } from "@/lib/spt-admin-format";
@@ -61,6 +62,13 @@ async function createSubscription(formData: FormData) {
   });
 
   await syncRecordToGoogleSheets("Subscription", subscription, "CREATE");
+  revalidatePath("/spt/admin/subscriptions");
+}
+
+async function deleteSubscription(id: string) {
+  "use server";
+  await requireAdmin();
+  await prisma.subscription.delete({ where: { id } });
   revalidatePath("/spt/admin/subscriptions");
 }
 
@@ -165,7 +173,7 @@ export default async function SPTAdminSubscriptionsPage() {
         <SectionHeader title="Active subscriptions" text="This list powers renewal reminders and gives you one place to monitor recurring revenue and operating commitments." />
         {!schemaNotice && subscriptions.length ? (
           <DataTable
-            columns={["Name", "Type", "Related", "Amount", "Cycle", "Renewal", "Status", "Reminder"]}
+            columns={["Name", "Type", "Related", "Amount", "Cycle", "Renewal", "Status", "Reminder", ""]}
             rows={subscriptions.map((subscription) => [
               subscription.name,
               readableEnum(subscription.type),
@@ -174,7 +182,8 @@ export default async function SPTAdminSubscriptionsPage() {
               readableEnum(subscription.billingCycle),
               subscription.renewalDate ? subscription.renewalDate.toLocaleDateString() : "Not set",
               <StatusBadge key={subscription.id} value={readableEnum(subscription.status)} />,
-              subscription.reminderEnabled ? "Enabled" : "Off"
+              subscription.reminderEnabled ? "Enabled" : "Off",
+              <DeleteButton key={`del-${subscription.id}`} id={subscription.id} onDelete={deleteSubscription} label="subscription" />
             ])}
           />
         ) : schemaNotice ? (
