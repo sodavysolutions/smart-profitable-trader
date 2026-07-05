@@ -29,7 +29,7 @@ const serviceMap: Record<ServiceKey | string, string> = {
   general: "Not sure yet - I need guidance"
 };
 
-const brokerOptions = ["XM", "Valetax", "Capitalxtend", "I do not have a broker account yet", "I need guidance"];
+const brokerOptions = ["XM", "Valetax", "I do not have a broker account yet", "I need guidance"];
 const evaluationPropFirmOptions = ["Hola Prime", "FTMO", "FundingPips", "Fxify", "I have not chosen yet", "I need guidance"];
 const instantFundedProviderOptions = ["iFunds", "Tentrade", "I have not chosen yet", "I need guidance"];
 const generalInvestmentOptions = ["Below $100", "$100 - $299", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above", "I need guidance"];
