@@ -105,7 +105,8 @@ async function deleteCustomer(id: string) {
 export default async function SPTAdminCustomersPage({ searchParams }: { searchParams: Promise<{ q?: string; type?: CustomerType; status?: CustomerStatus }> }) {
   const session = await requireAdmin();
   const { q, type, status } = await searchParams;
-  let customers = [] as Awaited<ReturnType<typeof prisma.customer.findMany>>;
+  type CustomerWithSubs = Awaited<ReturnType<typeof prisma.customer.findMany<{ include: { subscriptions: { select: { name: true; status: true } } } }>>>[number];
+  let customers: CustomerWithSubs[] = [];
   let schemaNotice: string | null = null;
 
   try {
