@@ -26,28 +26,26 @@ async function createCustomer(formData: FormData) {
     throw new Error("Invalid customer details.");
   }
 
-  const customer = await prisma.customer.create({
-    data: {
-      fullName: parsed.data.fullName,
-      email: parsed.data.email,
-      phone: normalizeText(parsed.data.phone) ?? undefined,
-      whatsapp: normalizeText(parsed.data.whatsapp) ?? undefined,
-      country: normalizeText(parsed.data.country) ?? undefined,
-      city: normalizeText(parsed.data.city) ?? undefined,
-      customerType: parsed.data.customerType,
-      status: parsed.data.status,
-      accountPlatform: parsed.data.accountPlatform ? (parsed.data.accountPlatform as AccountPlatform) : undefined,
-      brokerOrPropFirm: normalizeText(parsed.data.brokerOrPropFirm) ?? undefined,
-      accountLogin: normalizeText(parsed.data.accountLogin) ?? undefined,
-      initialCapital: parsed.data.initialCapital,
-      currentBalance: parsed.data.currentBalance,
-      currentEquity: parsed.data.currentEquity,
-      startDate: normalizeDate(parsed.data.startDate),
-      renewalDate: normalizeDate(parsed.data.renewalDate),
-      dateOfBirth: normalizeDate(parsed.data.dateOfBirth),
-      profitShareTier: normalizeText(parsed.data.profitShareTier) ?? undefined,
-      setupFeeStatus: normalizeText(parsed.data.setupFeeStatus) ?? undefined,
-      notes: normalizeText(parsed.data.notes) ?? undefined,
+  const data = {
+    fullName: parsed.data.fullName,
+    phone: normalizeText(parsed.data.phone) ?? undefined,
+    whatsapp: normalizeText(parsed.data.whatsapp) ?? undefined,
+    country: normalizeText(parsed.data.country) ?? undefined,
+    city: normalizeText(parsed.data.city) ?? undefined,
+    customerType: parsed.data.customerType,
+    status: parsed.data.status,
+    accountPlatform: parsed.data.accountPlatform ? (parsed.data.accountPlatform as AccountPlatform) : undefined,
+    brokerOrPropFirm: normalizeText(parsed.data.brokerOrPropFirm) ?? undefined,
+    accountLogin: normalizeText(parsed.data.accountLogin) ?? undefined,
+    initialCapital: parsed.data.initialCapital,
+    currentBalance: parsed.data.currentBalance,
+    currentEquity: parsed.data.currentEquity,
+    startDate: normalizeDate(parsed.data.startDate),
+    renewalDate: normalizeDate(parsed.data.renewalDate),
+    dateOfBirth: normalizeDate(parsed.data.dateOfBirth),
+    profitShareTier: normalizeText(parsed.data.profitShareTier) ?? undefined,
+    setupFeeStatus: normalizeText(parsed.data.setupFeeStatus) ?? undefined,
+    notes: normalizeText(parsed.data.notes) ?? undefined,
       activityLogs: {
         create: {
           type: "CUSTOMER_CREATED",
@@ -55,9 +53,14 @@ async function createCustomer(formData: FormData) {
           userId: session.userId
         }
       }
-    }
+    };
+
+  const customer = await prisma.customer.upsert({
+    where: { email: parsed.data.email.trim().toLowerCase() },
+    create: { email: parsed.data.email.trim().toLowerCase(), ...data },
+    update: data,
   });
-  await syncRecordToGoogleSheets("Customer", customer, "CREATE");
+  await syncRecordToGoogleSheets("Customer", customer, "UPSERT");
   revalidatePath("/spt/admin/customers");
 }
 
@@ -112,6 +115,7 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
         ...(type ? { customerType: type } : {}),
         ...(status ? { status } : {})
       },
+      include: { subscriptions: { select: { name: true, status: true } } },
       orderBy: { createdAt: "desc" }
     });
   } catch (error) {
@@ -184,8 +188,27 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
           <button className="rounded-md bg-navy-950 px-4 py-2 text-sm font-bold text-white">Filter</button>
         </form>
         <DataTable
-          columns={["Customer", "Email", "Type", "Platform", "Birthday", "Broker/Prop firm", "Balance", "Equity", "Status"]}
-          rows={customers.map((item) => [item.fullName, item.email, readableEnum(item.customerType), item.accountPlatform ? readableEnum(item.accountPlatform) : "-", item.dateOfBirth ? item.dateOfBirth.toLocaleDateString() : "-", item.brokerOrPropFirm ?? "-", money(item.currentBalance), money(item.currentEquity), <StatusBadge key={item.id} value={readableEnum(item.status)} />])}
+          columns={["Customer", "Email", "Services", "Platform", "Birthday", "Broker/Prop firm", "Balance", "Equity", "Status"]}
+          rows={customers.map((item) => [
+            item.fullName,
+            item.email,
+            <span key={item.id} className="flex flex-wrap gap-1">
+              {item.subscriptions.length > 0
+                ? item.subscriptions.map((s) => (
+                    <span key={s.name} className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700">
+                      {s.name}
+                    </span>
+                  ))
+                : <span className="text-xs text-slate-500">{readableEnum(item.customerType)}</span>
+              }
+            </span>,
+            item.accountPlatform ? readableEnum(item.accountPlatform) : "-",
+            item.dateOfBirth ? item.dateOfBirth.toLocaleDateString() : "-",
+            item.brokerOrPropFirm ?? "-",
+            money(item.currentBalance),
+            money(item.currentEquity),
+            <StatusBadge key={`s-${item.id}`} value={readableEnum(item.status)} />,
+          ])}
         />
       </Card>
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
@@ -193,7 +216,12 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
           customers.slice(0, 10).map((customer) => (
             <Card key={customer.id}>
               <div className="flex items-start justify-between">
-                <SectionHeader title={customer.fullName} text={`${readableEnum(customer.customerType)} · ${customer.email}`} />
+                <SectionHeader
+                title={customer.fullName}
+                text={customer.subscriptions.length > 0
+                  ? `${customer.subscriptions.map(s => s.name).join(" · ")} · ${customer.email}`
+                  : `${readableEnum(customer.customerType)} · ${customer.email}`}
+              />
                 <DeleteButton id={customer.id} onDelete={deleteCustomer} label="customer" />
               </div>
               <form action={updateCustomer} className="grid gap-3">
