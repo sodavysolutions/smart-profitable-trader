@@ -227,8 +227,7 @@ export default async function SPTAdminLeadsPage({
     await Promise.all([
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       prisma.lead.count({ where: { source: "FORM" } as any }),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      prisma.lead.count({ where: { source: "AI_CHATBOT" } as any }),
+      prisma.chatbotContact.count(),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       prisma.lead.count({ where: { source: "WHATSAPP" } as any }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
