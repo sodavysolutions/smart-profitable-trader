@@ -417,17 +417,16 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
     ctaUrl: BLUEPRINT_DOWNLOAD_URL,
   },
   {
-    subject: "$700 for a $10,000 prop trading account — here is how",
+    subject: "From $700 to $500,000 in funded capital — here is how",
     preheader: "No challenge, no evaluation, no waiting. Just funded.",
     badge: "Prop Trading",
     title: "The Prop Trading Model Explained",
     body:
       p(`{firstName}, let me explain how our Prop Trading service works.`) +
-      p(`Instead of making you pass Phase 1, Phase 2, and a funded stage like traditional prop firms, our Prop Trading providers — ${bold("iFunds")} and ${bold("TenTrade")} — simply require a one-time fee:`) +
-      p(`${highlight("$700")} → You receive a ${bold("$10,000 funded account")}.`) +
-      p(`${highlight("$1,600")} → You receive a ${bold("$25,000 funded account")}.`) +
+      p(`Instead of making you pass Phase 1, Phase 2, and a funded stage like traditional prop firms, our Prop Trading providers — ${bold("iFunds")} and ${bold("TenTrade")} — simply require a one-time fee. Seven account sizes are available:`) +
+      p(`${highlight("$700")} → ${bold("$10k")} · ${highlight("$1,600")} → ${bold("$25k")} · ${highlight("$3,000")} → ${bold("$50k")} · ${highlight("$5,000")} → ${bold("$85k")} · ${highlight("$8,500")} → ${bold("$150k")} · ${highlight("$15,000")} → ${bold("$250k")} · ${highlight("$30,000")} → ${bold("$500k")}.`) +
       p(`Smart Profits Trader manages the trading. Our Smart Profit Algo runs the account. Profits are split between you and us. The first profits cover your fee — then it is all income.`) +
-      p(`That is the model. Simple. Structured. Scalable.`),
+      p(`Start at the level that fits your capital. Scale from there.`),
     ctaLabel: "Learn More About Prop Trading",
     ctaUrl: PROP_TRADING_URL,
   },
@@ -439,9 +438,9 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
     body:
       p(`{firstName}, let me put real numbers to this.`) +
       p(`A $10,000 funded account generating ${bold("8–12% per month")} produces $800–$1,200 in gross profit. After profit split, your monthly income from a single account looks like this:`) +
-      p(`${highlight("Month 1:")} Profits cover the $700 fee. You are at zero cost.`) +
+      p(`${highlight("Month 1:")} Profits cover your account fee. You are at zero cost.`) +
       p(`${highlight("Month 2 onwards:")} Every dollar is income. No cost basis. Pure profit.`) +
-      p(`On a $25,000 account at 10% per month, gross profit is $2,500. At 50/50 split — ${highlight("$1,250 to you each month")}, from a $1,600 starting investment.`) +
+      p(`On a $25,000 account at 10% per month, gross profit is $2,500. At 50/50 split — ${highlight("$1,250 to you each month")}, from a $1,600 starting investment. Scale to a $150k account ($8,500 fee) and that monthly share grows to ${highlight("$7,500+")}.`) +
       p(`Now imagine stacking two or three accounts over time. That is when trading becomes a real income stream.`),
   },
   {

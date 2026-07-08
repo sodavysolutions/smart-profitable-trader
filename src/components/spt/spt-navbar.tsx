@@ -6,11 +6,9 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Menu, MessageCircle, X } from "lucide-react";
 
 const sptLinks = [
-  { href: "/spt/home", label: "Home", shortLabel: "Home" },
   { href: "/spt/home#how-it-works", label: "How It Works", shortLabel: "How It Works" },
   { href: "/spt/home#trading-solutions", label: "Trading Solutions", shortLabel: "Trading Solutions" },
-  { href: "/spt/copy-trading", label: "Copy Trading", shortLabel: "Copy Trading" },
-  { href: "/spt/instant-funded", label: "Prop Trading", shortLabel: "Prop Trading" },
+  { href: "/spt/copy-trading", label: "Automated Trading", shortLabel: "Automated Trading" },
   { href: "/spt/vip", label: "VIP Signals", shortLabel: "VIP Signals" },
   { href: "/spt/home#faq", label: "FAQ", shortLabel: "FAQ" }
 ];
@@ -51,7 +49,7 @@ export function SPTNavbar() {
         </Link>
 
         <nav className="hidden items-center gap-5 text-sm font-semibold text-slate-600 lg:flex" aria-label="Smart Profits Trader desktop navigation">
-          {sptLinks.slice(1).map((item) => (
+          {sptLinks.map((item) => (
             <Link key={item.href} href={item.href} className="whitespace-nowrap transition hover:text-navy-950">
               {item.shortLabel}
             </Link>

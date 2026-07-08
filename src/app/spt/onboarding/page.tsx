@@ -28,7 +28,7 @@ const SERVICE_CONFIG: Record<string, {
     brokerLabel: "Provider",
     brokers: ["iFunds", "TenTrade"],
     amountLabel: "Funded account size",
-    amounts: ["$10,000 ($700 fee)", "$25,000 ($1,600 fee)", "$50,000", "$100,000"],
+    amounts: ["$10,000 ($700)", "$25,000 ($1,600)", "$50,000 ($3,000)", "$85,000 ($5,000)", "$150,000 ($8,500)", "$250,000 ($15,000)", "$500,000 ($30,000)"],
   },
 };
 

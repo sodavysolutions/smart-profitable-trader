@@ -142,8 +142,8 @@ function AccountPreview() {
           </div>
           <div className="mt-5 grid gap-3">
             {[
-              ["Account size", "$10,000 — $25,000+"],
-              ["Setup fee", "$700 → $10k · $1,600 → $25k"],
+              ["Account sizes", "$10,000 — $500,000"],
+              ["Setup fee", "$700 → $10k · up to $30,000 → $500k"],
               ["No evaluation", "Get funded immediately"],
               ["Managed by SPT", "We trade — you earn"]
             ].map(([label, val]) => (
@@ -247,19 +247,14 @@ export function IFundsWhatIsIt() {
 
 // ── Account options ──────────────────────────────────────────────────────────
 export function IFundsAccountOptions() {
-  const tiers = [
-    {
-      name: "Standard",
-      size: "$10,000",
-      fee: "$700 one-time fee",
-      features: ["Instant account access", "No evaluation required", "Managed by SPT", "Profit share after fee recovery", "Gold trading — Smart Profit Algo"]
-    },
-    {
-      name: "Advanced",
-      size: "$25,000",
-      fee: "$1,600 one-time fee",
-      features: ["Instant account access", "No evaluation required", "Managed by SPT", "Profit share after fee recovery", "Gold trading — Smart Profit Algo"]
-    }
+  const tiers: Array<{ size: string; fee: string; popular?: boolean }> = [
+    { size: "$10,000",  fee: "$700" },
+    { size: "$25,000",  fee: "$1,600", popular: true },
+    { size: "$50,000",  fee: "$3,000" },
+    { size: "$85,000",  fee: "$5,000" },
+    { size: "$150,000", fee: "$8,500" },
+    { size: "$250,000", fee: "$15,000" },
+    { size: "$500,000", fee: "$30,000" }
   ];
 
   return (
@@ -268,39 +263,31 @@ export function IFundsAccountOptions() {
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">iFunds Account Options</h2>
           <p className="mt-4 leading-7 text-slate-600">
-            Choose the account size that fits your capital and income goal. Both accounts are managed by Smart Profits Trader from day one.
+            Seven account sizes — from $10,000 to $500,000. Pay one fee, get funded immediately. SPT manages the trading from day one.
           </p>
         </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
-          {tiers.map((tier, index) => (
-            <div key={tier.name} className={`rounded-[26px] border p-6 shadow-soft ${index === 1 ? "border-profit-400 bg-profit-50/30" : "border-slate-200 bg-white"}`}>
-              {index === 1 && (
-                <span className="mb-4 inline-block rounded-md bg-profit-500/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-profit-600">Most Popular</span>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {tiers.map((tier) => (
+            <div key={tier.size} className={`relative rounded-[22px] border p-5 shadow-soft ${tier.popular ? "border-profit-400 bg-profit-50/30" : "border-slate-200 bg-white"}`}>
+              {tier.popular && (
+                <span className="mb-3 inline-block rounded-md bg-profit-500/15 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-profit-600">Popular</span>
               )}
-              <h3 className="text-xl font-semibold text-navy-950">{tier.name}</h3>
-              <p className="mt-2 text-4xl font-semibold text-navy-950">{tier.size}</p>
-              <p className="mt-1 text-sm font-semibold text-slate-500">{tier.fee}</p>
-              <ul className="mt-6 space-y-3">
-                {tier.features.map((f) => (
-                  <li key={f} className="flex gap-3 text-sm leading-6 text-slate-700">
-                    <CheckCircle2 className="mt-0.5 shrink-0 text-profit-600" size={16} />
-                    {f}
-                  </li>
-                ))}
-              </ul>
+              <p className="text-2xl font-semibold text-navy-950">{tier.size}</p>
+              <p className="mt-1 text-sm font-bold text-profit-600">One-time fee: {tier.fee}</p>
+              <p className="mt-3 text-xs leading-5 text-slate-500">Instant access · SPT managed · No evaluation</p>
               <Link
                 href={iFundsAffiliateHref}
                 target="_blank"
                 rel="noreferrer"
-                className="funnel-primary mt-6 inline-flex w-full items-center justify-center gap-2 bg-navy-950 px-4 py-3 text-sm font-bold text-white hover:bg-navy-900"
+                className="funnel-primary mt-4 inline-flex w-full items-center justify-center gap-1.5 bg-navy-950 px-3 py-2.5 text-xs font-bold text-white hover:bg-navy-900"
               >
-                Open {tier.name} Account <ArrowRight size={15} />
+                Open Account <ArrowRight size={13} />
               </Link>
             </div>
           ))}
         </div>
-        <p className="mt-8 text-center text-sm text-slate-500">
-          Larger account sizes may be available depending on iFunds platform availability. Confirm directly on the iFunds platform.
+        <p className="mt-6 text-center text-sm text-slate-500">
+          All accounts are instant funded — no evaluation, no challenge. Confirm latest pricing and rules directly on the iFunds platform.
         </p>
       </div>
     </section>
@@ -557,7 +544,7 @@ export function IFundsFinalCTA() {
             Open Your iFunds Account and Let SPT Trade It For You
           </h2>
           <p className="mt-5 leading-7 text-slate-600">
-            $700 for a $10k account. $1,600 for a $25k account. No evaluation. No challenge. No waiting.
+            Seven account sizes from $10,000 to $500,000. One fee, instant access, no evaluation, no challenge.
           </p>
           <p className="mt-3 leading-7 text-slate-600">
             Click the button below to open your iFunds account, then contact our AI agent to start the onboarding process with Smart Profits Trader.

@@ -181,7 +181,7 @@ export function InstantFundedHero() {
               </h1>
               <div className="mt-6 space-y-4 text-base leading-8 text-slate-600 sm:text-lg">
                 <p>
-                  Smart Profits Trader partners with <strong>iFunds</strong> to give you an instantly funded account with zero evaluation required. Pay a one-time fee — <strong>$700 for a $10,000 account, $1,600 for a $25,000 account</strong> — and we manage the trading for you.
+                  Smart Profits Trader partners with <strong>iFunds</strong> and <strong>TenTrade</strong> to give you an instantly funded prop account with zero evaluation required. Accounts range from <strong>$10,000 ($700 fee)</strong> up to <strong>$500,000 ($30,000 fee)</strong> — and we manage the trading for you.
                 </p>
                 <p>
                   The Smart Profit Algo trades the account. First profits cover your fee. After that, every payout is income. Transparent, structured, and professionally managed from day one.
@@ -389,16 +389,20 @@ export function InstantFundedAccountOptions() {
             <PrimaryCTA>Check Available Instant Funded Options</PrimaryCTA>
           </div>
         </div>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {[
-            ["Bronze Account", "$5,000", "$400 account purchase + $50 setup fee"],
-            ["Silver Account", "$10,000", "$700 account purchase + setup fee"],
-            ["Higher Account Options", "Larger accounts", "May be available depending on provider rules and current availability"]
-          ].map(([title, size, requirement]) => (
-            <div key={title} className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-soft">
-              <p className="text-sm font-bold text-profit-600">{title}</p>
-              <p className="mt-4 text-3xl font-semibold text-navy-950">{size}</p>
-              <p className="mt-4 text-sm leading-6 text-slate-600">{requirement}</p>
+            ["$10,000", "$700"],
+            ["$25,000", "$1,600"],
+            ["$50,000", "$3,000"],
+            ["$85,000", "$5,000"],
+            ["$150,000", "$8,500"],
+            ["$250,000", "$15,000"],
+            ["$500,000", "$30,000"]
+          ].map(([size, fee]) => (
+            <div key={size} className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-soft">
+              <p className="text-sm font-bold text-profit-600">Funded Account</p>
+              <p className="mt-3 text-2xl font-semibold text-navy-950">{size}</p>
+              <p className="mt-2 text-sm font-semibold text-slate-500">One-time fee: {fee}</p>
             </div>
           ))}
         </div>
@@ -587,7 +591,7 @@ export function InstantFundedFinalCTA() {
         <div className="relative mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Ready to Start Prop Trading — No Evaluation, No Challenge?</h2>
           <p className="mt-5 leading-7 text-slate-600">
-            $700 for a $10k account. $1,600 for a $25k account. We manage the trading. First profits cover your fee. Then it is all income.
+            Seven account sizes from $10,000 to $500,000. One fee, instant access, no evaluation. We manage the trading. First profits cover your fee. Then it is all income.
           </p>
           <p className="mt-3 leading-7 text-slate-600">
             Apply now and let us review your goal, preferred account size, and available funding options.
