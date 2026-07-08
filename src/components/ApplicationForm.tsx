@@ -26,7 +26,7 @@ const serviceMap: Record<ServiceKey | string, string> = {
 };
 
 const brokerOptions = ["XM", "Valetax", "I do not have a broker account yet", "I need guidance"];
-const instantFundedProviderOptions = ["iFunds", "TenTrade", "I have not chosen yet", "I need guidance"];
+const instantFundedProviderOptions = ["iFunds", "TenTrade"];
 const generalInvestmentOptions = ["Below $100", "$100 - $299", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above", "I need guidance"];
 const copyInvestmentOptions = ["Below $300", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above"];
 const profitGoalOptions = ["5% – 8% per month (steady, low risk)", "10% – 15% per month (moderate growth)", "20% – 30% per month (ambitious)", "I need guidance on realistic expectations"];
@@ -262,7 +262,7 @@ function ServiceFields({ service }: { service: string }) {
   if (service.includes("Instant Funded")) {
     return (
       <>
-        <SelectField name="instantFundedProvider" label="Instant funded provider" options={instantFundedProviderOptions} required />
+        <SelectField name="instantFundedProvider" label="Which prop trading provider?" options={instantFundedProviderOptions} required />
         <SelectField name="instantFundedAccountSize" label="Which account size are you interested in?" options={["$10,000 ($700 fee)", "$25,000 ($1,600 fee)", "$50,000", "$100,000", "Not sure yet"]} />
         <RadioGroup name="readyToPaySetupFee" label="Are you ready to pay the account fee?" options={["Yes – I am ready", "Not yet – I need more details", "I need guidance on the fee"]} required />
       </>
