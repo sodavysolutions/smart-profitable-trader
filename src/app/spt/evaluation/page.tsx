@@ -1,11 +1,5 @@
-import type { Metadata } from "next";
-import { funnelPages, SPTFunnelPage } from "@/components/spt/sections";
-
-export const metadata: Metadata = {
-  title: "Smart Profits Trader Evaluation Management | Prop Firm Challenge Support",
-  description: "Apply for Smart Profits Trader evaluation account management for Phase 1, Phase 2, and funded prop firm account support."
-};
+import { redirect } from "next/navigation";
 
 export default function SPTEvaluationPage() {
-  return <SPTFunnelPage page={funnelPages.evaluation} />;
+  redirect("/spt/instant-funded");
 }

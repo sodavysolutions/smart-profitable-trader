@@ -19,8 +19,8 @@ export const BLUEPRINT_DOWNLOAD_URL =
 
 export const APPLY_URL = "https://www.smartprofitstrader.com/spt/apply";
 export const VIP_SIGNALS_URL = "https://www.smartprofitstrader.com/spt/vip";
-export const HOLAPRIME_URL = "https://holaprime.com?affiliateId=smartprofitsalgo";
-export const HOLAPRIME_PAGE_URL = "https://www.smartprofitstrader.com/spt/holaprime";
+export const INSTANT_FUNDED_URL = "https://www.smartprofitstrader.com/spt/instant-funded";
+export const IFUNDS_URL = "https://ifunds.com"; // iFunds partner link
 
 export type DripEmail = {
   subject: string;
@@ -400,255 +400,421 @@ export const SIGNALS_SEQUENCE: DripEmail[] = [
 // PROP_FIRM — Evaluation & Instant Funded Sequence
 // ─────────────────────────────────────────────────────────────────────────────
 export const PROP_FIRM_SEQUENCE: DripEmail[] = [
+  // ── DAY 1 BURST ──────────────────────────────────────────────────────────
   {
     subject: "Your Smart Money Blueprint is here",
-    preheader: "The complete roadmap from $50 to $200K in funded capital",
+    preheader: "The roadmap from $200 to funded prop trading — starts with this",
     badge: "Smart Money Blueprint",
     title: "Your Blueprint Has Arrived",
     body:
       p(`Hi {firstName},`) +
-      p(`Welcome to Smart Profits Trader. Your Smart Money Blueprint is ready — download it now. Pay particular attention to Tiers 1 and 2: Evaluation Accounts and Instant Funded. These are the fastest routes to serious trading capital in the system.`) +
-      p(`Starting from as little as $50, you can access $10,000 to $200,000 in prop firm capital — with Smart Profits Trader managing the trading on your behalf. I'll explain exactly how this works over the coming emails.`) +
-      p(`Download the Blueprint first. Then we'll build on it together.`),
-    ctaLabel: "Download Your Blueprint",
+      p(`Welcome to Smart Profits Trader. Your Smart Money Blueprint is ready — download it using the button below.`) +
+      p(`Inside you will find the exact pathway we use to build trading income: ${bold("start with Copy Trading, compound profits, then upgrade to an Instant Funded account via iFunds.")} No evaluation. No challenge. No waiting for months.`) +
+      p(`Over the next 24 hours I am going to break this model down step by step. Pay attention — this is not a theoretical system. This is what we actually do.`),
+    ctaLabel: "Download Your Blueprint Now",
     ctaUrl: BLUEPRINT_DOWNLOAD_URL,
   },
   {
-    subject: "How to access $200,000 in trading capital for $400",
-    preheader: "The prop firm model explained simply",
-    badge: "Prop Trading Explained",
-    title: "The Leverage Play — Evaluation Accounts",
-    body:
-      p(`{firstName}, here's a concept that changes everything about how people think about trading capital.`) +
-      p(`Prop firms give traders access to large funded accounts — $10,000 to $200,000 — after passing a trading challenge. The challenge fee ranges from ${highlight("$50 to $400 total")}. Pass the challenge, and the firm funds your account with their capital.`) +
-      p(`Smart Profits Trader manages the challenge trading using our Smart Profit EA. We target completing ${bold("each evaluation phase in 15 days")}. Once funded, we trade the prop account and split profits with you.`) +
-      p(`On a $100,000 funded account at 10% monthly return, you receive ${highlight("$6,500 every month")} — from a $300 initial investment. That's the power of this model.`),
-  },
-  {
-    subject: "The evaluation account table you need to see",
-    preheader: "Every account size, cost, and monthly income mapped out",
-    badge: "Numbers Breakdown",
-    title: "Evaluation Account Income Projections",
-    body:
-      p(`{firstName}, let me give you the exact numbers from our Blueprint.`) +
-      p(`${bold("$10K account:")} $50 total cost → $650/month to you (65% of $1,000 monthly profit) — ROI in under 1 month.`) +
-      p(`${bold("$25K account:")} $120 total cost → $1,625/month — ROI in under 1 month.`) +
-      p(`${bold("$50K account:")} $200 total cost → $3,250/month — ROI in under 1 month.`) +
-      p(`${bold("$100K account:")} $300 total cost → $6,500/month — ROI in under 1 month.`) +
-      p(`${bold("$200K account:")} $400 total cost → $13,000/month — ROI in under 1 month.`) +
-      p(`The profit split is ${highlight("65% to you, 35% to Smart Profits Trader")}. Income begins the month after the challenge is passed — approximately 30 days from start.`),
-  },
-  {
-    subject: "What happens if the evaluation fails?",
-    preheader: "Being transparent about the risk before you decide",
-    badge: "Honest Risk Disclosure",
-    title: "The Risk You Need to Know About",
-    body:
-      p(`{firstName}, I want to be completely transparent about the risk in evaluation accounts.`) +
-      p(`If our EA exceeds the prop firm's drawdown limits during the challenge — the challenge fails. The fee paid ($50–$400) is ${bold("lost and the challenge must be restarted")} from scratch with a new fee.`) +
-      p(`Our Smart Profit EA has been engineered specifically to stay within prop firm rules — targeting 10% profit while keeping daily and total drawdown well within limits. But no algo has a 100% pass rate. Challenges can fail.`) +
-      p(`This is why the Blueprint recommends starting with the smallest account size you're comfortable with, confirming success before scaling. The entry cost is low for exactly this reason — the risk is manageable.`),
-  },
-  {
-    subject: "Instant Funded — trade from Day 1 with no challenge",
-    preheader: "Skip the evaluation. Start earning immediately.",
+    subject: "$700 for a $10,000 trading account — here is how",
+    preheader: "No challenge, no evaluation, no waiting. Just funded.",
     badge: "Instant Funded",
-    title: "No Challenge. No Waiting. Just Trading.",
+    title: "The iFunds Model Explained",
     body:
-      p(`{firstName}, if you'd rather skip the evaluation process entirely, there's a second path: ${bold("Instant Funded accounts through iFunds")}.`) +
-      p(`You purchase a funded account directly — no challenge phases to pass. Smart Profits Trader begins managing it from Day 1. Returns target ${highlight("10–25% monthly")} on account sizes from $5,000 to $85,000.`) +
-      p(`The trade-off is higher upfront cost ($400–$5,800 depending on account size) versus the challenge route ($50–$400). But there's no waiting period, no risk of challenge failure, and trading income starts immediately.`) +
-      p(`For people who want to go faster and have more capital to deploy — Instant Funded is the fast lane.`),
+      p(`{firstName}, let me tell you about iFunds.`) +
+      p(`iFunds is an instant funded account provider. Instead of making you pass Phase 1, Phase 2, and a funded stage like traditional prop firms, iFunds simply requires a one-time fee:`) +
+      p(`${highlight("$700")} → You receive a ${bold("$10,000 funded account")}.`) +
+      p(`${highlight("$1,600")} → You receive a ${bold("$25,000 funded account")}.`) +
+      p(`Smart Profits Trader manages the trading. Our Smart Profit Algo runs the account. Profits are split between you and us. The first profits cover your fee — then it is all income.`) +
+      p(`That is the model. Simple. Structured. Scalable.`),
+    ctaLabel: "Learn More About Instant Funded",
+    ctaUrl: INSTANT_FUNDED_URL,
   },
   {
-    subject: "Instant Funded income projections — the numbers that matter",
-    preheader: "What each package earns and how quickly you recover your cost",
-    badge: "iFunds Numbers",
-    title: "Instant Funded Profit Projections",
+    subject: "The math behind a $10,000 funded account",
+    preheader: "Let me show you what consistent monthly returns actually look like",
+    badge: "Income Projection",
+    title: "What the Numbers Look Like",
     body:
-      p(`{firstName}, here are the Instant Funded income figures from our blueprint. iFunds retains 50% of gross profit first, then the remaining 50% is split 50/50 (or 65/35 if you pay the setup fee).`) +
-      p(`${bold("Bronze — $5,000 account:")} $400 total, targeting $313–$406/month. ROI in ~1 month.`) +
-      p(`${bold("Silver — $10,000 account:")} $700 total, targeting $625–$813/month.`) +
-      p(`${bold("Gold — $25,000 account:")} $1,600 total, targeting $1,563–$2,031/month.`) +
-      p(`${bold("Diamond — $50,000 account:")} $3,000 total, targeting ${highlight("$3,125–$4,063/month")}.`) +
-      p(`${bold("Platinum — $85,000 account:")} $5,000 total, targeting ${highlight("$5,313–$6,906/month")}. ROI in under 1 month.`),
+      p(`{firstName}, let me put real numbers to this.`) +
+      p(`A $10,000 funded account generating ${bold("8–12% per month")} produces $800–$1,200 in gross profit. After profit split, your monthly income from a single account looks like this:`) +
+      p(`${highlight("Month 1:")} Profits cover the $700 fee. You are at zero cost.`) +
+      p(`${highlight("Month 2 onwards:")} Every dollar is income. No cost basis. Pure profit.`) +
+      p(`On a $25,000 account at 10% per month, gross profit is $2,500. At 50/50 split — ${highlight("$1,250 to you each month")}, from a $1,600 starting investment.`) +
+      p(`Now imagine stacking two or three accounts over time. That is when trading becomes a real income stream.`),
   },
   {
-    subject: "Evaluation vs Instant Funded — which is right for you?",
-    preheader: "A simple framework for choosing your path",
-    badge: "Decision Guide",
-    title: "Choosing Your Prop Firm Route",
+    subject: "Why we stopped doing evaluation challenges",
+    preheader: "Challenges waste time. Here is what we do instead.",
+    badge: "Strategic Decision",
+    title: "Why We Chose iFunds Over Evaluations",
     body:
-      p(`{firstName}, both routes lead to the same destination — funded prop trading with Smart Profits Trader managing your account. The right choice depends on your situation.`) +
-      p(`${bold("Choose Evaluation if:")} You have limited capital to start ($50–$400), you're happy to wait 30 days for income to begin, and you want to minimise upfront cost. Best starting point.`) +
-      p(`${bold("Choose Instant Funded if:")} You have $400–$5,800 available, you want income from Day 1, and you don't want the risk of challenge failure costing you the entry fee.`) +
-      p(`Many subscribers start with an evaluation account to prove the system works for them, then reinvest profits into Instant Funded accounts to scale faster. The Blueprint recommends this exact progression.`),
+      p(`{firstName}, for a long time the prop firm model meant buying a challenge, passing Phase 1, passing Phase 2, then finally getting funded. Many clients failed. Some passed Phase 1 and failed Phase 2. Some made it to funded and then broke a rule and lost everything.`) +
+      p(`The evaluation model puts all the risk and time cost on the trader. You spend money on challenges. You spend months trying to pass. And there is no guarantee.`) +
+      p(`${bold("iFunds eliminates all of that.")} Pay once. Get funded immediately. We trade it. You earn.`) +
+      p(`No evaluation. No Phase 1. No Phase 2. No performance window. No account rules to fail. Just a funded account, professionally managed, from day one.`),
   },
   {
-    subject: "How we pass prop firm evaluations with the Smart Profit EA",
-    preheader: "The technology behind the challenge strategy",
-    badge: "EA Strategy",
-    title: "How Our EA Passes Prop Challenges",
+    subject: "The journey: from $200 to $25,000 in funded capital",
+    preheader: "Step by step — here is the exact pathway",
+    badge: "The SPT Journey",
+    title: "Copy Trading → Instant Funded — The Full Roadmap",
     body:
-      p(`{firstName}, passing prop firm evaluations requires a specific approach — one that's very different from normal trading.`) +
-      p(`Our Smart Profit EA is calibrated for prop firm rules: a maximum daily drawdown of 4% and total drawdown of 8% (industry standard). The EA targets the profit threshold — usually 8-10% — within the allowed timeframe, while staying comfortably within both drawdown limits.`) +
-      p(`We target completing each phase in 15 days, giving a buffer before the 30-day deadline. This is not aggressive trading — it's calculated, systematic execution designed specifically to meet prop firm requirements.`) +
-      p(`The same EA then continues managing the funded account, simply adjusted for the different rules that apply post-funding.`),
-  },
-  {
-    subject: "The multi-firm scaling strategy that generates $42,000+/month",
-    preheader: "Stage 5 of the Smart Money Blueprint explained",
-    badge: "Scale Strategy",
-    title: "Running Multiple Funded Accounts",
-    body:
-      p(`{firstName}, Stage 5 of the Smart Money Blueprint is where things get genuinely life-changing.`) +
-      p(`Once you've successfully passed and funded one prop account, you replicate across multiple firms. FTMO, FundedNext, The 5%ers, Alpha Capital Group — there are at least 8 top-tier firms you can run simultaneously.`) +
-      p(`At $200,000 per firm at 10% monthly, each account generates $13,000/month to you. Running just ${bold("5 firms simultaneously")} at scale generates ${highlight("$65,000/month")}.`) +
-      p(`This isn't a dream — it's the logical endpoint of the system. Start with one $10K evaluation. Prove it. Scale to five firms. The Blueprint maps every step.`),
-  },
-  {
-    subject: "Here's how to get your first funded account",
-    preheader: "The exact steps to start this week",
-    badge: "Getting Started",
-    title: "Your First Step Into Prop Trading",
-    body:
-      p(`{firstName}, getting your first prop evaluation or instant funded account with us is straightforward.`) +
-      p(`Submit your application. We'll review it, get on a quick call to understand your goals and budget, then recommend the right account size and prop firm for your situation. We handle the trading — you receive monthly profit distributions.`) +
-      p(`The minimum to start is $50 (for a $10K evaluation). Within 30 days of starting, you could be receiving ${highlight("$650/month")} from a $10K funded account.`) +
-      p(`Apply below and let's map out your specific roadmap.`),
-    ctaLabel: "Apply for Prop Trading",
+      p(`{firstName}, here is the complete Smart Profits Trader income roadmap:`) +
+      p(`${bold("Step 1 — Copy Trading.")} Start with as little as $200. Open an XM or Valetax account. We connect it and trade it for you. Profit split: 70% to you, 30% to SPT.`) +
+      p(`${bold("Step 2 — Compound.")} Do not withdraw everything. Let the balance grow. Every dollar that stays in the account grows the next month's profit base.`) +
+      p(`${bold("Step 3 — Cross $5k.")} Once your account balance exceeds $5,000, the split shifts to 50/50. Both sides are incentivised to keep growing.`) +
+      p(`${bold("Step 4 — Upgrade to iFunds.")} Use your accumulated copy trading profits to fund an iFunds account. $700 gets a $10k account. $1,600 gets a $25k account.`) +
+      p(`${bold("Step 5 — Scale.")} We trade both accounts simultaneously. Your income multiplies. That is the full system.`),
+    ctaLabel: "Start Your Journey",
     ctaUrl: APPLY_URL,
   },
   {
-    subject: "Prop trading is not gambling — here's the difference",
-    preheader: "And why people confuse the two",
-    badge: "Education",
-    title: "Prop Trading vs Gambling",
+    subject: "The profit split explained simply",
+    preheader: "Exactly how much you keep — at every stage",
+    badge: "Profit Structure",
+    title: "Your Cut at Every Stage",
     body:
-      p(`{firstName}, I hear this concern often: "Isn't prop trading just gambling with borrowed money?"`) +
-      p(`It isn't — and here's why. Gambling has a negative expected value by design. The house always wins over time. Systematic trading with a positive edge — like our Smart Profit EA — has a ${bold("positive expected value")} when applied correctly over hundreds of trades.`) +
-      p(`Prop firm accounts give us capital to express that positive edge at scale. The firm takes on the capital risk in exchange for a share of profits. If we trade well, everyone wins. If we don't — the firm loses their capital, and we lose only the initial challenge fee.`) +
-      p(`This asymmetric risk structure is one of the most attractive things about the prop model. Limited downside, significant upside.`),
+      p(`{firstName}, let me make the profit split as clear as possible.`) +
+      p(`${bold("Copy Trading — Below $5,000 balance:")} 70% to you, 30% to SPT.`) +
+      p(`${bold("Copy Trading — $5,000 and above:")} 50% to you, 50% to SPT.`) +
+      p(`${bold("Instant Funded (iFunds):")} We agree a profit split at onboarding. All profits are tracked and distributed on the iFunds payout schedule.`) +
+      p(`There are no hidden fees. No monthly management charges. No subscription costs layered on top. The split is the only thing that matters — and you see every number in your dashboard.`) +
+      p(`We win when you win. That is how the model is designed.`),
   },
   {
-    subject: "The 7 Golden Rules of our trading system",
-    preheader: "These are non-negotiable. Break them and the system breaks.",
-    badge: "Golden Rules",
-    title: "The Non-Negotiable Rules",
+    subject: "Who is iFunds best for?",
+    preheader: "This is not for everyone — here is who it actually suits",
+    badge: "Right Fit",
+    title: "Is Instant Funded Right for You?",
     body:
-      p(`{firstName}, the Smart Money Blueprint includes 7 Golden Rules that govern how we manage every account. They're worth knowing.`) +
-      p(`Rule 1: Always use the system. Rule 2: Protect the account above all else. Rule 3: Withdraw regularly — don't leave everything in one account. Rule 4: Reinvest strategically (40% back to trading, 40% to next challenge, 20% to savings).`) +
-      p(`Rule 5: Scale only after consistency — don't rush to $100K accounts before mastering $25K. Rule 6: Diversify across 4-6 firms minimum. Rule 7: Keep records — review monthly performance and adjust.`) +
-      p(`These rules exist because the traders who ignore them are the ones who lose. The ones who follow them build lasting wealth.`),
+      p(`{firstName}, let me be direct.`) +
+      p(`iFunds is best for people who:`) +
+      p(`${bold("1.")} Have already tested Copy Trading and want to scale with more capital.`) +
+      p(`${bold("2.")} Want funded exposure without the time and stress of an evaluation.`) +
+      p(`${bold("3.")} Can afford the one-time fee ($700 or $1,600) and understand it is not a guaranteed return.`) +
+      p(`${bold("4.")} Want a professionally managed funded account — not a DIY trading challenge.`) +
+      p(`If you are completely new to trading and have zero capital, start with Copy Trading first. Build confidence. Build your balance. Then upgrade to iFunds when you are ready.`) +
+      p(`If you already have $700–$1,600 available and want funded trading income, iFunds is worth a serious look.`),
   },
   {
-    subject: "Which prop firms do we target? Full list inside.",
-    preheader: "The 9 firms in our multi-firm scaling strategy",
-    badge: "Prop Firm Guide",
-    title: "Our Target Prop Firm Portfolio",
+    subject: "What happens after you pay the iFunds fee",
+    preheader: "Step by step — from payment to first profit",
+    badge: "Onboarding Process",
+    title: "The Onboarding Process After You Apply",
     body:
-      p(`{firstName}, for multi-firm scaling, the Blueprint recommends these firms. Each has been selected for reliability, payout track record, and EA-friendly rules.`) +
-      p(`${bold("FTMO")} — $200K max, gold standard. ${bold("FundedNext")} — flexible rules, generous scaling. ${bold("The 5%ers")} — lifetime funding, no time limit. ${bold("The 8%ers")} — newer entrant, strong payouts. ${bold("Alpha Capital Group")} — good for EA traders.`) +
-      p(`${bold("ThinkCapital")} — competitive splits. ${bold("Audacity Capital")} — instant funding available. ${bold("iFunds")} — our Instant Funded partner, $85K max, static drawdown model.`) +
-      p(`Smart Profits Trader has relationships and specific EA configurations for each of these firms. When you work with us, you benefit from that knowledge immediately.`),
+      p(`{firstName}, here is exactly what happens once you decide to move forward with an iFunds account:`) +
+      p(`${bold("Step 1:")} You complete the Smart Profits Trader application. We review your details and confirm your account size preference.`) +
+      p(`${bold("Step 2:")} We guide you through the iFunds payment process. You pay the fee directly to iFunds — $700 for a $10k account, $1,600 for a $25k account.`) +
+      p(`${bold("Step 3:")} iFunds activates your funded account. We receive access and connect it to our trading system.`) +
+      p(`${bold("Step 4:")} The Smart Profit Algo starts trading the account. You track performance in the dashboard.`) +
+      p(`${bold("Step 5:")} First profits arrive. They cover your fee. After that, every payout is income.`) +
+      p(`The whole process from application to live trading typically takes a few business days.`),
   },
   {
-    subject: "Withdraw early. Withdraw often. Here's why.",
-    preheader: "One of the most important rules in the entire blueprint",
-    badge: "Withdrawal Strategy",
-    title: "Why Regular Withdrawals Are Non-Negotiable",
+    subject: "The Gold market — why we only trade XAUUSD",
+    preheader: "There is a reason we focus on one market only",
+    badge: "Market Focus",
+    title: "Why Gold Is the Only Market We Trade",
     body:
-      p(`{firstName}, one of the Golden Rules that beginners often ignore is ${bold("Rule 3: Withdraw Regularly")}.`) +
-      p(`It's tempting to leave profits in a funded account and watch the number grow. But prop firms can change rules, suspend payouts, or in rare cases, shut down. Every dollar of unrealised profit sitting in a prop account is money you don't yet have.`) +
-      p(`Our withdrawal strategy: withdraw every month as soon as you hit the eligible threshold. Take the money out. It's yours.`) +
-      p(`The reinvestment plan is equally important — 40% back into trading capital, 40% into the next challenge or tier, 20% into savings. This structure accelerates growth while protecting what you've built.`),
+      p(`{firstName}, one thing that surprises people about Smart Profits Trader is that we only trade one market: ${bold("XAUUSD — Gold.")}`) +
+      p(`Here is why.`) +
+      p(`Gold is the most liquid commodity in the world. It trades 24 hours a day, 5 days a week. It has predictable patterns driven by institutional order flow, macroeconomic sentiment, and safe-haven demand.`) +
+      p(`By specialising in ${highlight("one market instead of trading everything")}, our algo develops deep pattern recognition that generalised systems never achieve. Our entries are more precise. Our risk management is more specific. Our results are more consistent.`) +
+      p(`Every prop firm account we manage — whether through Copy Trading or iFunds — trades only Gold. This is not a limitation. It is a competitive edge.`),
   },
   {
-    subject: "What does a typical month look like on a funded account?",
-    preheader: "From challenge pass to first withdrawal — the timeline",
-    badge: "Real Timeline",
-    title: "Month 1 After Your Account Is Funded",
+    subject: "Last email of the day — one question for you",
+    preheader: "Where are you starting from?",
+    badge: "Quick Check-In",
+    title: "Which Stage Are You At?",
     body:
-      p(`{firstName}, here's a realistic month-by-month timeline for someone starting with a $25K evaluation.`) +
-      p(`${bold("Week 1-2:")} Challenge Phase 1 begins. EA trades within rules. Target: 8% profit in 15 days.`) +
-      p(`${bold("Week 3-4:")} Phase 1 passed. Phase 2 begins immediately. Same process.`) +
-      p(`${bold("Month 2:")} Account is funded. EA begins live trading on $25K. Target: 10% — $2,500 gross.`) +
-      p(`${bold("Month 2 payout:")} You receive ${highlight("$1,625")} (65% split). The $120 total cost was recovered in month 1 when profit was shared at Phase 2 completion (some firms pay on funded account only — we advise the specific rules for each firm).`),
+      p(`{firstName}, I have sent you a lot today. Let me ask one simple question.`) +
+      p(`${bold("Where are you right now?")}`) +
+      p(`${highlight("A)")} I am brand new — I have some capital and want to start with Copy Trading.`) +
+      p(`${highlight("B)")} I have $700–$1,600 and I am ready to explore an iFunds account.`) +
+      p(`${highlight("C)")} I already trade and I want to understand how Copy Trading fits my setup.`) +
+      p(`Whichever you are, the next step is the same: complete the application form. It takes 3 minutes and tells us everything we need to match you to the right path.`) +
+      p(`There is no pressure. No payment required at this stage. Just a conversation.`),
+    ctaLabel: "Apply Now — 3 Minutes",
+    ctaUrl: APPLY_URL,
+  },
+  // ── EMAILS 11–20 (every 48 hours) ─────────────────────────────────────────
+  {
+    subject: "The compounding effect — why patience pays",
+    preheader: "What happens when you stop withdrawing everything",
+    badge: "Compounding",
+    title: "The Power of Letting Profits Stay",
+    body:
+      p(`{firstName}, most traders make one critical mistake: they withdraw every profit immediately.`) +
+      p(`Compounding is the most powerful force in trading. A $1,000 account growing at 10% per month does not generate $100 every month forever. It generates ${highlight("$100 in month 1, $110 in month 2, $121 in month 3")} — because each month's profit base is larger.`) +
+      p(`If you leave profits in the account for 6 months instead of withdrawing:`) +
+      p(`Month 1: $1,000 → $1,100. Month 3: $1,331. Month 6: ${highlight("$1,772.")}`) +
+      p(`That is 77% growth from nothing but patience. And when you cross $5,000, you have enough to fund an iFunds account and run both engines simultaneously.`) +
+      p(`Withdraw profits strategically. Compound aggressively. Then scale.`),
   },
   {
-    subject: "The question I get asked most: 'Is this too good to be true?'",
-    preheader: "My honest answer",
-    badge: "Honest Conversation",
-    title: "Addressing the Scepticism Directly",
+    subject: "A common question — can I trust iFunds?",
+    preheader: "Here is what you need to know before paying a fee",
+    badge: "Due Diligence",
+    title: "What You Should Know About iFunds",
     body:
-      p(`{firstName}, the most common question I receive is: "This all sounds too good to be true — what's the catch?"`) +
-      p(`Fair question. Here's the complete picture. Evaluation accounts can fail (the EA has a strong but not perfect pass rate). Prop firms can change rules or delay payouts. Monthly returns of 10% are targets, not guarantees. Some months will underperform. Some challenges will need to be retaken.`) +
-      p(`The system works over time — with consistent execution, proper risk management, and realistic expectations. It's not a get-rich-quick scheme. It's a structured, methodical approach to building trading income using institutional-grade tools.`) +
-      p(`If you're looking for a guarantee with zero risk — trading isn't that. If you're looking for a serious system with a clear edge — this is it.`),
-  },
-  {
-    subject: "The starter path: how to begin with just $50",
-    preheader: "The exact sequence for getting started at the minimum",
-    badge: "Minimum Start Guide",
-    title: "Starting With $50 — Step by Step",
-    body:
-      p(`{firstName}, you don't need hundreds or thousands to start. Here is the exact path from $50.`) +
-      p(`Step 1: Apply with Smart Profits Trader and select the $10K evaluation account. Total cost: ${bold("$50")} (two phases × $25 each).`) +
-      p(`Step 2: We set up the EA on your MT5 demo account for Phase 1 of the challenge. Trading begins. We target completion in 15 days.`) +
-      p(`Step 3: Phase 1 passed. Phase 2 begins. Same process. Phase 2 passed — your $10K account is now funded.`) +
-      p(`Step 4: Month 1 of live trading on the funded account. At 10% return, you receive ${highlight("$650")} — 13x your total investment. This is the starting point of your prop trading business.`),
-    ctaLabel: "Get Your HolaPrime Account — From $50",
-    ctaUrl: HOLAPRIME_PAGE_URL,
-  },
-  {
-    subject: "What separates our clients from DIY prop traders",
-    preheader: "The advantage of having an expert team manage your accounts",
-    badge: "Why Use SPT",
-    title: "DIY vs. Managed Prop Trading",
-    body:
-      p(`{firstName}, a common question: "Why not just buy the EA and manage my own prop accounts?"`) +
-      p(`You could. But here's what that requires: understanding prop firm rules deeply (they vary by firm and change often), knowing how to configure the EA for each firm's specific requirements, monitoring accounts during volatile market events, handling edge cases and drawdown scenarios, and maintaining multiple accounts simultaneously across different platforms.`) +
-      p(`Smart Profits Trader does all of this. We've already made the mistakes, learned the rules, and built the infrastructure. You access the results without the learning curve.`) +
-      p(`Your time has value. Our service lets you deploy capital productively while you focus on everything else in your life.`),
-  },
-  {
-    subject: "Scaling to $500K in funded accounts — is it realistic?",
-    preheader: "The numbers behind Stage 5 of the blueprint",
-    badge: "Scale Vision",
-    title: "The $500K Funded Portfolio",
-    body:
-      p(`{firstName}, Stage 5 of the Blueprint is running $500K–$1M across multiple prop firms simultaneously. Let's look at whether that's realistic.`) +
-      p(`To reach $500K in funded capital, you need roughly 5 × $100K accounts (or 10 × $50K, or 2-3 × $200K FTMO accounts). Each $100K challenge costs $300. Five challenges cost $1,500 total.`) +
-      p(`At 10% monthly on $500K: $50,000 gross profit. Your 65% split: ${highlight("$32,500/month")}.`) +
-      p(`Is it realistic? For someone starting now, reinvesting profits, and scaling systematically — yes, within 18-24 months. Not easy. Not overnight. But achievable through the Blueprint framework.`),
-  },
-  {
-    subject: "Final push — this is your moment",
-    preheader: "I've shared everything. Now it's your move.",
-    badge: "Your Move",
-    title: "Everything You Need Is Already in Your Hands",
-    body:
-      p(`{firstName}, you have the Blueprint. You understand how evaluation accounts and instant funded programs work. You've seen the income numbers.`) +
-      p(`You know that a $50 investment can unlock $650/month from a $10K funded account. You know that scaling to multiple accounts can generate $32,000+/month. You know Smart Profits Trader manages the trading so you don't have to.`) +
-      p(`The only thing missing is your application. It takes 3 minutes. There's no commitment at the application stage — just a conversation about whether we're the right fit for your goals.`) +
-      p(`Apply below. Let's get your first funded account set up.`),
-    ctaLabel: "Apply Now — Get Started This Week",
+      p(`{firstName}, a fair question: ${bold("Is iFunds legitimate and trustworthy?")}`) +
+      p(`iFunds is an established instant funded account provider operating in the prop trading space. Like all prop firms, it has specific account rules, payout terms, and operating conditions that you need to understand before joining.`) +
+      p(`What makes the Smart Profits Trader partnership work is that ${highlight("we manage the account for you.")} You are not expected to know the rules yourself. We operate within the iFunds framework and ensure the account is traded correctly.`) +
+      p(`Before paying any fee, we always review your situation during onboarding and confirm that iFunds is the right fit. We do not push anyone toward a fee they are not ready for.`) +
+      p(`If you have questions about iFunds before applying, speak with us directly via WhatsApp.`),
+    ctaLabel: "Apply Now",
     ctaUrl: APPLY_URL,
   },
   {
-    subject: "One more thing before I stop writing to you",
-    preheader: "This is the last email in this sequence",
-    badge: "Final Message",
-    title: "The Last Email — Make It Count",
+    subject: "Copy Trading for 3 months — then what?",
+    preheader: "The natural upgrade point most clients hit",
+    badge: "Growth Path",
+    title: "When Copy Trading Graduates to Instant Funded",
     body:
-      p(`{firstName}, this is my last email in this series. You've received everything I can share in writing.`) +
-      p(`If you haven't applied yet — ask yourself honestly: what am I waiting for? If it's a specific concern or question, reply to this email and I'll answer it personally. I read every reply.`) +
-      p(`If you've decided this isn't for you right now — no hard feelings. Keep the Blueprint. Come back when you're ready.`) +
-      p(`And if you're ready now — click below. Let's build your prop trading income together.`),
-    ctaLabel: "Apply — Final Email",
+      p(`{firstName}, I have had many clients start with Copy Trading and after 3–6 months of compounding, they are sitting on $800 to $2,000 in accumulated profits.`) +
+      p(`At that point, they have two options:`) +
+      p(`${bold("Option A:")} Keep compounding in Copy Trading. Growth continues steadily.`) +
+      p(`${bold("Option B:")} Use profits to fund an iFunds account. Add a second income engine on top of the Copy Trading account.`) +
+      p(`Most clients who reach that stage choose Option B. Because instead of one account growing slowly, they now have ${highlight("a $10k funded account generating $800–$1,200 a month")} on top of their Copy Trading income.`) +
+      p(`That is the moment trading stops being supplemental income and starts being a serious monthly revenue stream.`),
+    ctaLabel: "Explore Instant Funded",
+    ctaUrl: INSTANT_FUNDED_URL,
+  },
+  {
+    subject: "Risk disclaimer — the part I must always say",
+    preheader: "Honesty matters. Here is what you need to know about risk.",
+    badge: "Risk Transparency",
+    title: "What Can Go Wrong — And How We Manage It",
+    body:
+      p(`{firstName}, I want to be honest with you about risk.`) +
+      p(`Trading involves the possibility of losing money. Neither Copy Trading nor iFunds accounts are guaranteed to generate profit every month. Markets can be unpredictable. Drawdown happens.`) +
+      p(`${bold("What we do to manage risk:")}`) +
+      p(`We use the Smart Profit Algo with defined risk parameters on every trade. Stop losses are set. Position sizes are controlled. We do not over-leverage. We review performance every weekend and optimize based on current market conditions.`) +
+      p(`${bold("What this means for you:")}`) +
+      p(`Only invest capital you can afford to risk. Do not invest your savings, emergency funds, or borrowed money. Start at a level that does not stress you financially.`) +
+      p(`We operate with full transparency. You see the account. You see the trades. You see the numbers.`),
+  },
+  {
+    subject: "Why XM and Valetax — and not any other broker",
+    preheader: "We are very specific about which brokers we support. Here is why.",
+    badge: "Broker Selection",
+    title: "Why We Only Work With XM and Valetax",
+    body:
+      p(`{firstName}, for Copy Trading accounts, we only work with ${bold("XM")} and ${bold("Valetax.")} This is intentional.`) +
+      p(`${bold("XM")} is a globally regulated broker with MT4 and MT5 support, competitive spreads on Gold, and strong execution. It is accessible in most countries we serve.`) +
+      p(`${bold("Valetax")} is a preferred broker for clients who need specific account conditions, lower minimum deposits, or regional access where XM is limited.`) +
+      p(`We do not work with random brokers because ${highlight("broker quality directly affects trade execution.")} Slippage, spread width, and server latency all impact Copy Trading performance. We have tested both XM and Valetax extensively and trust their execution for XAUUSD.`) +
+      p(`If you already have an XM or Valetax account, you may be able to start within days.`),
+    ctaLabel: "Apply — Check Your Eligibility",
+    ctaUrl: APPLY_URL,
+  },
+  {
+    subject: "What our weekly optimization actually looks like",
+    preheader: "Every weekend we review, adjust, and prepare for the week ahead",
+    badge: "Weekly Process",
+    title: "What Happens Every Weekend at SPT",
+    body:
+      p(`{firstName}, every weekend our team runs a full optimization review of the Smart Profit Algo before markets open Monday.`) +
+      p(`Here is what gets reviewed:`) +
+      p(`${bold("Market behavior:")} How did volatility, trend, and liquidity behave last week? What patterns emerged?`) +
+      p(`${bold("Strategy performance:")} Which setups worked? Which underperformed? Do we need to adjust parameters?`) +
+      p(`${bold("Account status:")} How are our managed accounts performing? Are there any drawdown risks going into the new week?`) +
+      p(`${bold("Upcoming events:")} Are there major economic announcements (NFP, CPI, FOMC) that require cautious positioning?`) +
+      p(`This weekly review is why our system does not become stale. Markets change constantly. A system that does not adapt eventually stops working. Ours adapts every single week.`),
+  },
+  {
+    subject: "Three accounts, three income streams — is this realistic?",
+    preheader: "Let me show you what scaling actually looks like",
+    badge: "Scaling Vision",
+    title: "Building Multiple Income Streams From Trading",
+    body:
+      p(`{firstName}, most people think trading income comes from one account. The traders who build real income think differently.`) +
+      p(`Here is what scaling looks like in the Smart Profits Trader ecosystem:`) +
+      p(`${bold("Account 1:")} Copy Trading account on XM. Starting at $500. 70/30 split. Compounding monthly.`) +
+      p(`${bold("Account 2:")} iFunds $10k account funded with $700. Managed by SPT. First profits cover fee.`) +
+      p(`${bold("Account 3:")} iFunds $25k account funded after Account 1 profits accumulate. Second funded income engine.`) +
+      p(`Three accounts. Three income streams. All managed by the same system. All trading Gold.`) +
+      p(`Is this realistic? Yes — but it takes time and consistent compounding. ${highlight("We are building something that lasts, not a get-rich-quick scheme.")} That is the difference.`),
+  },
+  {
+    subject: "What makes Smart Profits Trader different from other services",
+    preheader: "There are dozens of copy trading services. Here is what sets us apart.",
+    badge: "SPT Difference",
+    title: "Why Clients Choose Smart Profits Trader",
+    body:
+      p(`{firstName}, the managed trading space is crowded. Signal services, copy trading platforms, prop firm challenge coaches — there are hundreds. So why Smart Profits Trader?`) +
+      p(`${bold("1. We manage everything.")} You do not need to analyse charts, place trades, or monitor screens. We handle execution completely.`) +
+      p(`${bold("2. We use a real algo.")} The Smart Profit Algo is not gut-feel trading. It is tested, optimized weekly, and rule-based. Emotion is removed from the equation.`) +
+      p(`${bold("3. Two clear pathways.")} Copy Trading for steady income. iFunds for funded scale. Simple, structured, and designed to grow.`) +
+      p(`${bold("4. Transparent profit split.")} You know exactly what you keep. No hidden fees. No surprises.`) +
+      p(`${bold("5. We communicate.")} WhatsApp updates, dashboard visibility, and regular performance reviews keep you informed.`),
+  },
+  {
+    subject: "Your questions answered — the most common ones we get",
+    preheader: "Clear answers to what people always ask before starting",
+    badge: "FAQ",
+    title: "The Questions We Get Asked Most",
+    body:
+      p(`{firstName}, here are the questions I get most often — and the real answers:`) +
+      p(`${bold("Q: Do I need trading experience?")} No. We handle all the trading. You invest, we execute, you share profits.`) +
+      p(`${bold("Q: What is the minimum to start Copy Trading?")} We recommend starting with at least $200. More capital means more monthly profit in absolute terms.`) +
+      p(`${bold("Q: Is the $700 iFunds fee refundable?")} No — it is a one-time funded account fee paid to iFunds. The first profits from the account recover the cost.`) +
+      p(`${bold("Q: How do I receive my profits?")} Copy Trading profits are transferred from your broker account. iFunds profits are paid on the iFunds payout schedule.`) +
+      p(`${bold("Q: What if the account goes into drawdown?")} We manage drawdown proactively using stop losses and position sizing. Drawdown is monitored weekly.`),
+    ctaLabel: "Apply — Get Started",
+    ctaUrl: APPLY_URL,
+  },
+  {
+    subject: "Honestly — what does month 6 look like?",
+    preheader: "A realistic picture of where clients are after 6 months",
+    badge: "6-Month Outlook",
+    title: "What 6 Months of Compounding Looks Like",
+    body:
+      p(`{firstName}, I want to paint a realistic picture of where clients who stay consistent end up after 6 months.`) +
+      p(`${bold("Starting capital: $500 Copy Trading account.")}`) +
+      p(`Month 1: 10% return. Balance: $550. Your 70% share: $35 (kept in account).`) +
+      p(`Month 3: Balance has grown to ~$665. Monthly profit increasing.`) +
+      p(`Month 6: Balance approaches $800–$900. Total compounded growth without withdrawing: ${highlight("60–80%.")}.`) +
+      p(`At month 6 you have two choices: start withdrawing monthly income, or put $700 of accumulated profit into an iFunds account and add a second income engine.`) +
+      p(`Most clients who get to month 6 choose to stay and scale. Because by that point, the system has proven itself and the income is real.`),
+  },
+  // ── EMAILS 21–30 (every 72 hours) ─────────────────────────────────────────
+  {
+    subject: "The VIP Signals option — for active traders",
+    preheader: "If you want to be more hands-on, this is the path",
+    badge: "VIP Signals",
+    title: "Not Everyone Wants Full Automation — That Is Fine",
+    body:
+      p(`{firstName}, Copy Trading and iFunds are fully managed — we handle everything.`) +
+      p(`But some people prefer to be more involved. They want to see the signals, understand the setup, and place trades themselves on their own account.`) +
+      p(`For those people, we have ${bold("VIP Signals")}.`) +
+      p(`$50 per month. Daily trade alerts on XAUUSD with entry, stop loss, and take profit — delivered to your Telegram. You execute on your broker account at your own pace.`) +
+      p(`VIP Signals is not managed trading. It is guided trading. You stay in control. You see every setup. You learn as you earn.`) +
+      p(`Some clients use both: VIP Signals on one account, Copy Trading on another. If you can afford to run both, the compounded learning and income is powerful.`),
+    ctaLabel: "Join VIP Signals — $50/month",
+    ctaUrl: VIP_SIGNALS_URL,
+  },
+  {
+    subject: "What happens if I need to withdraw before 6 months?",
+    preheader: "Life happens. Here is how withdrawals work.",
+    badge: "Withdrawals",
+    title: "How Withdrawals Work in Copy Trading",
+    body:
+      p(`{firstName}, a practical question: what if you need to withdraw money from your Copy Trading account before the 6-month mark?`) +
+      p(`The answer is: you can withdraw whenever you need to. The account is yours. The broker (XM or Valetax) processes withdrawals on their standard timelines.`) +
+      p(`The only thing to know is that ${bold("withdrawals reduce your compounding base.")} If you withdraw profits every month, your account grows slower. If you leave profits in, it grows faster.`) +
+      p(`We always recommend: ${highlight("withdraw what you need, compound what you can.")} Life requires income. Trading also requires patience. Finding that balance is part of building a sustainable trading income.`) +
+      p(`We will help you find the right withdrawal strategy during onboarding based on your financial situation.`),
+  },
+  {
+    subject: "A message from Solomon — why I built this",
+    preheader: "The personal story behind Smart Profits Trader",
+    badge: "Founder Message",
+    title: "Why I Created Smart Profits Trader",
+    body:
+      p(`{firstName}, I want to share something personal.`) +
+      p(`I built Smart Profits Trader because I saw too many people trying to figure out trading on their own and failing. Not because trading is impossible — but because ${bold("trading without structure, systems, and accountability is almost impossible to sustain.")}`) +
+      p(`Most people who try to trade retail end up losing. Not because they lack intelligence. Because they trade emotionally, without proper risk management, without an edge that has been tested and optimized.`) +
+      p(`I wanted to create something different. A system where everyday people could access algo-powered trading outcomes without needing to become professional traders themselves.`) +
+      p(`Copy Trading and iFunds are the answer to that. You bring the capital. We bring the system. We share the results.`) +
+      p(`That is what Smart Profits Trader is. That is why I built it. And that is why I want to help you get started.`),
+    ctaLabel: "Apply Now",
+    ctaUrl: APPLY_URL,
+  },
+  {
+    subject: "The safest way to start — if you are not sure yet",
+    preheader: "You do not have to go all-in. Start small and see.",
+    badge: "Low-Risk Entry",
+    title: "The Safest Way to Test Copy Trading",
+    body:
+      p(`{firstName}, if you are not sure yet — that is completely normal.`) +
+      p(`Here is the safest way to start: ${bold("begin with a small Copy Trading account.")}`) +
+      p(`$200–$300 is enough to start. You are not making huge returns at that level, but you are ${highlight("seeing the system work in real time.")} You see trades being placed. You see profits accumulating. You watch drawdown get managed.`) +
+      p(`After 2–3 months of watching a small account perform, most clients are confident enough to add more capital or fund an iFunds account.`) +
+      p(`Starting small is not a weakness. It is ${bold("smart risk management.")} We would rather you start with $200 and grow into confidence than put in $5,000 before you are ready.`) +
+      p(`Apply now. Tell us your starting capital. We will guide you from there.`),
+    ctaLabel: "Apply — Start Small, Scale Smart",
+    ctaUrl: APPLY_URL,
+  },
+  {
+    subject: "What our clients say — real stories from inside SPT",
+    preheader: "Results are not guaranteed, but here is what is actually happening",
+    badge: "Client Stories",
+    title: "Inside the SPT Ecosystem",
+    body:
+      p(`{firstName}, I will not fabricate testimonials. What I can tell you is what actually happens inside the Smart Profits Trader ecosystem.`) +
+      p(`Clients who start Copy Trading and compound consistently for 3–6 months see meaningful balance growth. They start withdrawing monthly income. Some reinvest into iFunds accounts.`) +
+      p(`Clients who take the iFunds route see their $700 fee recovered within the first 1–2 months of trading, then shift into pure profit mode.`) +
+      p(`Not every month is profitable. Not every trade wins. But the system is structured, the risk is managed, and the communication is consistent.`) +
+      p(`${bold("What you can expect:")} Structured trading. Weekly updates. Transparent numbers. An honest partnership.`) +
+      p(`${bold("What you should not expect:")} Guaranteed profits. Risk-free returns. Overnight wealth.`),
+  },
+  {
+    subject: "How to talk to us before deciding",
+    preheader: "No pressure, no pitch. Just a real conversation.",
+    badge: "Talk to Us",
+    title: "Have Questions? We Would Rather You Ask",
+    body:
+      p(`{firstName}, I know this is a financial decision. And financial decisions deserve proper consideration.`) +
+      p(`If you have questions you want answered before applying, speak with us directly. We are available on WhatsApp — the link is below.`) +
+      p(`We will tell you honestly:`) +
+      p(`✓ Whether Copy Trading or iFunds is the right fit for your capital and goals.`) +
+      p(`✓ What realistic returns look like at your capital level.`) +
+      p(`✓ What the risks are and how we manage them.`) +
+      p(`✓ What the onboarding process looks like step by step.`) +
+      p(`There is no pressure to join immediately. We would rather you join when you are ready and informed than rush in and regret it. Ask us anything.`),
+    ctaLabel: "Chat With Us on WhatsApp",
+    ctaUrl: "https://wa.me/2349164753603",
+  },
+  {
+    subject: "One thing that separates our investors from everyone else",
+    preheader: "It is not capital. It is not experience. It is this.",
+    badge: "Investor Mindset",
+    title: "The One Thing That Determines Success",
+    body:
+      p(`{firstName}, after working with many Copy Trading and iFunds clients, I have noticed one thing that separates the ones who build real income from the ones who give up.`) +
+      p(`It is not the amount of capital they started with. It is not their trading experience. It is not even which account they chose.`) +
+      p(`${bold("It is patience and consistency.")}`) +
+      p(`The clients who succeed compound consistently. They do not panic during drawdown. They do not withdraw every cent of profit the moment it appears. They treat their trading account like a ${highlight("business asset that needs time to grow.")}.`) +
+      p(`The ones who fail expect fast returns, withdraw impulsively during good months, or give up after a single difficult week.`) +
+      p(`If you approach this as a long-term income-building tool — not a slot machine — the results compound into something real.`),
+  },
+  {
+    subject: "We are almost at the end of this email series — but the work is just beginning",
+    preheader: "The decision point is here. What are you going to do?",
+    badge: "Decision Point",
+    title: "The Next Step Is Yours",
+    body:
+      p(`{firstName}, we are near the end of this email sequence.`) +
+      p(`Over the past weeks, I have walked you through the entire Smart Profits Trader system:`) +
+      p(`✓ How Copy Trading works and why it is the best starting point.`) +
+      p(`✓ How iFunds eliminates evaluations and gives instant funded access.`) +
+      p(`✓ The profit split structure. The income projections. The journey from $200 to multiple income streams.`) +
+      p(`✓ The risks. The process. The mindset required.`) +
+      p(`You now have everything you need to make an informed decision. The only thing left is to take action.`) +
+      p(`${bold("Apply now.")} It takes 3 minutes. Our team will review your situation and guide you to the right starting point.`),
+    ctaLabel: "Apply Now",
+    ctaUrl: APPLY_URL,
+  },
+  {
+    subject: "The final email — and a genuine invitation",
+    preheader: "This is the last email. Let me leave you with something honest.",
+    badge: "Final Email",
+    title: "A Genuine Invitation to Start",
+    body:
+      p(`{firstName}, this is my final email to you.`) +
+      p(`I have one ask: do not let this sit as unread emails that were interesting but never acted on.`) +
+      p(`If you believe structured, algo-powered managed trading is the right tool for your financial goals — take the next step. Apply. Have a conversation with our team. Ask your questions.`) +
+      p(`If the timing is not right, that is fine too. But save this email. Come back when you are ready.`) +
+      p(`Smart Profits Trader is not going anywhere. The Copy Trading and iFunds models are designed to grow steadily — for years. Whenever you decide to start, we will be here.`) +
+      p(`Thank you for reading every email. It means more than you know.`) +
+      p(`− Solomon David, Founder of Smart Profits Trader`),
+    ctaLabel: "Start My Application",
     ctaUrl: APPLY_URL,
   },
 ];
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // COPY_TRADING — Copy Trading & Personal Account Management Sequence

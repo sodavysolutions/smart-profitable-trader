@@ -49,7 +49,7 @@ function resolveSendyList(category: DripCategory): { listId: string | undefined;
     case "COPY_TRADING":
       return { listId: process.env.SENDY_LIST_ID_COPY_TRADING ?? process.env.SENDY_LIST_ID, tags: ["copy-trading", "blueprint-lead"] };
     case "PROP_FIRM":
-      return { listId: process.env.SENDY_LIST_ID_EVALUATION ?? process.env.SENDY_LIST_ID, tags: ["prop-firm", "blueprint-lead"] };
+      return { listId: process.env.SENDY_LIST_ID_INSTANT_FUNDED ?? process.env.SENDY_LIST_ID, tags: ["instant-funded", "blueprint-lead"] };
     case "GENERAL":
     default:
       return { listId: process.env.SENDY_LIST_ID, tags: ["general", "blueprint-lead"] };

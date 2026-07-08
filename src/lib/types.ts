@@ -1,8 +1,7 @@
-export type ServiceSlug = "copy-trading" | "evaluation" | "funded-account" | "personal-account" | "general";
+export type ServiceSlug = "copy-trading" | "instant-funded" | "vip-signals" | "general";
 
 export type ServiceInterest =
-  | "Copy Trading Subscription"
-  | "Funded Account Trading"
-  | "Evaluation Account Management"
-  | "Personal Trading Account Management"
+  | "Copy Trading"
+  | "Instant Funded Account (iFunds)"
+  | "VIP Signals"
   | "General Inquiry";

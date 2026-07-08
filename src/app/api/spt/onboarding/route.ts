@@ -12,8 +12,7 @@ import type { CustomerType } from "@prisma/client";
 const SERVICE_LABELS: Record<string, string> = {
   COPY_TRADING: "Copy Trading",
   VIP_SIGNALS: "VIP Signals",
-  INSTANT_FUNDED: "Instant Funded Accounts",
-  EVALUATION: "Evaluation Account",
+  INSTANT_FUNDED: "Instant Funded Account (iFunds)",
 };
 
 export async function POST(request: NextRequest) {

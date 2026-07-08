@@ -8,30 +8,25 @@ type Option = {
   label: string;
 };
 
-type ServiceKey = "vip-signals" | "copy-trading" | "instant-funded" | "evaluation" | "personal-account" | "general";
+type ServiceKey = "vip-signals" | "copy-trading" | "instant-funded" | "general";
 
 const serviceOptions: Option[] = [
-  { value: "Smart Profits Trader VIP Signal Service", label: "Smart Profits Trader VIP Signal Service" },
-  { value: "Copy Trading / Personal Account Trading", label: "Copy Trading / Personal Account Trading" },
-  { value: "Instant Funded Prop Trading", label: "Instant Funded Prop Trading" },
-  { value: "Evaluation Account Management", label: "Evaluation Account Management" },
-  { value: "Personal Account Management", label: "Personal Account Management" },
-  { value: "Not sure yet - I need guidance", label: "Not sure yet - I need guidance" }
+  { value: "Smart Profits Trader VIP Signal Service", label: "VIP Signals — Daily algo signals on Gold" },
+  { value: "Copy Trading", label: "Copy Trading — We trade on your behalf" },
+  { value: "Instant Funded Account (iFunds)", label: "Instant Funded — Get funded via iFunds (no challenge)" },
+  { value: "Not sure yet - I need guidance", label: "Not sure yet — Help me choose" }
 ];
 
 const serviceMap: Record<ServiceKey | string, string> = {
   "vip-signals": "Smart Profits Trader VIP Signal Service",
-  "copy-trading": "Copy Trading / Personal Account Trading",
-  "instant-funded": "Instant Funded Prop Trading",
-  evaluation: "Evaluation Account Management",
-  "personal-account": "Personal Account Management",
-  "funded-account": "Instant Funded Prop Trading",
+  "copy-trading": "Copy Trading",
+  "instant-funded": "Instant Funded Account (iFunds)",
+  "funded-account": "Instant Funded Account (iFunds)",
   general: "Not sure yet - I need guidance"
 };
 
 const brokerOptions = ["XM", "Valetax", "I do not have a broker account yet", "I need guidance"];
-const evaluationPropFirmOptions = ["Hola Prime", "FTMO", "FundingPips", "Fxify", "I have not chosen yet", "I need guidance"];
-const instantFundedProviderOptions = ["iFunds", "Tentrade", "I have not chosen yet", "I need guidance"];
+const instantFundedProviderOptions = ["iFunds", "I have not chosen yet", "I need guidance"];
 const generalInvestmentOptions = ["Below $100", "$100 - $299", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above", "I need guidance"];
 const copyInvestmentOptions = ["Below $300", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above"];
 const profitGoalOptions = ["5% – 8% per month (steady, low risk)", "10% – 15% per month (moderate growth)", "20% – 30% per month (ambitious)", "I need guidance on realistic expectations"];
@@ -57,19 +52,15 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
   const derivedMainGoal = useMemo(() => {
     if (service.includes("VIP Signal")) return "Receive daily trading signals I can act on";
     if (service.includes("Copy Trading")) return "Have my trades copied automatically into my account";
-    if (service.includes("Personal Account")) return "Have my personal account professionally managed";
-    if (service.includes("Evaluation")) return "Pass a prop firm evaluation challenge";
-    if (service.includes("Instant Funded")) return "Get an instant funded trading account";
-    return "";
+    if (service.includes("Instant Funded")) return "Get an instantly funded trading account via iFunds";
+    return "I need guidance — help me choose the right path";
   }, [service]);
 
   const serviceSummary = useMemo(() => {
     if (service.includes("VIP Signal")) return "Tell us how you plan to use the signals and whether you already trade gold.";
-    if (service.includes("Copy Trading")) return "We will confirm your broker, platform, capital level, and copy trading readiness.";
-    if (service.includes("Evaluation")) return "Share your prop firm, challenge stage, and account size so the team can advise properly.";
-    if (service.includes("Instant Funded")) return "We will check the provider, account size, and setup-fee readiness before next steps.";
-    if (service.includes("Personal Account")) return "We will review your broker, capital, and preference for account management or copy trading.";
-    return "Choose this if you want the team to recommend the best Smart Profits Trader path.";
+    if (service.includes("Copy Trading")) return "We will confirm your broker, platform, and capital so we can start copying trades immediately.";
+    if (service.includes("Instant Funded")) return "No challenge required. Pay the fee, get funded, let us trade for you. We will confirm your account size preference.";
+    return "Choose this if you want the team to recommend the best Smart Profits Trader path for your capital and goals.";
   }, [service]);
 
   useEffect(() => {
@@ -177,8 +168,8 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
           />
           <RadioGroup
             name="hasExistingTradingAccount"
-            label="Do you currently have a live trading or prop firm account?"
-            options={["Yes – I have a broker account", "Yes – I have a prop firm account", "No – I need help setting one up", "I am not sure what I need"]}
+            label="Do you currently have a live trading account?"
+            options={["Yes – I already have a broker account", "No – I need help setting one up", "I am not sure what I need"]}
             required
           />
           <RadioGroup
@@ -197,9 +188,7 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
               options={[
                 "Receive daily trading signals I can act on",
                 "Have my trades copied automatically into my account",
-                "Have my personal account professionally managed",
-                "Pass a prop firm evaluation challenge",
-                "Get an instant funded trading account",
+                "Get an instantly funded trading account via iFunds",
                 "I need guidance – help me choose the right path"
               ]}
               required
@@ -255,7 +244,7 @@ function ServiceFields({ service }: { service: string }) {
     return (
       <>
         <RadioGroup name="goldTradingExperience" label="Do you already trade XAUUSD / Gold?" options={["Yes", "No", "I am interested but have not traded gold before"]} />
-        <SelectField name="signalAccountType" label="Do you want to use the signals on a personal account or prop firm account?" options={["Personal trading account", "Prop firm account", "Both", "Not sure yet"]} />
+        <SelectField name="signalAccountType" label="Which account type will you use the signals on?" options={["Personal broker account", "Both", "Not sure yet"]} />
         <SelectField name="preferredBroker" label="Preferred broker" options={brokerOptions} />
       </>
     );
@@ -270,36 +259,17 @@ function ServiceFields({ service }: { service: string }) {
     );
   }
 
-  if (service.includes("Evaluation")) {
-    return (
-      <>
-        <SelectField name="evaluationPropFirm" label="Which evaluation prop firm are you using or considering?" options={evaluationPropFirmOptions} required />
-        <SelectField name="evaluationStage" label="What stage are you currently in?" options={["I have not bought a challenge yet", "Phase 1", "Phase 2", "Funded account", "Failed before and want to try again", "I need guidance"]} required />
-        <SelectField name="evaluationAccountSize" label="What account size are you considering or currently using?" options={["$5,000", "$10,000", "$25,000", "$50,000", "$100,000", "Not sure yet"]} />
-      </>
-    );
-  }
-
   if (service.includes("Instant Funded")) {
     return (
       <>
-        <SelectField name="instantFundedProvider" label="Which instant funded provider are you interested in?" options={instantFundedProviderOptions} required />
-        <SelectField name="instantFundedAccountSize" label="What instant funded account size are you interested in?" options={["$5,000", "$10,000", "$25,000", "$50,000", "Higher account size", "Not sure yet"]} />
-        <RadioGroup name="readyToPaySetupFee" label="Are you ready to pay the account/setup fee if accepted?" options={["Yes", "Not yet", "I need more details first"]} required />
+        <SelectField name="instantFundedProvider" label="Instant funded provider" options={instantFundedProviderOptions} required />
+        <SelectField name="instantFundedAccountSize" label="Which account size are you interested in?" options={["$10,000 ($700 fee)", "$25,000 ($1,600 fee)", "$50,000", "$100,000", "Not sure yet"]} />
+        <RadioGroup name="readyToPaySetupFee" label="Are you ready to pay the account fee?" options={["Yes – I am ready", "Not yet – I need more details", "I need guidance on the fee"]} required />
       </>
     );
   }
 
-  if (service.includes("Personal Account")) {
-    return (
-      <>
-        <SelectField name="preferredBroker" label="Preferred broker" options={brokerOptions} required />
-        <SelectField name="personalManagementPreference" label="Do you want full account management or copy trading?" options={["Full personal account management", "Copy trading", "I need guidance"]} />
-      </>
-    );
-  }
-
-  return <p className="rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-600">Select the closest service above. If you are unsure, the team will use your answers to recommend the most suitable option.</p>;
+  return <p className="rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-600">Select a service above. The team will use your answers to recommend the best Smart Profits Trader path for your goals.</p>;
 }
 
 function FormSection({ title, children }: { title: string; children: React.ReactNode }) {

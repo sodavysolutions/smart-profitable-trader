@@ -177,17 +177,14 @@ export function InstantFundedHero() {
           <div className="funnel-hero-grid">
             <div className="funnel-hero-copy hero-slide-left">
               <h1 className="funnel-headline text-4xl text-navy-950 sm:text-5xl lg:text-[4rem]">
-                Get Access to Funded Trading Opportunities Without Going Through the Long Evaluation Challenge Route
+                Get a Funded Trading Account Instantly — No Evaluation, No Challenge, No Waiting
               </h1>
               <div className="mt-6 space-y-4 text-base leading-8 text-slate-600 sm:text-lg">
                 <p>
-                  Smart Profits Trader Instant Funded helps clients access funded prop trading opportunities faster, with account setup support, structured trading management, progress tracking, and profit-share handling, all powered by our <strong>Smart Profit Algo</strong>.
+                  Smart Profits Trader partners with <strong>iFunds</strong> to give you an instantly funded account with zero evaluation required. Pay a one-time fee — <strong>$700 for a $10,000 account, $1,600 for a $25,000 account</strong> — and we manage the trading for you.
                 </p>
                 <p>
-                  Instead of struggling through Phase 1 and Phase 2 evaluations yourself, you can start with an instant funded account pathway and allow our structured trading operation to manage the trading process professionally.
-                </p>
-                <p>
-                  Our trading decisions are supported by a machine learning-driven trading system built around strategy testing, live-market validation, weekly optimization, and risk-managed execution.
+                  The Smart Profit Algo trades the account. First profits cover your fee. After that, every payout is income. Transparent, structured, and professionally managed from day one.
                 </p>
               </div>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -208,8 +205,8 @@ export function InstantFundedHero() {
 
 export function InstantFundedPainSection() {
   const painPoints = [
-    "They fail Phase 1 before reaching the target.",
-    "They pass Phase 1 but lose the account in Phase 2.",
+    "They pay for evaluations and fail before reaching the profit target.",
+    "They spend months trying to pass evaluations only to fail at the final stage.",
     "They break drawdown rules.",
     "They overtrade because they are under pressure.",
     "They lack a structured system.",
@@ -221,9 +218,9 @@ export function InstantFundedPainSection() {
     <section className="page-shell py-16">
       <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
-          <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">Most People Want Prop Firm Funding, But the Evaluation Process Can Be Stressful and Difficult</h2>
+          <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">Traditional Prop Firms Make You Wait. iFunds Gives You Capital Immediately.</h2>
           <p className="mt-5 leading-7 text-slate-600">
-            Prop trading has opened the door for people to access larger trading capital, but passing evaluations is not always easy. The opportunity is real, but the process can be frustrating.
+            The traditional prop firm model requires weeks or months of evaluation before you see a funded account. iFunds removes all of that — one payment, instant access, professionally managed.
           </p>
         </div>
         <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-soft">
@@ -336,7 +333,7 @@ export function InstantFundedAlgoSection() {
 
 export function InstantFundedBenefits() {
   const benefits = [
-    ["Skip the Long Evaluation Route", "Instead of spending weeks or months trying to pass Phase 1 and Phase 2, the instant funded pathway allows you to start with a funded account option faster.", Clock3],
+    ["No Evaluation Required", "Pay one fee and receive a funded account immediately. No Phase 1, no Phase 2, no waiting.", Clock3],
     ["Let a Structured Trading System Handle Execution", "You do not have to sit on charts all day or make emotional decisions. Our trading operation is supported by the Smart Profit Algo, weekly optimization, and controlled risk management.", Bot],
     ["Track Progress, Withdrawals, and Profit Share Professionally", "We help monitor account growth, profit progress, drawdown status, withdrawals, and profit-share records so the process feels organized and transparent.", BarChart3]
   ] as const;
@@ -482,7 +479,7 @@ export function InstantFundedProfitShare() {
 
 export function InstantFundedWhoFor() {
   const items = [
-    "You want access to funded trading opportunities without going through a long evaluation route.",
+    "You want funded prop firm capital without paying for evaluations or waiting months to get funded.",
     "You want a faster way to participate in prop trading.",
     "You do not have the time or skill to trade the account yourself.",
     "You prefer a structured trading operation to manage the account.",
@@ -588,9 +585,9 @@ export function InstantFundedFinalCTA() {
     <section className="page-shell py-16">
       <div className="overflow-hidden rounded-[28px] bg-[radial-gradient(circle_at_top_left,#dbeafe_0,#f8fbff_46%,#fff7f1_100%)] p-6 shadow-[0_24px_70px_rgba(15,35,70,0.1)] md:p-10">
         <div className="relative mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Ready to Access Funded Trading Without the Long Challenge Process?</h2>
+          <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Ready to Get a Funded Account Without Any Evaluation?</h2>
           <p className="mt-5 leading-7 text-slate-600">
-            If you want to participate in prop trading but do not want to go through the stressful evaluation route alone, Smart Profits Trader Instant Funded may be the right path for you.
+            $700 for a $10k account. $1,600 for a $25k account. We manage the trading. First profits cover your fee. Then it is all income.
           </p>
           <p className="mt-3 leading-7 text-slate-600">
             Apply now and let us review your goal, preferred account size, and available funding options.
@@ -620,7 +617,7 @@ export function InstantFundedFooter() {
             {[
               ["VIP Signals", "/spt/vip-signals"],
               ["Copy Trading", "/spt/copy-trading"],
-              ["Evaluation Management", "/spt/evaluation"],
+              ["VIP Signals", "/spt/vip"],
               ["Risk Disclaimer", "/spt/risk-disclaimer"],
               ["Contact", "/spt/contact"]
             ].map(([label, href]) => (

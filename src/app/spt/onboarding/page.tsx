@@ -7,10 +7,9 @@ import { CheckCircle2, Loader2, User, Mail, Phone, Globe, Calendar, Layers, Chev
 // ── Config ───────────────────────────────────────────────────────────────────
 
 const SERVICES = [
-  { value: "COPY_TRADING",   label: "Copy Trading",            desc: "We trade on your behalf, 20% profit share" },
-  { value: "VIP_SIGNALS",    label: "VIP Signals",             desc: "Daily signals with entry, SL & TP" },
-  { value: "INSTANT_FUNDED", label: "Instant Funded Accounts", desc: "Get instantly funded via iFunds" },
-  { value: "EVALUATION",     label: "Evaluation / Prop Trading", desc: "Pass a prop firm challenge with our support" },
+  { value: "COPY_TRADING",   label: "Copy Trading",            desc: "We trade on your behalf — 70/30 split below $5k, 50/50 above" },
+  { value: "VIP_SIGNALS",    label: "VIP Signals",             desc: "Daily algo signals with entry, SL & TP on Gold" },
+  { value: "INSTANT_FUNDED", label: "Instant Funded (iFunds)", desc: "Get an instantly funded account — $700 → $10k, $1,600 → $25k" },
 ];
 
 const SERVICE_CONFIG: Record<string, {
@@ -23,19 +22,13 @@ const SERVICE_CONFIG: Record<string, {
     brokerLabel: "Select your broker",
     brokers: ["XM", "Valetax"],
     amountLabel: "Investment amount",
-    amounts: ["$100", "$200", "$300", "$500", "$1,000", "$2,000", "$3,000", "$5,000"],
-  },
-  EVALUATION: {
-    brokerLabel: "Select your prop firm",
-    brokers: ["Blueberry Markets", "HolaPrime", "FXIFY"],
-    amountLabel: "Challenge account size",
-    amounts: ["$10,000", "$25,000", "$50,000", "$100,000", "$200,000"],
+    amounts: ["$200", "$300", "$500", "$1,000", "$2,000", "$3,000", "$5,000", "$10,000"],
   },
   INSTANT_FUNDED: {
     brokerLabel: "Provider",
     brokers: ["iFunds"],
     amountLabel: "Funded account size",
-    amounts: ["$10,000", "$25,000", "$50,000", "$100,000", "$200,000"],
+    amounts: ["$10,000 ($700 fee)", "$25,000 ($1,600 fee)", "$50,000", "$100,000"],
   },
 };
 
@@ -124,7 +117,7 @@ function ServiceDetailPanel({
             value={detail.broker}
             onChange={v => onChange({ ...detail, broker: v })}
             options={cfg.brokers}
-            placeholder={`Choose ${serviceValue === "EVALUATION" ? "prop firm" : "broker"}`}
+            placeholder="Choose broker"
             required
           />
         )}

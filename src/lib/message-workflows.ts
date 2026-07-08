@@ -152,9 +152,8 @@ function buildServiceTag(service: string) {
 function resolveProspectListId(service: string): string | undefined {
   const s = service.toLowerCase();
   if (s.includes("vip signal")) return process.env.SENDY_LIST_ID_VIP_SIGNALS;
-  if (s.includes("copy trading") || s.includes("personal account")) return process.env.SENDY_LIST_ID_COPY_TRADING;
-  if (s.includes("instant funded")) return process.env.SENDY_LIST_ID_INSTANT_FUNDED;
-  if (s.includes("evaluation")) return process.env.SENDY_LIST_ID_EVALUATION;
+  if (s.includes("copy trading")) return process.env.SENDY_LIST_ID_COPY_TRADING;
+  if (s.includes("instant funded") || s.includes("ifunds")) return process.env.SENDY_LIST_ID_INSTANT_FUNDED;
   return undefined;
 }
 

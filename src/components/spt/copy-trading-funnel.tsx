@@ -55,7 +55,7 @@ export function CopyTradingHeader() {
           </span>
           <span className="hidden leading-tight sm:block">
             <span className="block font-semibold text-navy-950">Smart Profits Trader Copy Trading</span>
-            <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-profit-600">A Personal Account Trading Solution</span>
+            <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-profit-600">We Trade Your Account — You Keep the Profits</span>
           </span>
         </Link>
         <div className="flex items-center gap-2">
@@ -341,7 +341,7 @@ export function CopyTradingTrustSection() {
             "Weekly optimization reviews",
             "Account progress monitoring",
             "Risk-managed execution",
-            "Transparent personal account setup",
+            "70/30 profit split below $5k, 50/50 above",
             "No guaranteed-profit claims"
           ].map((item) => (
             <div key={item} className="flex gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-sm font-semibold text-navy-950 shadow-sm">
@@ -407,7 +407,7 @@ export function CopyTradingFooter() {
             {[
               ["VIP Signals", "/spt/vip-signals"],
               ["Instant Funded", "/spt/instant-funded"],
-              ["Evaluation Management", "/spt/evaluation"],
+              ["VIP Signals", "/spt/vip"],
               ["Risk Disclaimer", "/spt/risk-disclaimer"],
               ["Contact", "/spt/contact"]
             ].map(([label, href]) => (

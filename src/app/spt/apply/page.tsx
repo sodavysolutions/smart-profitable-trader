@@ -4,7 +4,7 @@ import { SPTPageShell } from "@/components/spt/sections";
 
 export const metadata: Metadata = {
   title: "Apply | Smart Profits Trader",
-  description: "Apply for VIP signals, copy trading, personal account trading, instant funded prop trading, or evaluation account management with Smart Profits Trader."
+  description: "Apply for Copy Trading, Instant Funded accounts via iFunds, or VIP Signals with Smart Profits Trader. Takes 3 minutes."
 };
 
 export default async function SPTApplyPage({ searchParams }: { searchParams: Promise<{ service?: string }> }) {

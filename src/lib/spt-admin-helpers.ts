@@ -16,10 +16,9 @@ export function inferCustomerType(service: string) {
 
   if (normalized.includes("vip")) return CustomerType.VIP_SIGNALS;
   if (normalized.includes("copy")) return CustomerType.COPY_TRADING;
-  if (normalized.includes("funded")) return CustomerType.INSTANT_FUNDED;
-  if (normalized.includes("evaluation")) return CustomerType.EVALUATION;
+  if (normalized.includes("funded") || normalized.includes("ifunds")) return CustomerType.INSTANT_FUNDED;
 
-  return CustomerType.PERSONAL_ACCOUNT;
+  return CustomerType.COPY_TRADING; // default to Copy Trading for unclassified
 }
 
 export function calculateProfitShareValues(totalProfit: number, clientPercentage: number, companyPercentage: number) {

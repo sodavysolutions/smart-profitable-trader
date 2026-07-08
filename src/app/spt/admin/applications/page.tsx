@@ -249,7 +249,7 @@ async function convertApplicationToCustomer(formData: FormData) {
       currentProfit: 0,
       growthPercentage: 0,
       status: "Pending Setup",
-      phase: customerType === "EVALUATION" ? "Phase 1" : customerType === "INSTANT_FUNDED" ? "Funded" : null
+      phase: customerType === "INSTANT_FUNDED" ? "Funded" : null
     },
     create: {
       id: `progress-${customer.id}`,
@@ -258,7 +258,7 @@ async function convertApplicationToCustomer(formData: FormData) {
       accountSize: initialCapital,
       currentBalance: initialCapital,
       currentEquity: initialCapital,
-      profitTarget: customerType === "EVALUATION" ? initialCapital * 0.1 : initialCapital * 0.05,
+      profitTarget: initialCapital * 0.05,
       currentProfit: 0,
       growthPercentage: 0,
       drawdownLimit: initialCapital * 0.1,
@@ -266,7 +266,7 @@ async function convertApplicationToCustomer(formData: FormData) {
       dailyDrawdown: 0,
       maxDrawdown: 0,
       daysTraded: 0,
-      minimumTradeDays: customerType === "EVALUATION" ? 5 : 0,
+      minimumTradeDays: 0,
       status: "Pending Setup",
       notes: app.message
     }

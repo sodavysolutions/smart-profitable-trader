@@ -13,7 +13,7 @@ import type { AccountPlatform, CustomerStatus, CustomerType } from "@prisma/clie
 
 export const dynamic = "force-dynamic";
 
-const customerTypes: CustomerType[] = ["VIP_SIGNALS", "COPY_TRADING", "INSTANT_FUNDED", "EVALUATION", "PERSONAL_ACCOUNT"];
+const customerTypes: CustomerType[] = ["VIP_SIGNALS", "COPY_TRADING", "INSTANT_FUNDED", "PERSONAL_ACCOUNT"];
 const customerStatuses: CustomerStatus[] = ["ACTIVE", "PENDING_SETUP", "SUSPENDED", "PAUSED", "COMPLETED", "FUNDED", "CANCELLED", "LOST"];
 const accountPlatforms: Array<AccountPlatform | ""> = ["", "MT4", "MT5", "TRADELOCKER", "OTHER"];
 

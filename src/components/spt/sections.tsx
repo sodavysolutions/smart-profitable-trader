@@ -26,9 +26,6 @@ import { ApplicationForm } from "@/components/ApplicationForm";
 import { SPTNavbar } from "@/components/spt/spt-navbar";
 
 const whatsappUrl = "https://wa.me/2349164753603";
-const evaluationWhatsappUrl = `${whatsappUrl}?text=${encodeURIComponent(
-  "Hello Smart Profits Trader team, I'm interested in the Evaluation Prop Trading service. Please send me the recommended prop firms, account options, management process, risk guidelines, and how to get started."
-)}`;
 
 const offers: Array<{
   title: string;
@@ -40,61 +37,51 @@ const offers: Array<{
   icon: LucideIcon;
 }> = [
   {
-    title: "Smart Profits Trader VIP Signal Service",
-    subtitle: "Real-time algo-powered signals — $50/month",
-    copy: "Get real-time trade alerts with entry, TP, and SL delivered straight to your Telegram. Powered by the Smart Profit Algo. Join in minutes.",
-    bestFor: ["Traders who want guided alerts", "Beginners who need structure", "Busy people who trade manually", "People who want a disciplined signal flow"],
-    cta: "Join VIP Signals — $50/month",
-    href: "/spt/vip",
-    icon: Signal
-  },
-  {
-    title: "Copy Trading / Personal Account Trading",
-    subtitle: "Let your account follow professional trading execution",
-    copy: "For clients who prefer a more hands-free approach, your account can follow selected trading activity or receive personal account management support.",
-    bestFor: ["Busy professionals", "Investors with personal accounts", "People who prefer automation", "Clients who want managed trading support"],
-    cta: "Explore Copy Trading",
+    title: "Copy Trading",
+    subtitle: "We trade on your behalf — you keep the profit",
+    copy: "Invest capital through XM or Valetax. Our algo executes every trade. Profits are split 70/30 (you/SPT) below $5k, then 50/50 above $5k. Compound and scale until you upgrade to Instant Funded.",
+    bestFor: ["Busy professionals who want passive income", "Beginners who prefer full automation", "Investors who want to compound steadily", "Anyone who wants algo-powered trading without lifting a finger"],
+    cta: "Start Copy Trading",
     href: "/spt/copy-trading",
     icon: Copy
   },
   {
-    title: "Instant Funded Prop Trading",
-    subtitle: "Start with a funded account without the traditional challenge",
-    copy: "Our instant funded pathway supports account setup, trading operations, progress tracking, and profit-share management.",
-    bestFor: ["Faster funded access", "Prop firm capital exposure", "Structured funded-account trading", "Clients who want done-with-you support"],
-    cta: "Explore Instant Funded",
+    title: "Instant Funded Account (iFunds)",
+    subtitle: "Get a funded account — no challenge, no evaluation",
+    copy: "Pay a one-time fee and receive a funded iFunds account instantly. $700 gets you a $10k account. $1,600 gets you a $25k account. We manage the account. Profits roll in. Recover your fee, then pure income.",
+    bestFor: ["Traders ready to scale with prop firm capital", "Copy Trading graduates who want more leverage", "People who want funded exposure without passing a challenge", "Serious investors building a trading income"],
+    cta: "Get Instantly Funded",
     href: "/spt/instant-funded",
     icon: WalletCards
   },
   {
-    title: "Evaluation Account Management",
-    subtitle: "Structured support for Phase 1, Phase 2, and funded accounts",
-    copy: "We support evaluation account progress with target tracking, drawdown awareness, trading-day discipline, and funded-stage preparation.",
-    bestFor: ["Prop firm challenges", "Phase 1 and Phase 2 support", "Account progress tracking", "Disciplined execution"],
-    cta: "Explore Evaluation",
-    href: "/spt/evaluation",
-    icon: Target
+    title: "VIP Signals — $50/month",
+    subtitle: "Real-time algo signals on Gold, straight to Telegram",
+    copy: "Get every trade alert — entry, take profit, and stop loss — delivered to your phone in real time. Powered by the Smart Profit Algo. Trade on your own broker account at your own pace.",
+    bestFor: ["Traders who want to stay in control", "People learning the market with expert guidance", "Busy professionals who trade manually", "Anyone wanting algo-quality signals without full management"],
+    cta: "Join VIP Signals — $50/month",
+    href: "/spt/vip",
+    icon: Signal
   }
 ];
 
 const ecosystem = [
-  ["VIP Signals", "Receive structured trading alerts and market opportunities.", Signal],
-  ["Copy Trading", "Connect your account to selected trading activity.", Copy],
-  ["Personal Trading", "Use your own broker account with a managed trading structure.", WalletCards],
-  ["Prop Trading", "Get support for instant funded and evaluation accounts.", Target]
+  ["Copy Trading", "We trade your account — you keep the profits. 70/30 below $5k, 50/50 above.", Copy],
+  ["Instant Funded", "Get a $10k or $25k funded account instantly via iFunds. We manage it.", WalletCards],
+  ["VIP Signals", "Real-time Gold signals with entry, TP, SL — delivered to Telegram daily.", Signal]
 ] as const;
 
 const tradingPathCards = [
-  ["I want trading signals", "Best for newer or busy traders who want guided market alerts.", "Join VIP Signals — $50/mo", "/spt/vip", Signal],
-  ["I want my account managed", "Best for clients who prefer copy trading or personal account support.", "Managed Account", "/spt/copy-trading", Copy],
-  ["I want prop firm support", "Best for funded accounts, instant funding, or evaluation challenges.", "Prop Firm Support", "/spt/evaluation", Target]
+  ["I want passive income", "Best for investors who want their capital traded on their behalf with profit sharing.", "Start Copy Trading", "/spt/copy-trading", Copy],
+  ["I want a funded account", "Best for those ready to scale with $10k–$25k prop firm capital via iFunds.", "Get Instant Funded", "/spt/instant-funded", WalletCards],
+  ["I want daily signals", "Best for traders who trade manually and want algo-quality alerts on Gold.", "Join VIP Signals", "/spt/vip", Signal]
 ] as const;
 
 const offerFitGuide = [
-  ["Beginner", "VIP Signals"],
-  ["Busy professional", "Copy Trading"],
-  ["Prop firm trader", "Evaluation or Instant Funded"],
-  ["Investor with account capital", "Personal Account Trading"]
+  ["Starting out / beginner investor", "Copy Trading ($200+ to start)"],
+  ["Passive income seeker", "Copy Trading → Compound → Instant Funded"],
+  ["Ready to scale with prop capital", "Instant Funded via iFunds"],
+  ["Active trader who trades manually", "VIP Signals — $50/month"]
 ] as const;
 
 const afterApplyItems = [
@@ -112,101 +99,68 @@ const algoSteps = [
 ] as const;
 
 const features = [
-  ["Algo-Supported Decisions", "Trading operations are supported by a structured algorithmic process.", Bot],
-  ["Weekly Optimization", "Strategies are reviewed every weekend based on market volatility and price behavior.", RefreshCcw],
-  ["Multiple Income Pathways", "Choose signals, copy trading, personal accounts, or prop firm support.", LineChart],
-  ["Risk-Managed Approach", "The focus is controlled exposure, drawdown awareness, and disciplined execution.", ShieldCheck],
-  ["Progress Tracking", "Track growth, phase progress, withdrawals, and account updates.", BarChart3],
-  ["Professional Ecosystem", "Built around structure, communication, transparency, and sustainability.", Sparkles]
+  ["Algo-Supported Decisions", "Every trade is powered by the Smart Profit Algo — no emotions, just rules.", Bot],
+  ["Weekly Optimization", "Strategies are reviewed every weekend based on live market behavior.", RefreshCcw],
+  ["Two Clear Pathways", "Copy Trading for compounders. Instant Funded for scalers. Simple, structured, profitable.", LineChart],
+  ["Risk-Managed Approach", "Controlled exposure, drawdown awareness, and disciplined position sizing on every trade.", ShieldCheck],
+  ["Profit Tracking", "Track your balance, equity, withdrawals, and profit-share milestones clearly.", BarChart3],
+  ["Clear Profit Splits", "Below $5k: 70% yours. Above $5k: 50/50. Transparent from day one.", Sparkles]
 ] as const;
 
-const proofCards = ["Account Growth", "Weekly Review", "Profit Share", "Drawdown Monitoring", "Evaluation Progress", "Withdrawal Tracking"];
+const proofCards = ["Account Growth", "Weekly Review", "Profit Share", "Drawdown Monitoring", "Balance Tracking", "Withdrawal Tracking"];
 
 const faqs = [
   ["Is profit guaranteed?", "No. Trading involves risk and profits are not guaranteed. Smart Profits Trader focuses on structure, risk management, and continuous optimization, but losses can still happen."],
   ["What is the Smart Profit Algo?", "The Smart Profit Algo is our algorithmic trading system that helps analyze market behavior, test strategies, validate setups, and support trading decisions."],
   ["Do I need trading experience?", "Not necessarily. If you are new, you can start with VIP signals or copy trading. If you already understand trading, choose the offer that fits your goals."],
   ["Can I use my personal account?", "Yes. Personal account trading and copy trading are designed for clients who want to use their own trading accounts."],
-  ["Do you support prop firm accounts?", "Yes. We support instant funded accounts and evaluation accounts, including Phase 1, Phase 2, and funded account progress tracking."],
+  ["Do you support instant funded accounts?", "Yes. We support iFunds accounts — $700 for a $10k account and $1,600 for a $25k account. We manage the trading after funding."],
+  ["What is the profit split for Copy Trading?", "Below $5k account balance: 70% to you, 30% to SPT. Above $5k: 50/50. Both parties win as the account grows."],
   ["How often is the algo optimized?", "Optimization reviews are carried out every weekend to help align the trading system with current market trends and conditions."]
 ];
 
-const evaluationSupportItems = [
-  "Prop firm selection guidance",
-  "Account size planning",
-  "Phase 1 progress tracking",
-  "Phase 2 progress tracking",
-  "Funded account transition support",
-  "Drawdown monitoring",
-  "Account rule awareness",
-  "Risk-managed trading operation",
-  "Profit target tracking",
-  "Updates and progress communication"
+const copyTradingJourney = [
+  ["Invest", "Open an XM or Valetax account. Deposit your capital. We connect and start trading."],
+  ["Compound", "Profits accumulate. Your balance grows. 70% is yours below $5k — you keep compounding."],
+  ["Cross $5k", "Profit split becomes 50/50. Both sides are motivated to keep growing the account."],
+  ["Upgrade to Instant Funded", "Use your Copy Trading profits to fund an iFunds account. $700 → $10k. $1,600 → $25k."],
+  ["Recover Your Fee", "We trade the funded account. First profits cover your fee. After that — pure income."],
+  ["Scale", "Grow the funded account. Withdraw profits. Reinvest. Build a real trading income stream."]
 ];
 
-const evaluationAlgoPoints = [
-  "Market behavior analysis",
-  "Strategy testing",
-  "Live-market demo validation",
-  "Weekly optimization",
-  "Drawdown awareness",
-  "Risk-managed execution",
-  "Prop account rule sensitivity"
-];
-
-const evaluationBenefits = [
+const ifundsBenefits = [
   [
-    "Reduce Emotional Trading Pressure",
-    "Prop challenges can make traders emotional because every loss feels like a threat to the account. Our structured process helps reduce random decisions, revenge trading, and pressure-based execution.",
+    "No Evaluation. No Challenge. No Waiting.",
+    "Traditional prop firms make you pass Phase 1, Phase 2 before you see a cent. With iFunds, you pay once and receive a funded account immediately. We handle the trading.",
     ShieldCheck
   ],
   [
-    "Track Phase Progress Professionally",
-    "We monitor account growth, target progress, daily drawdown, max drawdown, phase status, and account rules so the challenge is handled with more clarity.",
-    BarChart3
+    "We Manage Everything",
+    "Once funded, the Smart Profit Algo trades the account with weekly optimization. You check your dashboard. Profits roll in. No screen time required.",
+    Bot
   ],
   [
-    "Use Algo-Supported Trade Selection",
-    "Our trading approach is supported by the Smart Profit Algo, weekly optimization, and live-market strategy validation to help create a more disciplined trading operation.",
-    Bot
+    "Recover Your Cost, Then Pure Profit",
+    "The first profits from the account cover your fee. After that, every dollar is income. $700 for a $10k account. $1,600 for a $25k account.",
+    BarChart3
   ]
 ] as const;
 
-const recommendedPropFirms = [
-  ["Hola Prime ⭐", "https://holaprime.com?affiliateId=smartprofitsalgo"],
-  ["FTMO", "https://trader.ftmo.com/?affiliates=dDWEICNovYoncFqgzCop"],
-  ["FundingPips", "https://app.fundingpips.com/register?referral_code=64d6c082"],
-  ["Fxify", "https://trader.fxify.com/purchasechallenge?affiliateId=8259"]
-] as const;
-
-const evaluationFitItems = [
-  "You want to take a prop firm challenge but do not want to trade it blindly.",
-  "You have failed challenges before because of risk, emotions, or poor execution.",
-  "You want support for Phase 1, Phase 2, or funded account stages.",
-  "You want your account progress, drawdown, and target tracked professionally.",
-  "You want a structured trading process supported by algo-assisted analysis.",
-  "You understand that prop firm accounts have rules that must be respected.",
-  "You are willing to follow a disciplined, risk-managed approach.",
-  "You understand that results are not guaranteed and accounts can still fail."
+const ifundsSteps = [
+  ["Apply", "Tell us which account size you want — $10k or $25k. We confirm your details and readiness."],
+  ["Pay the Fee", "$700 for a $10k account. $1,600 for a $25k account. One-time fee via iFunds."],
+  ["Account Activated", "iFunds activates your funded account. We connect it and begin trading immediately."],
+  ["Profits Accumulate", "First profits cover your fee. Then it is all income. Track your balance in the dashboard."],
+  ["Withdraw and Scale", "Withdraw on the iFunds schedule. Reinvest to scale. Upgrade account size when ready."]
 ];
 
-const evaluationSteps = [
-  ["Apply", "Complete the application form so we can understand your preferred prop firm, account size, current phase, risk level, and goal."],
-  ["Account Review", "Our team reviews your account details, prop firm rules, drawdown limits, and target requirements."],
-  ["Setup and Onboarding", "If accepted, we guide you through the onboarding process, account access requirements, communication, and management terms."],
-  ["Evaluation Management Begins", "The account is managed using our structured trading process supported by Smart Profit Algo analysis, weekly optimization, and drawdown monitoring."],
-  ["Track Phase Progress", "We monitor progress through Phase 1, Phase 2, and funded account stages while updating you on account performance and key milestones."]
-];
-
-const evaluationRiskItems = [
-  "Controlled trade exposure",
-  "Daily drawdown awareness",
-  "Max drawdown monitoring",
-  "Profit target tracking",
-  "Prop firm rule awareness",
-  "No reckless lot sizing",
-  "No emotional overtrading",
-  "Weekly trading system optimization"
+const ifundsFitItems = [
+  "You have copy traded and are ready to scale with more capital.",
+  "You want a funded account without passing a challenge or evaluation.",
+  "You want to put $700 or $1,600 to work in a professionally managed account.",
+  "You want to recover your fee from profits, then enjoy pure passive income.",
+  "You understand that trading involves risk and results are not guaranteed.",
+  "You are ready to follow a clear, structured onboarding process."
 ];
 
 export function SPTHeroSection() {
@@ -223,7 +177,7 @@ export function SPTHeroSection() {
               <span className="text-profit-600">Not Just a Strategy.</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-              Smart Profits Trader gives you algo-powered signals, copy trading, and prop firm support — all structured around your goal, your risk tolerance, and your account type.
+              Smart Profits Trader gives you two clear paths to trading income: Copy Trading (we trade your account) or Instant Funded (we trade prop firm capital for you) — both powered by the Smart Profit Algo.
             </p>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-500">
               Pick your path below, apply in 2 minutes, and our team will recommend your best next step.
@@ -454,7 +408,7 @@ export function AboutFounderSection() {
           <div className="mt-5 space-y-4 leading-7 text-slate-600">
             <p>I created Smart Profits Trader to help everyday people access trading opportunities with more structure, better systems, and less guesswork.</p>
             <p>The ecosystem is built for traders, investors, and busy professionals who want guidance, tracking, communication, and a more organized way to participate in trading opportunities.</p>
-            <p>Through the Smart Profit Algo, weekly optimization, VIP signals, copy trading, personal account trading, and prop firm account management, we are building a complete trading business ecosystem for people who want to take trading seriously.</p>
+            <p>Through the Smart Profit Algo, weekly optimization, Copy Trading, and Instant Funded accounts via iFunds, we are building a complete trading income ecosystem for people who want consistent, structured results without the guesswork.</p>
           </div>
           <p className="mt-6 font-semibold text-navy-950">- Solomon David, Founder of Smart Profits Trader</p>
           <Link href="/spt/apply" className="mt-7 inline-flex items-center gap-2 rounded-md bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950">
@@ -475,7 +429,7 @@ export function HowItWorksSection() {
         </div>
         <div className="mt-10 grid gap-4 md:grid-cols-4">
           {[
-            ["Choose Your Path", "Select VIP signals, copy trading, instant funded, or evaluation management."],
+            ["Choose Your Path", "Copy Trading, Instant Funded (iFunds), or VIP Signals — pick what fits your goals."],
             ["Complete the Application", "Tell us your account type, goals, and risk profile."],
             ["Get Connected", "Our team guides onboarding, setup, communication, and tracking."],
             ["Track Progress", "Follow updates, reports, renewals, and performance reviews."]
@@ -593,7 +547,6 @@ export function SPTFooter() {
             ["VIP Signals", "/spt/vip"],
             ["Copy Trading", "/spt/copy-trading"],
             ["Instant Funded", "/spt/instant-funded"],
-            ["Evaluation", "/spt/evaluation"],
             ["Contact", "/spt/contact"],
             ["Risk Disclaimer", "/spt/risk-disclaimer"]
           ].map(([label, href]) => (
@@ -643,30 +596,20 @@ export const funnelPages = {
     service: "vip-signals"
   },
   "copy-trading": {
-    title: "Copy Trading / Personal Account Trading",
-    subtitle: "A more hands-free path into structured trading operations",
-    description: "Connect your account to selected trading activity or request personal account trading support. This route is designed for clients who prefer managed execution, progress tracking, and a disciplined account structure.",
+    title: "Copy Trading",
+    subtitle: "We trade your account on your behalf — you keep the profit",
+    description: "Invest through XM or Valetax. Our Smart Profit Algo executes every trade. Profits split 70/30 below $5k, then 50/50. Compound your balance and upgrade to Instant Funded when you are ready.",
     service: "copy-trading"
   },
   "instant-funded": {
-    title: "Instant Funded Prop Trading",
-    subtitle: "Access funded account trading support without the traditional challenge route",
-    description: "Our instant funded pathway supports account setup, trading operations, progress tracking, withdrawal planning, and profit-share visibility for clients who want structured exposure to prop firm capital.",
-    service: "funded-account"
-  },
-  evaluation: {
-    title: "Evaluation Account Management",
-    subtitle: "Structured support for Phase 1, Phase 2, and funded stages",
-    description: "Apply for prop firm evaluation support built around target tracking, drawdown awareness, minimum trading day discipline, account updates, and funded-stage preparation.",
-    service: "evaluation"
+    title: "Instant Funded Account (iFunds)",
+    subtitle: "Get funded immediately — no challenge, no evaluation required",
+    description: "Pay a one-time fee and receive a funded iFunds account. $700 gets a $10k account. $1,600 gets a $25k account. We manage the trading. First profits cover your fee, then it is all income.",
+    service: "instant-funded"
   }
 } as const;
 
 export function SPTFunnelPage({ page }: { page: (typeof funnelPages)[keyof typeof funnelPages] }) {
-  if (page.service === "evaluation") {
-    return <EvaluationManagementFunnel />;
-  }
-
   return (
     <SPTPageShell>
       <section className="bg-[radial-gradient(circle_at_top_left,#dbeafe_0,#f8fbff_38%,#fff7f4_100%)] py-16">
@@ -717,294 +660,3 @@ export function SPTFunnelPage({ page }: { page: (typeof funnelPages)[keyof typeo
   );
 }
 
-function EvaluationCTAButtons({ className = "" }: { className?: string }) {
-  return (
-    <div className={`flex flex-col gap-3 sm:flex-row ${className}`}>
-      <Link href="/spt/apply?service=evaluation" className="funnel-primary inline-flex items-center justify-center gap-2 bg-navy-950 px-5 py-3 text-sm font-bold text-white">
-        Apply for Evaluation Management <ArrowRight size={15} />
-      </Link>
-      <Link href={evaluationWhatsappUrl} target="_blank" rel="noreferrer" className="funnel-secondary inline-flex items-center justify-center gap-2 border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-navy-950 hover:border-profit-500">
-        <MessageCircle size={16} />
-        Chat With Us on WhatsApp
-      </Link>
-    </div>
-  );
-}
-
-function EvaluationSectionHeader({ title, children }: { title: string; children?: React.ReactNode }) {
-  return (
-    <div className="mx-auto max-w-3xl text-center">
-      <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">{title}</h2>
-      {children ? <div className="mt-4 space-y-4 leading-7 text-slate-600">{children}</div> : null}
-    </div>
-  );
-}
-
-function EvaluationManagementFunnel() {
-  return (
-    <SPTPageShell>
-      <section className="overflow-hidden bg-[radial-gradient(circle_at_12%_8%,#dbeafe_0,#f7fbff_34%,#fff7f2_72%,#ffffff_100%)] py-8 sm:py-10">
-        <div className="funnel-hero-shell">
-          <div className="funnel-hero-panel">
-            <div className="funnel-hero-grid">
-              <div className="funnel-hero-copy hero-slide-left">
-                <h1 className="funnel-headline text-4xl text-navy-950 sm:text-5xl lg:text-[4rem]">
-                  Stop Failing Prop Firm Challenges Alone. Trade Your Evaluation With a More Structured System.
-                </h1>
-                <p className="mt-6 text-lg leading-8 text-slate-600">
-                  Smart Profits Trader Evaluation Management helps traders and investors approach prop firm challenges with structured account management, risk control, phase tracking, and algo-supported trade selection powered by the <strong className="font-semibold text-navy-950">Smart Profit Algo</strong>.
-                </p>
-                <p className="mt-4 leading-7 text-slate-600">
-                  Whether you are starting Phase 1, moving into Phase 2, or trying to protect a funded account, our goal is to help you trade with more discipline, less emotion, and a clearer process.
-                </p>
-                <p className="mt-4 leading-7 text-slate-600">
-                  Prop firm challenges are not just about making profit. You must also protect drawdown, obey trading rules, manage risk, and stay consistent long enough to reach the target. That is where structure matters.
-                </p>
-                <EvaluationCTAButtons className="mt-8" />
-                <p className="mt-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">
-                  Trading involves risk, and results are not guaranteed. Prop firm accounts can fail if targets are not reached, rules are broken, or drawdown limits are violated.
-                </p>
-              </div>
-              <div className="funnel-hero-visual hero-slide-right relative">
-                <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-[0_24px_70px_rgba(15,35,70,0.12)]">
-                  <div className="rounded-[20px] bg-gradient-to-br from-slate-50 to-blue-50 p-5">
-                    <div className="flex items-center justify-between gap-5">
-                      <div>
-                        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Evaluation console</p>
-                        <h2 className="mt-2 text-2xl font-semibold text-navy-950">Phase-by-phase control</h2>
-                      </div>
-                      <Target className="shrink-0 text-profit-600" size={30} />
-                    </div>
-                    <div className="mt-6 grid gap-3">
-                      {["Phase 1 target", "Phase 2 target", "Daily drawdown", "Funded transition"].map((item, index) => (
-                        <div key={item} className="funnel-card rounded-xl border border-white bg-white/85 p-4 shadow-sm">
-                          <div className="flex items-center justify-between gap-4">
-                            <p className="text-sm font-semibold text-navy-950">{item}</p>
-                            <span className="text-xs font-bold text-profit-600">0{index + 1}</span>
-                          </div>
-                          <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
-                            <div className="h-full rounded-full bg-profit-500" style={{ width: `${[58, 44, 72, 38][index]}%` }} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-                      Built for rule awareness, drawdown control, and disciplined execution.
-                    </div>
-                  </div>
-                </div>
-                <div className="funnel-float pointer-events-none absolute -left-4 top-8 hidden rotate-[-7deg] rounded-2xl bg-white p-4 text-sm font-bold text-navy-950 shadow-xl md:block" style={{ "--float-rotate": "-7deg" } as React.CSSProperties}>
-                  Drawdown first
-                </div>
-                <div className="funnel-float pointer-events-none absolute -right-5 bottom-10 hidden rotate-[6deg] rounded-2xl bg-white p-4 text-sm font-bold text-profit-600 shadow-xl md:block" style={{ "--float-rotate": "6deg" } as React.CSSProperties}>
-                  Phase tracking
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="page-shell py-16">
-        <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
-          <div>
-            <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">
-              Most Traders Don't Fail Prop Challenges Because the Target Is Impossible. They Fail Because They Trade Under Pressure Without a System.
-            </h2>
-            <div className="mt-5 space-y-4 leading-7 text-slate-600">
-              <p>Prop firm evaluations look simple on paper: reach the profit target, protect the drawdown, follow the rules, pass Phase 1, pass Phase 2, and get funded.</p>
-              <p>But in real market conditions, many traders struggle. They overtrade because they want to pass quickly, increase lot size after a loss, break daily drawdown rules, hold losing trades too long, enter without a clear setup, and become emotional when the account is close to target.</p>
-              <p>The problem is not always lack of opportunity. The problem is lack of structure.</p>
-            </div>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {["Overtrading", "Revenge lot sizing", "Daily drawdown breaks", "Poor setup discipline", "Emotional target pressure", "Phase-to-phase inconsistency"].map((item) => (
-              <div key={item} className="funnel-card flex gap-3 rounded-md border border-slate-200 bg-white p-4 shadow-sm">
-                <ShieldCheck className="mt-0.5 shrink-0 text-profit-600" size={18} />
-                <span className="text-sm font-semibold text-slate-700">{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-slate-50 py-16">
-        <div className="page-shell">
-          <EvaluationSectionHeader title="A More Professional Way to Approach Phase 1, Phase 2, and Funded Accounts">
-            <p>Smart Profits Trader Evaluation Management is designed for clients who want support managing prop firm evaluation accounts.</p>
-            <p>Instead of treating the challenge like gambling, we treat it like a serious trading operation that requires patience, discipline, and proper risk control.</p>
-          </EvaluationSectionHeader>
-          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {evaluationSupportItems.map((item) => (
-              <div key={item} className="funnel-card rounded-md border border-slate-200 bg-white p-4 text-sm font-semibold leading-6 text-navy-950 shadow-sm">
-                {item}
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 flex justify-center">
-            <Link href="/spt/apply?service=evaluation" className="funnel-primary inline-flex items-center justify-center gap-2 bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950 hover:bg-profit-600 hover:text-white">
-              Apply for Evaluation Management <ArrowRight size={15} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="page-shell py-16">
-        <div className="grid items-start gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <p className="text-sm font-bold uppercase tracking-[0.16em] text-profit-600">Powered by the Smart Profit Algo</p>
-            <h2 className="funnel-section-title mt-4 text-3xl font-semibold text-navy-950 sm:text-4xl">Analyze market behavior, validate setups, and support better trade selection.</h2>
-            <div className="mt-5 space-y-4 leading-7 text-slate-600">
-              <p>Our trading operation is supported by the Smart Profit Algo, a sophisticated algorithmic trading system designed to analyze market behavior, test multiple strategies, validate setups, and support better trade selection.</p>
-              <p>The system uses machine learning-driven analysis to test strategies under different market conditions. Stronger strategies are demo-tested on live market behavior before being considered for deployment.</p>
-              <p>Every weekend, we run optimization reviews to help align the trading system with current volatility, liquidity, trend behavior, and price action.</p>
-            </div>
-            <p className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-              The algo does not remove risk or guarantee passing. It helps support a more structured and disciplined trading process.
-            </p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {evaluationAlgoPoints.map((item) => (
-              <div key={item} className="funnel-card flex gap-3 rounded-md border border-slate-200 bg-white p-4 shadow-sm">
-                <Bot className="mt-0.5 shrink-0 text-profit-600" size={18} />
-                <span className="text-sm font-semibold text-slate-700">{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gradient-to-b from-white to-slate-50 py-16">
-        <div className="page-shell">
-          <EvaluationSectionHeader title="Why Use Smart Profits Trader for Your Evaluation Account?" />
-          <div className="mt-10 grid gap-4 lg:grid-cols-3">
-            {evaluationBenefits.map(([title, text, Icon]) => (
-              <div key={title} className="funnel-card rounded-md border border-slate-200 bg-white p-6 shadow-sm">
-                <Icon className="text-profit-600" />
-                <h3 className="mt-4 text-xl font-semibold text-navy-950">{title}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">{text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="page-shell py-16">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">Recommended Prop Firms You Can Start With</h2>
-            <div className="mt-5 space-y-4 leading-7 text-slate-600">
-              <p>If you do not already have a prop firm account, you can start by choosing one of the prop firms we recommend.</p>
-              <p>Different prop firms have different rules, drawdown limits, account sizes, payout terms, and trading conditions. Before buying any challenge, make sure you understand the rules clearly.</p>
-            </div>
-            <p className="mt-5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-              Some of these links may be affiliate or referral links. This does not change the importance of reviewing each firm's rules before purchasing an account.
-            </p>
-            <Link href={evaluationWhatsappUrl} target="_blank" rel="noreferrer" className="funnel-primary mt-6 inline-flex items-center justify-center gap-2 bg-navy-950 px-5 py-3 text-sm font-bold text-white">
-              <MessageCircle size={16} />
-              Chat With Us Before Choosing a Prop Firm
-            </Link>
-          </div>
-          {/* HolaPrime featured banner */}
-          <Link href="/spt/holaprime" className="group mt-2 mb-4 flex items-center justify-between gap-4 rounded-xl border-2 border-profit-500 bg-gradient-to-r from-profit-500/10 to-transparent p-5 transition hover:bg-profit-500/15">
-            <div>
-              <span className="inline-block rounded-full bg-profit-500 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-navy-950 mb-1.5">Recommended Partner</span>
-              <h3 className="font-bold text-navy-950">Hola Prime — Our #1 Recommended Prop Firm</h3>
-              <p className="mt-0.5 text-sm text-slate-600">From $50 · Up to $200K funded · 80/20 profit split · EA-friendly</p>
-            </div>
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950 transition group-hover:bg-profit-600 group-hover:text-white">
-              Get Started <ArrowRight size={15} />
-            </span>
-          </Link>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            {recommendedPropFirms.map(([name, href]) => (
-              <Link key={name} href={href} target="_blank" rel="noreferrer" className="funnel-card group rounded-md border border-slate-200 bg-white p-5 shadow-sm hover:border-profit-500">
-                <div className="flex items-center justify-between gap-4">
-                  <h3 className="font-semibold text-navy-950">{name}</h3>
-                  <ArrowRight className="text-slate-400 transition group-hover:text-profit-600" size={17} />
-                </div>
-                <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-slate-400">Open prop firm link</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-slate-50 py-16">
-        <div className="page-shell">
-          <EvaluationSectionHeader title="This Evaluation Management Service Is Best For You If..." />
-          <div className="mt-10 grid gap-3 md:grid-cols-2">
-            {evaluationFitItems.map((item) => (
-              <div key={item} className="funnel-card flex gap-3 rounded-md border border-slate-200 bg-white p-4 shadow-sm">
-                <CheckCircle2 className="mt-0.5 shrink-0 text-profit-600" size={18} />
-                <span className="text-sm leading-6 text-slate-700">{item}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8 flex justify-center">
-            <Link href="/spt/apply?service=evaluation" className="funnel-primary inline-flex items-center justify-center gap-2 bg-profit-500 px-5 py-3 text-sm font-bold text-navy-950 hover:bg-profit-600 hover:text-white">
-              Apply to See If You Qualify <ArrowRight size={15} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="page-shell py-16">
-        <EvaluationSectionHeader title="How to Get Started" />
-        <div className="mt-10 grid gap-4 lg:grid-cols-5">
-          {evaluationSteps.map(([title, text], index) => (
-            <div key={title} className="funnel-card rounded-md border border-slate-200 bg-white p-5 shadow-sm">
-              <span className="text-xs font-bold text-profit-600">STEP {index + 1}</span>
-              <h3 className="mt-3 font-semibold text-navy-950">{title}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{text}</p>
-            </div>
-          ))}
-        </div>
-        <div className="mt-8 flex justify-center">
-          <Link href="/spt/apply?service=evaluation" className="funnel-primary inline-flex items-center justify-center gap-2 bg-navy-950 px-5 py-3 text-sm font-bold text-white">
-            Start My Evaluation Application <ArrowRight size={15} />
-          </Link>
-        </div>
-      </section>
-
-      <section className="bg-gradient-to-b from-slate-50 to-white py-16">
-        <div className="page-shell grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">Built Around Drawdown Control, Rule Awareness, and Disciplined Execution</h2>
-            <div className="mt-5 space-y-4 leading-7 text-slate-600">
-              <p>Prop firm accounts must be managed carefully. One bad trading day can damage or fail an account if risk is not controlled.</p>
-              <p>We do not promise that every account will pass. We do not promise guaranteed funding. We do not promise guaranteed payouts.</p>
-              <p>Our goal is to give each evaluation account a more professional, structured, and risk-managed trading process.</p>
-            </div>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {evaluationRiskItems.map((item) => (
-              <div key={item} className="funnel-card flex gap-3 rounded-md border border-slate-200 bg-white p-4 shadow-sm">
-                <FileCheck2 className="mt-0.5 shrink-0 text-profit-600" size={18} />
-                <span className="text-sm font-semibold text-slate-700">{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="apply" className="page-shell grid gap-10 py-16 lg:grid-cols-[0.85fr_1.15fr]">
-        <div>
-          <h2 className="funnel-section-title text-3xl font-semibold text-navy-950 sm:text-4xl">Ready to Approach Your Prop Firm Challenge With More Structure?</h2>
-          <p className="mt-5 leading-7 text-slate-600">
-            If you want to take a prop firm evaluation but do not want to trade it alone, Smart Profits Trader Evaluation Management may be the right path for you.
-          </p>
-          <p className="mt-4 leading-7 text-slate-600">
-            Apply now and let us review your prop firm, account size, phase, and trading goal.
-          </p>
-          <EvaluationCTAButtons className="mt-8" />
-          <p className="mt-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-800">
-            Trading involves significant risk. Smart Profits Trader does not guarantee passing evaluations, funded approval, withdrawals, fixed returns, or risk-free results. Prop firm accounts can fail if targets are not reached, rules are violated, or drawdown limits are exceeded. Only participate with funds you can afford to risk.
-          </p>
-        </div>
-        <ApplicationForm initialService="evaluation" thankYouPath="/spt/thank-you" />
-      </section>
-    </SPTPageShell>
-  );
-}

@@ -21,10 +21,8 @@ const requiredText = z.string().trim().min(1).max(500);
 
 const approvedServices = [
   "Smart Profits Trader VIP Signal Service",
-  "Copy Trading / Personal Account Trading",
-  "Instant Funded Prop Trading",
-  "Evaluation Account Management",
-  "Personal Account Management",
+  "Copy Trading",
+  "Instant Funded Account (iFunds)",
   "Not sure yet - I need guidance"
 ] as const;
 
@@ -62,33 +60,19 @@ export const applicationSchema = z.object({
   goldTradingExperience: optionalApplicationText,
   signalAccountType: optionalApplicationText,
   mtPlatform: optionalApplicationText,
-  evaluationPropFirm: optionalApplicationText,
-  evaluationStage: optionalApplicationText,
-  evaluationAccountSize: optionalApplicationText,
   instantFundedProvider: optionalApplicationText,
   instantFundedAccountSize: optionalApplicationText,
   readyToPaySetupFee: optionalApplicationText,
-  personalManagementPreference: optionalApplicationText,
   broker: optionalText,
   platform: optionalText,
   accountBalance: optionalText,
-  propFirm: optionalText,
   accountSize: optionalText,
-  currentPhase: optionalText,
   startDate: optionalDate,
-  fundedStatus: optionalText,
-  withdrawalTarget: optionalText,
   tradingExperience: optionalText,
   riskPreference: optionalText
 }).superRefine((data, ctx) => {
-  if ((data.service.includes("Copy Trading") || data.service.includes("Personal Account")) && !data.preferredBroker) {
+  if (data.service.includes("Copy Trading") && !data.preferredBroker) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Select a preferred broker.", path: ["preferredBroker"] });
-  }
-  if (data.service.includes("Evaluation") && !data.evaluationPropFirm) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Select an evaluation prop firm.", path: ["evaluationPropFirm"] });
-  }
-  if (data.service.includes("Evaluation") && !data.evaluationStage) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Select the evaluation stage.", path: ["evaluationStage"] });
   }
   if (data.service.includes("Instant Funded") && !data.instantFundedProvider) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Select an instant funded provider.", path: ["instantFundedProvider"] });
