@@ -9,7 +9,7 @@ import { CheckCircle2, Loader2, User, Mail, Phone, Globe, Calendar, Layers, Chev
 const SERVICES = [
   { value: "COPY_TRADING",   label: "Copy Trading",            desc: "We trade on your behalf — 70/30 split below $5k, 50/50 above" },
   { value: "VIP_SIGNALS",    label: "VIP Signals",             desc: "Daily algo signals with entry, SL & TP on Gold" },
-  { value: "INSTANT_FUNDED", label: "Instant Funded (iFunds)", desc: "Get an instantly funded account — $700 → $10k, $1,600 → $25k" },
+  { value: "INSTANT_FUNDED", label: "Prop Trading", desc: "Get a funded account via iFunds or TenTrade — $700 → $10k, $1,600 → $25k" },
 ];
 
 const SERVICE_CONFIG: Record<string, {
@@ -26,7 +26,7 @@ const SERVICE_CONFIG: Record<string, {
   },
   INSTANT_FUNDED: {
     brokerLabel: "Provider",
-    brokers: ["iFunds"],
+    brokers: ["iFunds", "TenTrade"],
     amountLabel: "Funded account size",
     amounts: ["$10,000 ($700 fee)", "$25,000 ($1,600 fee)", "$50,000", "$100,000"],
   },

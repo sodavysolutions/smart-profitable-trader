@@ -89,8 +89,8 @@ export function InstantFundedHeader() {
             <Image src="/images/smart-profits-trader-logo.png" alt="Smart Profits Trader logo" width={160} height={160} className="h-full w-full object-contain" priority />
           </span>
           <span className="hidden leading-tight sm:block">
-            <span className="block font-semibold text-navy-950">Smart Profits Trader Instant Funded</span>
-            <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-profit-600">A Prop Trading Account Growth Solution</span>
+            <span className="block font-semibold text-navy-950">Smart Profits Trader Prop Trading</span>
+            <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-profit-600">iFunds &amp; TenTrade — Managed For You</span>
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -342,7 +342,7 @@ export function InstantFundedBenefits() {
     <section className="bg-gradient-to-b from-white to-blue-50 py-16">
       <div className="page-shell">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Why Choose Instant Funded Prop Trading?</h2>
+          <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Why Choose SPT Prop Trading?</h2>
         </div>
         <div className="mt-10 grid gap-5 lg:grid-cols-3">
           {benefits.map(([title, text, Icon]) => (
@@ -378,7 +378,7 @@ export function InstantFundedAccountOptions() {
     <section className="page-shell py-16">
       <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
         <div>
-          <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Choose an Instant Funded Account Option That Fits Your Goal</h2>
+          <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Choose a Prop Trading Account That Fits Your Goal</h2>
           <p className="mt-5 leading-7 text-slate-600">
             Smart Profits Trader can help you get started with instant funded account options based on your capital, goal, and risk appetite.
           </p>
@@ -406,7 +406,7 @@ export function InstantFundedAccountOptions() {
       <div className="mt-10 rounded-[26px] border border-slate-200 bg-white p-6 shadow-[0_24px_70px_rgba(15,35,70,0.09)] md:p-8">
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div>
-            <h3 className="text-2xl font-semibold leading-tight text-navy-950">Recommended Instant Funded Prop Firms</h3>
+            <h3 className="text-2xl font-semibold leading-tight text-navy-950">Recommended Prop Trading Providers</h3>
             <p className="mt-4 text-sm leading-6 text-slate-600">
               You can use our recommended links below to review available instant funded options. Account rules, pricing, drawdown limits, and withdrawal terms may change by provider, so confirm all details before purchasing or activating any account.
             </p>
@@ -492,7 +492,7 @@ export function InstantFundedWhoFor() {
   return (
     <section className="page-shell py-16">
       <div className="mx-auto max-w-4xl rounded-[26px] border border-slate-200 bg-white p-6 shadow-[0_24px_70px_rgba(15,35,70,0.09)] md:p-8">
-        <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">This Instant Funded Pathway Is Best For You If...</h2>
+        <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">This Prop Trading Pathway Is Best For You If...</h2>
         <div className="mt-7 grid gap-3 md:grid-cols-2">
           {items.map((item) => (
             <div key={item} className="flex gap-3 rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">
@@ -585,7 +585,7 @@ export function InstantFundedFinalCTA() {
     <section className="page-shell py-16">
       <div className="overflow-hidden rounded-[28px] bg-[radial-gradient(circle_at_top_left,#dbeafe_0,#f8fbff_46%,#fff7f1_100%)] p-6 shadow-[0_24px_70px_rgba(15,35,70,0.1)] md:p-10">
         <div className="relative mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Ready to Get a Funded Account Without Any Evaluation?</h2>
+          <h2 className="text-3xl font-semibold leading-tight text-navy-950 sm:text-4xl">Ready to Start Prop Trading — No Evaluation, No Challenge?</h2>
           <p className="mt-5 leading-7 text-slate-600">
             $700 for a $10k account. $1,600 for a $25k account. We manage the trading. First profits cover your fee. Then it is all income.
           </p>
@@ -608,7 +608,7 @@ export function InstantFundedFooter() {
       <div className="page-shell">
         <div className="flex flex-col justify-between gap-5 text-sm text-slate-500 md:flex-row md:items-start">
           <div className="max-w-2xl">
-            <p>Smart Profits Trader Instant Funded is part of the Smart Profits Trader ecosystem by Laptop Lifestyle Income.</p>
+            <p>Smart Profits Trader Prop Trading is part of the Smart Profits Trader ecosystem by Laptop Lifestyle Income.</p>
             <p className="mt-3 text-xs leading-5">
               Trading involves significant risk. Smart Profits Trader does not guarantee profits, fixed returns, withdrawals, or risk-free results. Funded accounts can be lost if trading rules or drawdown limits are violated. Only participate with funds you can afford to risk.
             </p>

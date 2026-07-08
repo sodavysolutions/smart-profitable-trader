@@ -10,7 +10,7 @@ const sptLinks = [
   { href: "/spt/home#how-it-works", label: "How It Works", shortLabel: "How It Works" },
   { href: "/spt/home#trading-solutions", label: "Trading Solutions", shortLabel: "Trading Solutions" },
   { href: "/spt/copy-trading", label: "Copy Trading", shortLabel: "Copy Trading" },
-  { href: "/spt/instant-funded", label: "Instant Funded", shortLabel: "Instant Funded" },
+  { href: "/spt/instant-funded", label: "Prop Trading", shortLabel: "Prop Trading" },
   { href: "/spt/vip", label: "VIP Signals", shortLabel: "VIP Signals" },
   { href: "/spt/home#faq", label: "FAQ", shortLabel: "FAQ" }
 ];

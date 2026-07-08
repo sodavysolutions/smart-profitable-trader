@@ -46,11 +46,11 @@ const offers: Array<{
     icon: Copy
   },
   {
-    title: "Instant Funded Account (iFunds)",
+    title: "Prop Trading",
     subtitle: "Get a funded account — no challenge, no evaluation",
-    copy: "Pay a one-time fee and receive a funded iFunds account instantly. $700 gets you a $10k account. $1,600 gets you a $25k account. We manage the account. Profits roll in. Recover your fee, then pure income.",
+    copy: "Pay a one-time fee and receive a funded prop trading account instantly via iFunds or TenTrade. $700 gets you a $10k account. $1,600 gets you a $25k account. We manage the account. Recover your fee, then pure income.",
     bestFor: ["Traders ready to scale with prop firm capital", "Copy Trading graduates who want more leverage", "People who want funded exposure without passing a challenge", "Serious investors building a trading income"],
-    cta: "Get Instantly Funded",
+    cta: "Explore Prop Trading",
     href: "/spt/instant-funded",
     icon: WalletCards
   },
@@ -67,20 +67,20 @@ const offers: Array<{
 
 const ecosystem = [
   ["Copy Trading", "We trade your account — you keep the profits. 70/30 below $5k, 50/50 above.", Copy],
-  ["Instant Funded", "Get a $10k or $25k funded account instantly via iFunds. We manage it.", WalletCards],
+  ["Prop Trading", "Get a $10k or $25k funded prop account via iFunds or TenTrade. We manage it.", WalletCards],
   ["VIP Signals", "Real-time Gold signals with entry, TP, SL — delivered to Telegram daily.", Signal]
 ] as const;
 
 const tradingPathCards = [
   ["I want passive income", "Best for investors who want their capital traded on their behalf with profit sharing.", "Start Copy Trading", "/spt/copy-trading", Copy],
-  ["I want a funded account", "Best for those ready to scale with $10k–$25k prop firm capital via iFunds.", "Get Instant Funded", "/spt/instant-funded", WalletCards],
+  ["I want a funded account", "Best for those ready to scale with $10k–$25k prop firm capital via iFunds or TenTrade.", "Explore Prop Trading", "/spt/instant-funded", WalletCards],
   ["I want daily signals", "Best for traders who trade manually and want algo-quality alerts on Gold.", "Join VIP Signals", "/spt/vip", Signal]
 ] as const;
 
 const offerFitGuide = [
   ["Starting out / beginner investor", "Copy Trading ($200+ to start)"],
-  ["Passive income seeker", "Copy Trading → Compound → Instant Funded"],
-  ["Ready to scale with prop capital", "Instant Funded via iFunds"],
+  ["Passive income seeker", "Copy Trading → Compound → Prop Trading"],
+  ["Ready to scale with prop capital", "Prop Trading via iFunds or TenTrade"],
   ["Active trader who trades manually", "VIP Signals — $50/month"]
 ] as const;
 
@@ -101,7 +101,7 @@ const algoSteps = [
 const features = [
   ["Algo-Supported Decisions", "Every trade is powered by the Smart Profit Algo — no emotions, just rules.", Bot],
   ["Weekly Optimization", "Strategies are reviewed every weekend based on live market behavior.", RefreshCcw],
-  ["Two Clear Pathways", "Copy Trading for compounders. Instant Funded for scalers. Simple, structured, profitable.", LineChart],
+  ["Two Clear Pathways", "Copy Trading for compounders. Prop Trading for scalers. Simple, structured, profitable.", LineChart],
   ["Risk-Managed Approach", "Controlled exposure, drawdown awareness, and disciplined position sizing on every trade.", ShieldCheck],
   ["Profit Tracking", "Track your balance, equity, withdrawals, and profit-share milestones clearly.", BarChart3],
   ["Clear Profit Splits", "Below $5k: 70% yours. Above $5k: 50/50. Transparent from day one.", Sparkles]

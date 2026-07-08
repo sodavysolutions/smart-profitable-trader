@@ -13,7 +13,7 @@ type ServiceKey = "vip-signals" | "copy-trading" | "instant-funded" | "general";
 const serviceOptions: Option[] = [
   { value: "Smart Profits Trader VIP Signal Service", label: "VIP Signals — Daily algo signals on Gold" },
   { value: "Copy Trading", label: "Copy Trading — We trade on your behalf" },
-  { value: "Instant Funded Account (iFunds)", label: "Instant Funded — Get funded via iFunds (no challenge)" },
+  { value: "Instant Funded Account (iFunds)", label: "Prop Trading — Get a funded account via iFunds or TenTrade (no challenge)" },
   { value: "Not sure yet - I need guidance", label: "Not sure yet — Help me choose" }
 ];
 
@@ -26,7 +26,7 @@ const serviceMap: Record<ServiceKey | string, string> = {
 };
 
 const brokerOptions = ["XM", "Valetax", "I do not have a broker account yet", "I need guidance"];
-const instantFundedProviderOptions = ["iFunds", "I have not chosen yet", "I need guidance"];
+const instantFundedProviderOptions = ["iFunds", "TenTrade", "I have not chosen yet", "I need guidance"];
 const generalInvestmentOptions = ["Below $100", "$100 - $299", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above", "I need guidance"];
 const copyInvestmentOptions = ["Below $300", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above"];
 const profitGoalOptions = ["5% – 8% per month (steady, low risk)", "10% – 15% per month (moderate growth)", "20% – 30% per month (ambitious)", "I need guidance on realistic expectations"];
@@ -52,14 +52,14 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
   const derivedMainGoal = useMemo(() => {
     if (service.includes("VIP Signal")) return "Receive daily trading signals I can act on";
     if (service.includes("Copy Trading")) return "Have my trades copied automatically into my account";
-    if (service.includes("Instant Funded")) return "Get an instantly funded trading account via iFunds";
+    if (service.includes("Instant Funded")) return "Get a funded prop trading account via iFunds or TenTrade";
     return "I need guidance — help me choose the right path";
   }, [service]);
 
   const serviceSummary = useMemo(() => {
     if (service.includes("VIP Signal")) return "Tell us how you plan to use the signals and whether you already trade gold.";
     if (service.includes("Copy Trading")) return "We will confirm your broker, platform, and capital so we can start copying trades immediately.";
-    if (service.includes("Instant Funded")) return "No challenge required. Pay the fee, get funded, let us trade for you. We will confirm your account size preference.";
+    if (service.includes("Instant Funded")) return "No challenge required. Choose iFunds or TenTrade, pay the fee, get funded, and let us trade for you.";
     return "Choose this if you want the team to recommend the best Smart Profits Trader path for your capital and goals.";
   }, [service]);
 
