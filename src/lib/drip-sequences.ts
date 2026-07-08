@@ -19,8 +19,10 @@ export const BLUEPRINT_DOWNLOAD_URL =
 
 export const APPLY_URL = "https://www.smartprofitstrader.com/spt/apply";
 export const VIP_SIGNALS_URL = "https://www.smartprofitstrader.com/spt/vip";
-export const INSTANT_FUNDED_URL = "https://www.smartprofitstrader.com/spt/instant-funded";
-export const IFUNDS_URL = "https://ifunds.com"; // iFunds partner link
+export const PROP_TRADING_URL = "https://www.smartprofitstrader.com/spt/instant-funded";
+export const IFUNDS_PAGE_URL = "https://www.smartprofitstrader.com/spt/ifunds";
+export const IFUNDS_URL = "https://ifunds.io/?ref=vhDR3gs1018MYe2ea"; // iFunds affiliate link
+export const TENTRADE_URL = "https://cabinet.10tradefx.com/links/go/4596"; // TenTrade affiliate link
 
 export type DripEmail = {
   subject: string;
@@ -397,7 +399,7 @@ export const SIGNALS_SEQUENCE: DripEmail[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PROP_FIRM — Evaluation & Instant Funded Sequence
+// PROP_FIRM — Prop Trading Sequence (iFunds + TenTrade)
 // ─────────────────────────────────────────────────────────────────────────────
 export const PROP_FIRM_SEQUENCE: DripEmail[] = [
   // ── DAY 1 BURST ──────────────────────────────────────────────────────────
@@ -409,25 +411,25 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
     body:
       p(`Hi {firstName},`) +
       p(`Welcome to Smart Profits Trader. Your Smart Money Blueprint is ready — download it using the button below.`) +
-      p(`Inside you will find the exact pathway we use to build trading income: ${bold("start with Copy Trading, compound profits, then upgrade to an Instant Funded account via iFunds.")} No evaluation. No challenge. No waiting for months.`) +
+      p(`Inside you will find the exact pathway we use to build trading income: ${bold("start with Copy Trading, compound profits, then upgrade to Prop Trading via iFunds or TenTrade.")} No evaluation. No challenge. No waiting for months.`) +
       p(`Over the next 24 hours I am going to break this model down step by step. Pay attention — this is not a theoretical system. This is what we actually do.`),
     ctaLabel: "Download Your Blueprint Now",
     ctaUrl: BLUEPRINT_DOWNLOAD_URL,
   },
   {
-    subject: "$700 for a $10,000 trading account — here is how",
+    subject: "$700 for a $10,000 prop trading account — here is how",
     preheader: "No challenge, no evaluation, no waiting. Just funded.",
-    badge: "Instant Funded",
-    title: "The iFunds Model Explained",
+    badge: "Prop Trading",
+    title: "The Prop Trading Model Explained",
     body:
-      p(`{firstName}, let me tell you about iFunds.`) +
-      p(`iFunds is an instant funded account provider. Instead of making you pass Phase 1, Phase 2, and a funded stage like traditional prop firms, iFunds simply requires a one-time fee:`) +
+      p(`{firstName}, let me explain how our Prop Trading service works.`) +
+      p(`Instead of making you pass Phase 1, Phase 2, and a funded stage like traditional prop firms, our Prop Trading providers — ${bold("iFunds")} and ${bold("TenTrade")} — simply require a one-time fee:`) +
       p(`${highlight("$700")} → You receive a ${bold("$10,000 funded account")}.`) +
       p(`${highlight("$1,600")} → You receive a ${bold("$25,000 funded account")}.`) +
       p(`Smart Profits Trader manages the trading. Our Smart Profit Algo runs the account. Profits are split between you and us. The first profits cover your fee — then it is all income.`) +
       p(`That is the model. Simple. Structured. Scalable.`),
-    ctaLabel: "Learn More About Instant Funded",
-    ctaUrl: INSTANT_FUNDED_URL,
+    ctaLabel: "Learn More About Prop Trading",
+    ctaUrl: PROP_TRADING_URL,
   },
   {
     subject: "The math behind a $10,000 funded account",
@@ -450,20 +452,20 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
     body:
       p(`{firstName}, for a long time the prop firm model meant buying a challenge, passing Phase 1, passing Phase 2, then finally getting funded. Many clients failed. Some passed Phase 1 and failed Phase 2. Some made it to funded and then broke a rule and lost everything.`) +
       p(`The evaluation model puts all the risk and time cost on the trader. You spend money on challenges. You spend months trying to pass. And there is no guarantee.`) +
-      p(`${bold("iFunds eliminates all of that.")} Pay once. Get funded immediately. We trade it. You earn.`) +
-      p(`No evaluation. No Phase 1. No Phase 2. No performance window. No account rules to fail. Just a funded account, professionally managed, from day one.`),
+      p(`${bold("iFunds and TenTrade eliminate all of that.")} Pay once. Get funded immediately. We trade it. You earn.`) +
+      p(`No evaluation. No Phase 1. No Phase 2. No performance window. Just a funded account, professionally managed, from day one.`),
   },
   {
     subject: "The journey: from $200 to $25,000 in funded capital",
     preheader: "Step by step — here is the exact pathway",
     badge: "The SPT Journey",
-    title: "Copy Trading → Instant Funded — The Full Roadmap",
+    title: "Copy Trading → Prop Trading — The Full Roadmap",
     body:
       p(`{firstName}, here is the complete Smart Profits Trader income roadmap:`) +
       p(`${bold("Step 1 — Copy Trading.")} Start with as little as $200. Open an XM or Valetax account. We connect it and trade it for you. Profit split: 70% to you, 30% to SPT.`) +
       p(`${bold("Step 2 — Compound.")} Do not withdraw everything. Let the balance grow. Every dollar that stays in the account grows the next month's profit base.`) +
       p(`${bold("Step 3 — Cross $5k.")} Once your account balance exceeds $5,000, the split shifts to 50/50. Both sides are incentivised to keep growing.`) +
-      p(`${bold("Step 4 — Upgrade to iFunds.")} Use your accumulated copy trading profits to fund an iFunds account. $700 gets a $10k account. $1,600 gets a $25k account.`) +
+      p(`${bold("Step 4 — Upgrade to Prop Trading.")} Use your accumulated copy trading profits to open a funded account through iFunds or TenTrade. $700 gets a $10k account. $1,600 gets a $25k account.`) +
       p(`${bold("Step 5 — Scale.")} We trade both accounts simultaneously. Your income multiplies. That is the full system.`),
     ctaLabel: "Start Your Journey",
     ctaUrl: APPLY_URL,
@@ -477,35 +479,35 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`{firstName}, let me make the profit split as clear as possible.`) +
       p(`${bold("Copy Trading — Below $5,000 balance:")} 70% to you, 30% to SPT.`) +
       p(`${bold("Copy Trading — $5,000 and above:")} 50% to you, 50% to SPT.`) +
-      p(`${bold("Instant Funded (iFunds):")} We agree a profit split at onboarding. All profits are tracked and distributed on the iFunds payout schedule.`) +
+      p(`${bold("Prop Trading (iFunds / TenTrade):")} We agree a profit split at onboarding. All profits are tracked and distributed on the provider's payout schedule.`) +
       p(`There are no hidden fees. No monthly management charges. No subscription costs layered on top. The split is the only thing that matters — and you see every number in your dashboard.`) +
       p(`We win when you win. That is how the model is designed.`),
   },
   {
-    subject: "Who is iFunds best for?",
+    subject: "Who is Prop Trading best for?",
     preheader: "This is not for everyone — here is who it actually suits",
     badge: "Right Fit",
-    title: "Is Instant Funded Right for You?",
+    title: "Is Prop Trading Right for You?",
     body:
       p(`{firstName}, let me be direct.`) +
-      p(`iFunds is best for people who:`) +
+      p(`Prop Trading via iFunds or TenTrade is best for people who:`) +
       p(`${bold("1.")} Have already tested Copy Trading and want to scale with more capital.`) +
       p(`${bold("2.")} Want funded exposure without the time and stress of an evaluation.`) +
       p(`${bold("3.")} Can afford the one-time fee ($700 or $1,600) and understand it is not a guaranteed return.`) +
       p(`${bold("4.")} Want a professionally managed funded account — not a DIY trading challenge.`) +
-      p(`If you are completely new to trading and have zero capital, start with Copy Trading first. Build confidence. Build your balance. Then upgrade to iFunds when you are ready.`) +
-      p(`If you already have $700–$1,600 available and want funded trading income, iFunds is worth a serious look.`),
+      p(`If you are completely new to trading and have zero capital, start with Copy Trading first. Build confidence. Build your balance. Then upgrade to Prop Trading when you are ready.`) +
+      p(`If you already have $700–$1,600 available and want funded trading income, both iFunds and TenTrade are worth a serious look.`),
   },
   {
-    subject: "What happens after you pay the iFunds fee",
+    subject: "What happens after you pay the Prop Trading fee",
     preheader: "Step by step — from payment to first profit",
     badge: "Onboarding Process",
     title: "The Onboarding Process After You Apply",
     body:
-      p(`{firstName}, here is exactly what happens once you decide to move forward with an iFunds account:`) +
-      p(`${bold("Step 1:")} You complete the Smart Profits Trader application. We review your details and confirm your account size preference.`) +
-      p(`${bold("Step 2:")} We guide you through the iFunds payment process. You pay the fee directly to iFunds — $700 for a $10k account, $1,600 for a $25k account.`) +
-      p(`${bold("Step 3:")} iFunds activates your funded account. We receive access and connect it to our trading system.`) +
+      p(`{firstName}, here is exactly what happens once you decide to move forward with a Prop Trading account through iFunds or TenTrade:`) +
+      p(`${bold("Step 1:")} You complete the Smart Profits Trader application. We review your details and confirm your preferred provider (iFunds or TenTrade) and account size.`) +
+      p(`${bold("Step 2:")} We guide you through the payment process. You pay the fee directly to your chosen provider — $700 for a $10k account, $1,600 for a $25k account.`) +
+      p(`${bold("Step 3:")} The provider activates your funded account. We receive access and connect it to our trading system.`) +
       p(`${bold("Step 4:")} The Smart Profit Algo starts trading the account. You track performance in the dashboard.`) +
       p(`${bold("Step 5:")} First profits arrive. They cover your fee. After that, every payout is income.`) +
       p(`The whole process from application to live trading typically takes a few business days.`),
@@ -520,7 +522,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`Here is why.`) +
       p(`Gold is the most liquid commodity in the world. It trades 24 hours a day, 5 days a week. It has predictable patterns driven by institutional order flow, macroeconomic sentiment, and safe-haven demand.`) +
       p(`By specialising in ${highlight("one market instead of trading everything")}, our algo develops deep pattern recognition that generalised systems never achieve. Our entries are more precise. Our risk management is more specific. Our results are more consistent.`) +
-      p(`Every prop firm account we manage — whether through Copy Trading or iFunds — trades only Gold. This is not a limitation. It is a competitive edge.`),
+      p(`Every account we manage — whether through Copy Trading or Prop Trading via iFunds and TenTrade — trades only Gold. This is not a limitation. It is a competitive edge.`),
   },
   {
     subject: "Last email of the day — one question for you",
@@ -531,7 +533,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`{firstName}, I have sent you a lot today. Let me ask one simple question.`) +
       p(`${bold("Where are you right now?")}`) +
       p(`${highlight("A)")} I am brand new — I have some capital and want to start with Copy Trading.`) +
-      p(`${highlight("B)")} I have $700–$1,600 and I am ready to explore an iFunds account.`) +
+      p(`${highlight("B)")} I have $700–$1,600 and I am ready to explore Prop Trading via iFunds or TenTrade.`) +
       p(`${highlight("C)")} I already trade and I want to understand how Copy Trading fits my setup.`) +
       p(`Whichever you are, the next step is the same: complete the application form. It takes 3 minutes and tells us everything we need to match you to the right path.`) +
       p(`There is no pressure. No payment required at this stage. Just a conversation.`),
@@ -549,20 +551,20 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`Compounding is the most powerful force in trading. A $1,000 account growing at 10% per month does not generate $100 every month forever. It generates ${highlight("$100 in month 1, $110 in month 2, $121 in month 3")} — because each month's profit base is larger.`) +
       p(`If you leave profits in the account for 6 months instead of withdrawing:`) +
       p(`Month 1: $1,000 → $1,100. Month 3: $1,331. Month 6: ${highlight("$1,772.")}`) +
-      p(`That is 77% growth from nothing but patience. And when you cross $5,000, you have enough to fund an iFunds account and run both engines simultaneously.`) +
+      p(`That is 77% growth from nothing but patience. And when you cross $5,000, you have enough to open a Prop Trading account via iFunds or TenTrade and run both engines simultaneously.`) +
       p(`Withdraw profits strategically. Compound aggressively. Then scale.`),
   },
   {
-    subject: "A common question — can I trust iFunds?",
+    subject: "A common question — can I trust iFunds and TenTrade?",
     preheader: "Here is what you need to know before paying a fee",
     badge: "Due Diligence",
-    title: "What You Should Know About iFunds",
+    title: "What You Should Know About iFunds and TenTrade",
     body:
-      p(`{firstName}, a fair question: ${bold("Is iFunds legitimate and trustworthy?")}`) +
-      p(`iFunds is an established instant funded account provider operating in the prop trading space. Like all prop firms, it has specific account rules, payout terms, and operating conditions that you need to understand before joining.`) +
-      p(`What makes the Smart Profits Trader partnership work is that ${highlight("we manage the account for you.")} You are not expected to know the rules yourself. We operate within the iFunds framework and ensure the account is traded correctly.`) +
-      p(`Before paying any fee, we always review your situation during onboarding and confirm that iFunds is the right fit. We do not push anyone toward a fee they are not ready for.`) +
-      p(`If you have questions about iFunds before applying, speak with us directly via WhatsApp.`),
+      p(`{firstName}, a fair question: ${bold("Are iFunds and TenTrade legitimate and trustworthy?")}`) +
+      p(`Both iFunds and TenTrade are instant funded account providers operating in the prop trading space. Like all prop firms, they have specific account rules, payout terms, and operating conditions that you need to understand before joining.`) +
+      p(`What makes the Smart Profits Trader partnership work is that ${highlight("we manage the account for you.")} You are not expected to know all the rules yourself. We operate within each provider's framework and ensure the account is traded correctly.`) +
+      p(`Before paying any fee, we always review your situation during onboarding and recommend the provider that best fits your goal and capital. We do not push anyone toward a fee they are not ready for.`) +
+      p(`If you have questions about iFunds or TenTrade before applying, speak with us directly via WhatsApp.`),
     ctaLabel: "Apply Now",
     ctaUrl: APPLY_URL,
   },
@@ -570,16 +572,16 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
     subject: "Copy Trading for 3 months — then what?",
     preheader: "The natural upgrade point most clients hit",
     badge: "Growth Path",
-    title: "When Copy Trading Graduates to Instant Funded",
+    title: "When Copy Trading Graduates to Prop Trading",
     body:
       p(`{firstName}, I have had many clients start with Copy Trading and after 3–6 months of compounding, they are sitting on $800 to $2,000 in accumulated profits.`) +
       p(`At that point, they have two options:`) +
       p(`${bold("Option A:")} Keep compounding in Copy Trading. Growth continues steadily.`) +
-      p(`${bold("Option B:")} Use profits to fund an iFunds account. Add a second income engine on top of the Copy Trading account.`) +
+      p(`${bold("Option B:")} Use profits to open a Prop Trading account via iFunds or TenTrade. Add a second income engine on top of the Copy Trading account.`) +
       p(`Most clients who reach that stage choose Option B. Because instead of one account growing slowly, they now have ${highlight("a $10k funded account generating $800–$1,200 a month")} on top of their Copy Trading income.`) +
       p(`That is the moment trading stops being supplemental income and starts being a serious monthly revenue stream.`),
-    ctaLabel: "Explore Instant Funded",
-    ctaUrl: INSTANT_FUNDED_URL,
+    ctaLabel: "Explore Prop Trading",
+    ctaUrl: PROP_TRADING_URL,
   },
   {
     subject: "Risk disclaimer — the part I must always say",
@@ -632,8 +634,8 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`{firstName}, most people think trading income comes from one account. The traders who build real income think differently.`) +
       p(`Here is what scaling looks like in the Smart Profits Trader ecosystem:`) +
       p(`${bold("Account 1:")} Copy Trading account on XM. Starting at $500. 70/30 split. Compounding monthly.`) +
-      p(`${bold("Account 2:")} iFunds $10k account funded with $700. Managed by SPT. First profits cover fee.`) +
-      p(`${bold("Account 3:")} iFunds $25k account funded after Account 1 profits accumulate. Second funded income engine.`) +
+      p(`${bold("Account 2:")} Prop Trading $10k account via iFunds ($700 fee). Managed by SPT. First profits cover fee.`) +
+      p(`${bold("Account 3:")} Prop Trading $25k account via TenTrade ($1,600 fee) funded after Account 1 profits accumulate. Second funded income engine.`) +
       p(`Three accounts. Three income streams. All managed by the same system. All trading Gold.`) +
       p(`Is this realistic? Yes — but it takes time and consistent compounding. ${highlight("We are building something that lasts, not a get-rich-quick scheme.")} That is the difference.`),
   },
@@ -646,7 +648,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`{firstName}, the managed trading space is crowded. Signal services, copy trading platforms, prop firm challenge coaches — there are hundreds. So why Smart Profits Trader?`) +
       p(`${bold("1. We manage everything.")} You do not need to analyse charts, place trades, or monitor screens. We handle execution completely.`) +
       p(`${bold("2. We use a real algo.")} The Smart Profit Algo is not gut-feel trading. It is tested, optimized weekly, and rule-based. Emotion is removed from the equation.`) +
-      p(`${bold("3. Two clear pathways.")} Copy Trading for steady income. iFunds for funded scale. Simple, structured, and designed to grow.`) +
+      p(`${bold("3. Two clear pathways.")} Copy Trading for steady income. Prop Trading via iFunds or TenTrade for funded scale. Simple, structured, and designed to grow.`) +
       p(`${bold("4. Transparent profit split.")} You know exactly what you keep. No hidden fees. No surprises.`) +
       p(`${bold("5. We communicate.")} WhatsApp updates, dashboard visibility, and regular performance reviews keep you informed.`),
   },
@@ -659,8 +661,8 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`{firstName}, here are the questions I get most often — and the real answers:`) +
       p(`${bold("Q: Do I need trading experience?")} No. We handle all the trading. You invest, we execute, you share profits.`) +
       p(`${bold("Q: What is the minimum to start Copy Trading?")} We recommend starting with at least $200. More capital means more monthly profit in absolute terms.`) +
-      p(`${bold("Q: Is the $700 iFunds fee refundable?")} No — it is a one-time funded account fee paid to iFunds. The first profits from the account recover the cost.`) +
-      p(`${bold("Q: How do I receive my profits?")} Copy Trading profits are transferred from your broker account. iFunds profits are paid on the iFunds payout schedule.`) +
+      p(`${bold("Q: Is the $700 fee refundable?")} No — it is a one-time funded account fee paid to iFunds or TenTrade. The first profits from the account recover the cost.`) +
+      p(`${bold("Q: How do I receive my profits?")} Copy Trading profits are transferred from your broker account. Prop Trading profits are paid on the provider's (iFunds or TenTrade) payout schedule.`) +
       p(`${bold("Q: What if the account goes into drawdown?")} We manage drawdown proactively using stop losses and position sizing. Drawdown is monitored weekly.`),
     ctaLabel: "Apply — Get Started",
     ctaUrl: APPLY_URL,
@@ -676,7 +678,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`Month 1: 10% return. Balance: $550. Your 70% share: $35 (kept in account).`) +
       p(`Month 3: Balance has grown to ~$665. Monthly profit increasing.`) +
       p(`Month 6: Balance approaches $800–$900. Total compounded growth without withdrawing: ${highlight("60–80%.")}.`) +
-      p(`At month 6 you have two choices: start withdrawing monthly income, or put $700 of accumulated profit into an iFunds account and add a second income engine.`) +
+      p(`At month 6 you have two choices: start withdrawing monthly income, or put $700 of accumulated profit into a Prop Trading account via iFunds or TenTrade and add a second income engine.`) +
       p(`Most clients who get to month 6 choose to stay and scale. Because by that point, the system has proven itself and the income is real.`),
   },
   // ── EMAILS 21–30 (every 72 hours) ─────────────────────────────────────────
@@ -686,7 +688,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
     badge: "VIP Signals",
     title: "Not Everyone Wants Full Automation — That Is Fine",
     body:
-      p(`{firstName}, Copy Trading and iFunds are fully managed — we handle everything.`) +
+      p(`{firstName}, Copy Trading and Prop Trading are fully managed — we handle everything.`) +
       p(`But some people prefer to be more involved. They want to see the signals, understand the setup, and place trades themselves on their own account.`) +
       p(`For those people, we have ${bold("VIP Signals")}.`) +
       p(`$50 per month. Daily trade alerts on XAUUSD with entry, stop loss, and take profit — delivered to your Telegram. You execute on your broker account at your own pace.`) +
@@ -717,7 +719,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`I built Smart Profits Trader because I saw too many people trying to figure out trading on their own and failing. Not because trading is impossible — but because ${bold("trading without structure, systems, and accountability is almost impossible to sustain.")}`) +
       p(`Most people who try to trade retail end up losing. Not because they lack intelligence. Because they trade emotionally, without proper risk management, without an edge that has been tested and optimized.`) +
       p(`I wanted to create something different. A system where everyday people could access algo-powered trading outcomes without needing to become professional traders themselves.`) +
-      p(`Copy Trading and iFunds are the answer to that. You bring the capital. We bring the system. We share the results.`) +
+      p(`Copy Trading and Prop Trading via iFunds and TenTrade are the answer to that. You bring the capital. We bring the system. We share the results.`) +
       p(`That is what Smart Profits Trader is. That is why I built it. And that is why I want to help you get started.`),
     ctaLabel: "Apply Now",
     ctaUrl: APPLY_URL,
@@ -731,7 +733,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`{firstName}, if you are not sure yet — that is completely normal.`) +
       p(`Here is the safest way to start: ${bold("begin with a small Copy Trading account.")}`) +
       p(`$200–$300 is enough to start. You are not making huge returns at that level, but you are ${highlight("seeing the system work in real time.")} You see trades being placed. You see profits accumulating. You watch drawdown get managed.`) +
-      p(`After 2–3 months of watching a small account perform, most clients are confident enough to add more capital or fund an iFunds account.`) +
+      p(`After 2–3 months of watching a small account perform, most clients are confident enough to add more capital or start Prop Trading via iFunds or TenTrade.`) +
       p(`Starting small is not a weakness. It is ${bold("smart risk management.")} We would rather you start with $200 and grow into confidence than put in $5,000 before you are ready.`) +
       p(`Apply now. Tell us your starting capital. We will guide you from there.`),
     ctaLabel: "Apply — Start Small, Scale Smart",
@@ -745,7 +747,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
     body:
       p(`{firstName}, I will not fabricate testimonials. What I can tell you is what actually happens inside the Smart Profits Trader ecosystem.`) +
       p(`Clients who start Copy Trading and compound consistently for 3–6 months see meaningful balance growth. They start withdrawing monthly income. Some reinvest into iFunds accounts.`) +
-      p(`Clients who take the iFunds route see their $700 fee recovered within the first 1–2 months of trading, then shift into pure profit mode.`) +
+      p(`Clients who take the Prop Trading route via iFunds or TenTrade see their $700–$1,600 fee recovered within the first 1–2 months of trading, then shift into pure profit mode.`) +
       p(`Not every month is profitable. Not every trade wins. But the system is structured, the risk is managed, and the communication is consistent.`) +
       p(`${bold("What you can expect:")} Structured trading. Weekly updates. Transparent numbers. An honest partnership.`) +
       p(`${bold("What you should not expect:")} Guaranteed profits. Risk-free returns. Overnight wealth.`),
@@ -759,7 +761,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`{firstName}, I know this is a financial decision. And financial decisions deserve proper consideration.`) +
       p(`If you have questions you want answered before applying, speak with us directly. We are available on WhatsApp — the link is below.`) +
       p(`We will tell you honestly:`) +
-      p(`✓ Whether Copy Trading or iFunds is the right fit for your capital and goals.`) +
+      p(`✓ Whether Copy Trading, iFunds, or TenTrade is the right fit for your capital and goals.`) +
       p(`✓ What realistic returns look like at your capital level.`) +
       p(`✓ What the risks are and how we manage them.`) +
       p(`✓ What the onboarding process looks like step by step.`) +
@@ -773,7 +775,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
     badge: "Investor Mindset",
     title: "The One Thing That Determines Success",
     body:
-      p(`{firstName}, after working with many Copy Trading and iFunds clients, I have noticed one thing that separates the ones who build real income from the ones who give up.`) +
+      p(`{firstName}, after working with many Copy Trading and Prop Trading clients, I have noticed one thing that separates the ones who build real income from the ones who give up.`) +
       p(`It is not the amount of capital they started with. It is not their trading experience. It is not even which account they chose.`) +
       p(`${bold("It is patience and consistency.")}`) +
       p(`The clients who succeed compound consistently. They do not panic during drawdown. They do not withdraw every cent of profit the moment it appears. They treat their trading account like a ${highlight("business asset that needs time to grow.")}.`) +
@@ -789,7 +791,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`{firstName}, we are near the end of this email sequence.`) +
       p(`Over the past weeks, I have walked you through the entire Smart Profits Trader system:`) +
       p(`✓ How Copy Trading works and why it is the best starting point.`) +
-      p(`✓ How iFunds eliminates evaluations and gives instant funded access.`) +
+      p(`✓ How Prop Trading via iFunds and TenTrade eliminates evaluations and gives instant funded access.`) +
       p(`✓ The profit split structure. The income projections. The journey from $200 to multiple income streams.`) +
       p(`✓ The risks. The process. The mindset required.`) +
       p(`You now have everything you need to make an informed decision. The only thing left is to take action.`) +
@@ -807,7 +809,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`I have one ask: do not let this sit as unread emails that were interesting but never acted on.`) +
       p(`If you believe structured, algo-powered managed trading is the right tool for your financial goals — take the next step. Apply. Have a conversation with our team. Ask your questions.`) +
       p(`If the timing is not right, that is fine too. But save this email. Come back when you are ready.`) +
-      p(`Smart Profits Trader is not going anywhere. The Copy Trading and iFunds models are designed to grow steadily — for years. Whenever you decide to start, we will be here.`) +
+      p(`Smart Profits Trader is not going anywhere. Copy Trading and Prop Trading via iFunds and TenTrade are designed to grow steadily — for years. Whenever you decide to start, we will be here.`) +
       p(`Thank you for reading every email. It means more than you know.`) +
       p(`− Solomon David, Founder of Smart Profits Trader`),
     ctaLabel: "Start My Application",
