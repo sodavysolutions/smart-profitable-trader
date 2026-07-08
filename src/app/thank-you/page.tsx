@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { PublicShell } from "@/components/PublicShell";
 
-const WHATSAPP_NUMBER = "2349164753603";
+const WHATSAPP_NUMBER = "447344589579";
 const COUNTDOWN_SECONDS = 4;
 
 function ThankYouContent() {

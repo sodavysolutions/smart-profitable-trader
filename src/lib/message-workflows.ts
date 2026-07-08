@@ -293,7 +293,7 @@ export async function sendApplicationAcknowledgement(applicationId: string) {
     bodyHtml,
     cta: {
       label: "Chat With Us on WhatsApp",
-      href: "https://wa.me/2349164753603"
+      href: "https://wa.me/447344589579"
     }
   });
 
@@ -352,7 +352,7 @@ export async function sendWelcomeWorkflow(customerId: string) {
     bodyHtml,
     cta: {
       label: "Chat With Us on WhatsApp",
-      href: "https://wa.me/2349164753603"
+      href: "https://wa.me/447344589579"
     }
   });
 
@@ -421,7 +421,7 @@ export async function sendPaymentAcknowledgement(paymentId: string) {
     bodyHtml,
     cta: {
       label: "Chat With Us on WhatsApp",
-      href: "https://wa.me/2349164753603"
+      href: "https://wa.me/447344589579"
     }
   });
 

@@ -766,7 +766,7 @@ export const PROP_FIRM_SEQUENCE: DripEmail[] = [
       p(`✓ What the onboarding process looks like step by step.`) +
       p(`There is no pressure to join immediately. We would rather you join when you are ready and informed than rush in and regret it. Ask us anything.`),
     ctaLabel: "Chat With Us on WhatsApp",
-    ctaUrl: "https://wa.me/2349164753603",
+    ctaUrl: "https://wa.me/447344589579",
   },
   {
     subject: "One thing that separates our investors from everyone else",

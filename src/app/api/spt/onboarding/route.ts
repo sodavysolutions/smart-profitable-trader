@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
           In the meantime, feel free to reach out to us on WhatsApp or Telegram — our AI support agent is available 24/7 for any questions.
         </p>
         <p style="margin:0;">
-          WhatsApp: <a href="https://wa.me/2349164753603" style="color:#16A34A;">+234 916 475 3603</a><br/>
+          WhatsApp: <a href="https://wa.me/447344589579" style="color:#16A34A;">+44 7344 589579</a><br/>
           Telegram: <a href="https://t.me/SmartProfitsTraderBot" style="color:#16A34A;">@SmartProfitsTraderBot</a>
         </p>
       `,

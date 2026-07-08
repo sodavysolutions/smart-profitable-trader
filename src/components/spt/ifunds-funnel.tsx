@@ -19,7 +19,7 @@ import {
 
 // ── Links ───────────────────────────────────────────────────────────────────
 const iFundsAffiliateHref = "https://ifunds.io/?ref=vhDR3gs1018MYe2ea";
-const whatsappBaseUrl = "https://wa.me/2349164753603";
+const whatsappBaseUrl = "https://wa.me/447344589579";
 const whatsappHref =
   `${whatsappBaseUrl}?text=Hello%20Smart%20Profits%20Trader%20team%2C%20I%27m%20interested%20in%20getting%20a%20funded%20account%20through%20iFunds.%20Please%20help%20me%20understand%20the%20account%20options%2C%20fees%2C%20profit-share%2C%20and%20how%20to%20get%20started.`;
 

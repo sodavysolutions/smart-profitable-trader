@@ -20,8 +20,8 @@ export default function SPTContactPage() {
             <p>Email: support@smartprofitabletrader.com</p>
             <p>
               WhatsApp:{" "}
-              <a href="https://wa.me/2349164753603" target="_blank" rel="noreferrer" className="font-semibold text-profit-600 hover:text-navy-950">
-                +234 708 797 0133
+              <a href="https://wa.me/447344589579" target="_blank" rel="noreferrer" className="font-semibold text-profit-600 hover:text-navy-950">
+                +44 7344 589579
               </a>
             </p>
             <p>Social: Instagram, Facebook, LinkedIn</p>

@@ -31,7 +31,7 @@ export default function VipSuccessPage() {
 
         <p className="mt-6 text-sm text-slate-500">
           Didn&apos;t receive the email? Check your spam folder or{" "}
-          <a href="https://wa.me/2349164753603" target="_blank" rel="noreferrer" className="text-profit-400 hover:underline">
+          <a href="https://wa.me/447344589579" target="_blank" rel="noreferrer" className="text-profit-400 hover:underline">
             message us on WhatsApp
           </a>
           .

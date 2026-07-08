@@ -25,7 +25,7 @@ import {
 import { ApplicationForm } from "@/components/ApplicationForm";
 import { SPTNavbar } from "@/components/spt/spt-navbar";
 
-const whatsappUrl = "https://wa.me/2349164753603";
+const whatsappUrl = "https://wa.me/447344589579";
 
 const offers: Array<{
   title: string;

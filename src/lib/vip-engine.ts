@@ -83,7 +83,7 @@ export async function activateVipSubscription(subscriptionId: string) {
      <p>Your subscription runs from <strong>${now.toDateString()}</strong> to <strong>${endDate.toDateString()}</strong>.</p>
      <p>Inside the group you'll receive real-time algo-powered signals, trade setups, and market analysis directly from Solomon.</p>
      <p>If you have any issues joining, reply to this email or reach us on WhatsApp.</p>`,
-    { label: "Join VIP Group →", href: inviteLink ?? "https://wa.me/2349164753603" }
+    { label: "Join VIP Group →", href: inviteLink ?? "https://wa.me/447344589579" }
   );
 }
 
