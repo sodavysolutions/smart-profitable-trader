@@ -272,7 +272,7 @@ export function SPTEcosystemSection() {
           Smart Profits Trader helps traders, investors, and busy professionals access structured trading opportunities without needing to trade alone.
         </p>
       </div>
-      <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-10 grid gap-4 sm:grid-cols-3 max-w-4xl mx-auto">
         {ecosystem.map(([title, text, Icon]) => (
           <div key={title} className="rounded-[18px] border border-slate-200 bg-white p-5 shadow-sm">
             <Icon className="text-profit-600" />
