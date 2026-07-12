@@ -10,6 +10,7 @@ import { requireAdmin } from "@/lib/spt-admin-auth";
 import { getSchemaMismatchMessage, isSchemaMismatchError } from "@/lib/spt-admin-schema";
 import { applicationUpdateSchema } from "@/lib/validation";
 import type { ApplicationStatus } from "@prisma/client";
+import { DeleteApplicationButton } from "@/components/spt/delete-application-button";
 
 export const dynamic = "force-dynamic";
 
@@ -70,6 +71,14 @@ function detailRows(item: {
     ["Personal Management Preference", item.personalManagementPreference],
     ["Additional Message", item.message]
   ].filter(([, value]) => value && String(value).trim());
+}
+
+async function deleteApplication(formData: FormData) {
+  "use server";
+  await requireAdmin();
+  const id = String(formData.get("id"));
+  await prisma.application.delete({ where: { id } });
+  revalidatePath("/spt/admin/applications");
 }
 
 async function updateApplication(formData: FormData) {
@@ -411,6 +420,7 @@ export default async function SPTAdminApplicationsPage({ searchParams }: { searc
                   <input type="hidden" name="id" value={item.id} />
                   <button className="rounded-md bg-profit-500 px-4 py-2 text-sm font-bold text-navy-950">Convert to Customer</button>
                 </form>
+                <DeleteApplicationButton id={item.id} action={deleteApplication} />
               </div>
             </Card>
           ))
