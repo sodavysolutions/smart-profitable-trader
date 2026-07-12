@@ -21,11 +21,13 @@ export async function POST(request: NextRequest) {
       phoneNumber,
       displayName,
       messageText,
+      botReply,
     } = body as {
       platform?: string;
       phoneNumber?: string;
       displayName?: string;
       messageText?: string;
+      botReply?: string;
     };
 
     const channel = (VALID_PLATFORMS.includes(platform as Platform)
@@ -92,13 +94,24 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Save the incoming message
+    // Save the incoming user message
     if (messageText?.trim()) {
       await prisma.chatbotMessage.create({
         data: {
           conversationId: conversation.id,
           senderType: "USER",
           message: messageText.trim(),
+        },
+      });
+    }
+
+    // Save the bot's reply
+    if (botReply?.trim()) {
+      await prisma.chatbotMessage.create({
+        data: {
+          conversationId: conversation.id,
+          senderType: "BOT",
+          message: botReply.trim(),
         },
       });
     }
