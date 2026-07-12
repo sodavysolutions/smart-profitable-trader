@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
       await prisma.chatbotMessage.create({
         data: {
           conversationId: conversation.id,
-          senderType: "BOT",
+          senderType: "AI_AGENT",
           message: botReply.trim(),
         },
       });
