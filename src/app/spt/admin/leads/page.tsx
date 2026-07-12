@@ -152,6 +152,20 @@ async function deleteLead(id: string) {
   revalidatePath("/spt/admin/leads");
 }
 
+async function deleteChatbotContact(id: string) {
+  "use server";
+  await requireAdmin();
+  // Cascade: messages deleted via onDelete:Cascade on ChatbotMessage → conversation
+  // Conversations deleted manually first
+  const convs = await prisma.chatbotConversation.findMany({ where: { contactId: id }, select: { id: true } });
+  for (const conv of convs) {
+    await prisma.chatbotMessage.deleteMany({ where: { conversationId: conv.id } });
+  }
+  await prisma.chatbotConversation.deleteMany({ where: { contactId: id } });
+  await prisma.chatbotContact.delete({ where: { id } });
+  revalidatePath("/spt/admin/leads");
+}
+
 // ── Tab definitions ─────────────────────────────────────────────────────────────
 
 type TabKey = "all" | "form" | "ai_chatbot" | "whatsapp" | "telegram" | "follow_ups" | "converted";
@@ -345,6 +359,7 @@ export default async function SPTAdminLeadsPage({
                       View chat
                     </Link>
                   )}
+                  <DeleteButton id={contact.id} onDelete={deleteChatbotContact} label="contact" />
                 </div>
               ))}
             </div>
