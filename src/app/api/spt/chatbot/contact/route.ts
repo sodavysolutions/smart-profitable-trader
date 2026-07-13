@@ -13,22 +13,36 @@ import { prisma } from "@/lib/prisma";
 const VALID_PLATFORMS = ["WHATSAPP", "TELEGRAM", "WEBSITE_CHAT"] as const;
 type Platform = (typeof VALID_PLATFORMS)[number];
 
+/**
+ * Strip artefacts from n8n field values:
+ * - Leading "=" when the field was in Fixed mode with ={{ }} template syntax
+ * - Unevaluated n8n expressions like $('NodeName').item.json.field
+ */
+function cleanField(value: string | undefined): string | undefined {
+  if (!value) return value;
+  const trimmed = value.trim();
+  // Reject unevaluated n8n expressions (they start with $( or ={{ )
+  if (trimmed.startsWith("$(") || trimmed.startsWith("={{")) return undefined;
+  // Strip a single leading "=" left by Fixed-mode template evaluation
+  return trimmed.startsWith("=") ? trimmed.slice(1).trim() : trimmed;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const {
-      platform = "WHATSAPP",
-      phoneNumber,
-      displayName,
-      messageText,
-      botReply,
-    } = body as {
+    const raw = body as {
       platform?: string;
       phoneNumber?: string;
       displayName?: string;
       messageText?: string;
       botReply?: string;
     };
+
+    const platform = raw.platform ?? "WHATSAPP";
+    const phoneNumber = cleanField(raw.phoneNumber);
+    const displayName = cleanField(raw.displayName);
+    const messageText = cleanField(raw.messageText);
+    const botReply    = cleanField(raw.botReply);
 
     const channel = (VALID_PLATFORMS.includes(platform as Platform)
       ? platform
