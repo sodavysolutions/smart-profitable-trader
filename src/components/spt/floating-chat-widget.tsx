@@ -5,7 +5,7 @@ import { X, MessageCircle, ChevronDown } from "lucide-react";
 
 const WHATSAPP_LINK =
   process.env.NEXT_PUBLIC_WHATSAPP_AI_LINK ??
-  "https://wa.me/447344589579?text=Hello%20SPT%20Support%20Team%2C%20I%20need%20help%20choosing%20the%20right%20trading%20service.";
+  "https://wa.me/447344589579?text=Hello";
 
 const TELEGRAM_LINK =
   process.env.NEXT_PUBLIC_TELEGRAM_BOT_LINK ?? "https://t.me/SmartProfitsTraderBot";
@@ -97,7 +97,7 @@ export function FloatingChatWidget() {
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#16A34A]">
                 <MessageCircle size={14} className="text-white" />
               </span>
-              <span className="text-sm font-bold text-white">SPT Support Team</span>
+              <span className="text-sm font-bold text-white">Chat with SPT</span>
             </div>
             <button
               onClick={close}
@@ -114,7 +114,7 @@ export function FloatingChatWidget() {
               Need help choosing the right trading service?
             </p>
             <p className="mt-1 text-[12px] leading-5 text-slate-500">
-              Our support team is ready to help you choose the right trading service — available 24/7.
+              Our AI agent replies instantly 24/7 — ask anything about our services.
             </p>
 
             <div className="mt-4 flex flex-col gap-2">
@@ -127,8 +127,8 @@ export function FloatingChatWidget() {
                   <WhatsAppIcon size={18} />
                 </span>
                 <div>
-                  <p className="text-[13px] font-bold text-[#15803d]">WhatsApp Support Team</p>
-                  <p className="text-[11px] text-slate-500">Chat with us on WhatsApp</p>
+                  <p className="text-[13px] font-bold text-[#15803d]">WhatsApp AI Agent</p>
+                  <p className="text-[11px] text-slate-500">Instant replies, 24/7</p>
                 </div>
               </button>
 
@@ -141,14 +141,14 @@ export function FloatingChatWidget() {
                   <TelegramIcon size={18} />
                 </span>
                 <div>
-                  <p className="text-[13px] font-bold text-[#0369a1]">Telegram Support Team</p>
-                  <p className="text-[11px] text-slate-500">Chat with us on Telegram</p>
+                  <p className="text-[13px] font-bold text-[#0369a1]">Telegram AI Agent</p>
+                  <p className="text-[11px] text-slate-500">Instant replies, 24/7</p>
                 </div>
               </button>
             </div>
 
             <p className="mt-3 text-center text-[10px] text-slate-400">
-              SPT Support Team · Available 24/7
+              SPT AI Agent · Available 24/7
             </p>
           </div>
         </div>
