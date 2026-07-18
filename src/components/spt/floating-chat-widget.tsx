@@ -98,6 +98,7 @@ export function FloatingChatWidget() {
                 <MessageCircle size={14} className="text-white" />
               </span>
               <span className="text-sm font-bold text-white">Chat with SPT</span>
+
             </div>
             <button
               onClick={close}
@@ -114,7 +115,7 @@ export function FloatingChatWidget() {
               Need help choosing the right trading service?
             </p>
             <p className="mt-1 text-[12px] leading-5 text-slate-500">
-              Our AI agent replies instantly 24/7 — ask anything about our services.
+              Have a question? We're here to help you find the right trading service.
             </p>
 
             <div className="mt-4 flex flex-col gap-2">
@@ -127,8 +128,8 @@ export function FloatingChatWidget() {
                   <WhatsAppIcon size={18} />
                 </span>
                 <div>
-                  <p className="text-[13px] font-bold text-[#15803d]">WhatsApp AI Agent</p>
-                  <p className="text-[11px] text-slate-500">Instant replies, 24/7</p>
+                  <p className="text-[13px] font-bold text-[#15803d]">Chat with SPT on WhatsApp</p>
+                  <p className="text-[11px] text-slate-500">Available 24/7</p>
                 </div>
               </button>
 
@@ -141,14 +142,14 @@ export function FloatingChatWidget() {
                   <TelegramIcon size={18} />
                 </span>
                 <div>
-                  <p className="text-[13px] font-bold text-[#0369a1]">Telegram AI Agent</p>
-                  <p className="text-[11px] text-slate-500">Instant replies, 24/7</p>
+                  <p className="text-[13px] font-bold text-[#0369a1]">Chat with SPT on Telegram</p>
+                  <p className="text-[11px] text-slate-500">Available 24/7</p>
                 </div>
               </button>
             </div>
 
             <p className="mt-3 text-center text-[10px] text-slate-400">
-              SPT AI Agent · Available 24/7
+              Smart Profits Trader · Available 24/7
             </p>
           </div>
         </div>
@@ -170,8 +171,8 @@ export function FloatingChatWidget() {
           ].join(" ")}
         >
           <MessageCircle size={18} className="shrink-0" />
-          <span className="hidden sm:inline">Chat With SPT Support Team</span>
-          <span className="sm:hidden">SPT Support</span>
+          <span className="hidden sm:inline">Chat with SPT</span>
+          <span className="sm:hidden">Chat with SPT</span>
           <ChevronDown
             size={15}
             className={[
