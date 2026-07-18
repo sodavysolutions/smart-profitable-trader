@@ -5,7 +5,7 @@ import { X, MessageCircle, ChevronDown } from "lucide-react";
 
 const WHATSAPP_LINK =
   process.env.NEXT_PUBLIC_WHATSAPP_AI_LINK ??
-  "https://wa.me/447344589579?text=Hello";
+  "https://wa.me/447344589579?text=Hello%20Smart%20Profits%20Trader%20Support%2C%20I%20need%20help%20choosing%20the%20right%20trading%20service.";
 
 const TELEGRAM_LINK =
   process.env.NEXT_PUBLIC_TELEGRAM_BOT_LINK ?? "https://t.me/SmartProfitsTraderBot";
