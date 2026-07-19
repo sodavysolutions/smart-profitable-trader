@@ -123,7 +123,7 @@ export default async function SPTAdminAccountProgressPage() {
           <label className="grid gap-1 text-sm font-medium text-slate-700">
             Service type
             <select name="serviceType" defaultValue={CustomerType.COPY_TRADING} className="rounded-md border border-slate-200 px-3 py-2">
-              {Object.values(CustomerType).map((item) => <option key={item} value={item}>{readableEnum(item)}</option>)}
+              {Object.values(CustomerType).filter((t) => t !== "EVALUATION").map((item) => <option key={item} value={item}>{readableEnum(item)}</option>)}
             </select>
           </label>
           <label className="grid gap-1 text-sm font-medium text-slate-700">

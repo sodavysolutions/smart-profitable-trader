@@ -28,7 +28,10 @@ import { clsx } from "clsx";
 
 // ── Sidebar nav definition ────────────────────────────────────────────────────
 
-const navItems = [
+type NavChild = { href: string; label: string; icon: React.ElementType };
+type NavItem  = { href: string; label: string; icon: React.ElementType; pageTitle?: string; children?: NavChild[] };
+
+const navItems: NavItem[] = [
   {
     href: "/spt/admin/dashboard",
     label: "Dashboard",
@@ -71,18 +74,10 @@ const navItems = [
     label: "AI Chatbot",
     pageTitle: "AI Chatbot Leads",
     icon: Bot,
-  },
-  {
-    href: "/spt/admin/chatbot-conversations",
-    label: "Conversations",
-    pageTitle: "Chatbot Conversations",
-    icon: MessagesSquare,
-  },
-  {
-    href: "/spt/admin/chatbot-broadcast",
-    label: "Broadcast",
-    pageTitle: "Broadcast Center",
-    icon: Megaphone,
+    children: [
+      { href: "/spt/admin/chatbot-conversations", label: "Conversations", icon: MessagesSquare },
+      { href: "/spt/admin/chatbot-broadcast",     label: "Broadcast",     icon: Megaphone },
+    ],
   },
   {
     href: "/spt/admin/reminders",
@@ -118,30 +113,70 @@ export function SourceBadge({ source }: { source: string }) {
 
 // ── Admin shell ───────────────────────────────────────────────────────────────
 
-function SidebarLink({ href, label, icon: Icon }: { href: string; label: string; icon: React.ElementType }) {
+function SidebarLink({
+  href,
+  label,
+  icon: Icon,
+  children,
+}: {
+  href: string;
+  label: string;
+  icon: React.ElementType;
+  children?: NavChild[];
+}) {
   const pathname = usePathname();
-  const active = pathname === href || pathname.startsWith(href + "/");
+  const active    = pathname === href || pathname.startsWith(href + "/");
+  const childActive = children?.some((c) => pathname === c.href || pathname.startsWith(c.href + "/")) ?? false;
+  const groupActive = active || childActive;
+
   return (
-    <Link
-      href={href}
-      className={clsx(
-        "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
-        active
-          ? "bg-white/12 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
-          : "text-slate-400 hover:bg-white/8 hover:text-white"
-      )}
-    >
-      <span
+    <div>
+      <Link
+        href={href}
         className={clsx(
-          "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors",
-          active ? "bg-profit-500 text-white shadow-sm" : "bg-white/6 text-slate-400 group-hover:bg-white/10 group-hover:text-white"
+          "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
+          groupActive
+            ? "bg-white/12 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+            : "text-slate-400 hover:bg-white/8 hover:text-white"
         )}
       >
-        <Icon size={15} />
-      </span>
-      {label}
-      {active && <ChevronRight size={13} className="ml-auto opacity-60" />}
-    </Link>
+        <span
+          className={clsx(
+            "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors",
+            groupActive ? "bg-profit-500 text-white shadow-sm" : "bg-white/6 text-slate-400 group-hover:bg-white/10 group-hover:text-white"
+          )}
+        >
+          <Icon size={15} />
+        </span>
+        {label}
+        {groupActive && !children && <ChevronRight size={13} className="ml-auto opacity-60" />}
+      </Link>
+
+      {/* Sub-links — always visible when parent is in group */}
+      {children && groupActive && (
+        <div className="ml-5 mt-0.5 space-y-0.5 border-l border-white/10 pl-3">
+          {children.map((child) => {
+            const childIsActive = pathname === child.href || pathname.startsWith(child.href + "/");
+            const CIcon = child.icon;
+            return (
+              <Link
+                key={child.href}
+                href={child.href}
+                className={clsx(
+                  "flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-medium transition-all",
+                  childIsActive
+                    ? "text-white"
+                    : "text-slate-500 hover:text-slate-300"
+                )}
+              >
+                <CIcon size={13} />
+                {child.label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -184,7 +219,7 @@ export function SPTAdminShell({
         {/* Nav */}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
           {navItems.map((item) => (
-            <SidebarLink key={item.href} href={item.href} label={item.label} icon={item.icon} />
+            <SidebarLink key={item.href} href={item.href} label={item.label} icon={item.icon} children={item.children} />
           ))}
         </nav>
 
@@ -232,9 +267,12 @@ export function SPTAdminShell({
             </div>
           </div>
 
-          {/* Mobile nav */}
+          {/* Mobile nav — flatten children */}
           <nav className="flex gap-1.5 overflow-x-auto border-t border-slate-100 px-4 pb-2 pt-1.5 lg:hidden">
-            {navItems.map((item) => {
+            {navItems.flatMap((item) => [
+              item,
+              ...(item.children ?? []),
+            ]).map((item) => {
               const Icon = item.icon;
               const active = pathname === item.href || pathname.startsWith(item.href + "/");
               return (
