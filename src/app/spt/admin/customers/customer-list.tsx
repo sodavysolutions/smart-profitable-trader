@@ -345,7 +345,7 @@ export function CustomerList({
                   <td className="py-3 pr-4 text-slate-600">{readableEnum(c.customerType)}</td>
                   <td className="py-3 pr-4 text-slate-600">{c.brokerOrPropFirm ?? "-"}</td>
                   <td className="py-3 pr-4 text-slate-600">{c.profitShareTier ?? (c.customerType === "VIP_SIGNALS" ? c.setupFeeStatus ?? "-" : "-")}</td>
-                  <td className="py-3 pr-4 font-medium text-[#0A1A3C]">{money(c.currentBalance)}</td>
+                  <td className="py-3 pr-4 font-medium text-[#0A1A3C]">{c.customerType === "VIP_SIGNALS" ? "-" : money(c.currentBalance)}</td>
                   <td className="py-3 pr-4"><StatusPill status={c.status} /></td>
                   <td className="py-3">
                     <button
