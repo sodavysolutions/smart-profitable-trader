@@ -1,0 +1,226 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/spt-admin-auth";
+
+// ─────────────────────────────────────────────────────────────
+//  POST /api/spt/chatbot/broadcast
+//
+//  Body: {
+//    message:   string        (required — plain text)
+//    platforms: ("WHATSAPP" | "TELEGRAM")[]  (required)
+//  }
+//
+//  Reads WHATSAPP_API_TOKEN + WHATSAPP_PHONE_NUMBER_ID from env.
+//  Reads TELEGRAM_BOT_TOKEN from env.
+//  Neither is ever exposed to the client.
+// ─────────────────────────────────────────────────────────────
+
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
+interface BroadcastBody {
+  message: string;
+  platforms: string[];
+}
+
+interface SendResult {
+  contactId: string;
+  name: string | null;
+  identifier: string;
+  platform: string;
+  ok: boolean;
+  error?: string;
+}
+
+async function sendWhatsApp(to: string, text: string): Promise<{ ok: boolean; error?: string }> {
+  const token = process.env.WHATSAPP_API_TOKEN;
+  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID ?? "1234231113102298";
+  if (!token) return { ok: false, error: "WHATSAPP_API_TOKEN not configured" };
+
+  // Normalise: strip leading + and whitespace
+  const phone = to.replace(/^\+/, "").replace(/\s/g, "");
+
+  const res = await fetch(
+    `https://graph.facebook.com/v17.0/${phoneNumberId}/messages`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: phone,
+        type: "text",
+        text: { body: text },
+      }),
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.text().catch(() => "unknown");
+    return { ok: false, error: `WA API ${res.status}: ${err.slice(0, 200)}` };
+  }
+  return { ok: true };
+}
+
+async function sendTelegram(chatId: string, text: string): Promise<{ ok: boolean; error?: string }> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) return { ok: false, error: "TELEGRAM_BOT_TOKEN not configured" };
+
+  const res = await fetch(
+    `https://api.telegram.org/bot${token}/sendMessage`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" }),
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.text().catch(() => "unknown");
+    return { ok: false, error: `Telegram API ${res.status}: ${err.slice(0, 200)}` };
+  }
+  return { ok: true };
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    await requireAdmin();
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  let body: BroadcastBody;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const { message, platforms } = body;
+  if (!message?.trim()) return NextResponse.json({ error: "Message is required" }, { status: 400 });
+  if (!platforms?.length) return NextResponse.json({ error: "Select at least one platform" }, { status: 400 });
+
+  const wantsWhatsApp = platforms.includes("WHATSAPP");
+  const wantsTelegram = platforms.includes("TELEGRAM");
+
+  // ── Fetch distinct contacts per platform ─────────────────
+  //
+  // Each contact may have multiple conversations (different channels).
+  // We want: contacts who have at least one conversation on the requested channel.
+  // Their phone/chatId is stored in ChatbotContact.phoneWhatsapp.
+  //
+  // For Telegram, phoneWhatsapp stores the Telegram chatId (numeric string).
+  // For WhatsApp, phoneWhatsapp stores the WhatsApp phone number.
+
+  const contactsToSend: {
+    contactId: string;
+    name: string | null;
+    identifier: string;
+    platform: "WHATSAPP" | "TELEGRAM";
+  }[] = [];
+
+  if (wantsWhatsApp) {
+    const rows = await prisma.chatbotConversation.findMany({
+      where: { channel: "WHATSAPP", contact: { phoneWhatsapp: { not: null } } },
+      select: { contactId: true, contact: { select: { fullName: true, phoneWhatsapp: true } } },
+      distinct: ["contactId"],
+    });
+    for (const r of rows) {
+      if (r.contactId && r.contact?.phoneWhatsapp) {
+        contactsToSend.push({
+          contactId: r.contactId,
+          name: r.contact.fullName ?? null,
+          identifier: r.contact.phoneWhatsapp,
+          platform: "WHATSAPP",
+        });
+      }
+    }
+  }
+
+  if (wantsTelegram) {
+    const rows = await prisma.chatbotConversation.findMany({
+      where: { channel: "TELEGRAM", contact: { phoneWhatsapp: { not: null } } },
+      select: { contactId: true, contact: { select: { fullName: true, phoneWhatsapp: true } } },
+      distinct: ["contactId"],
+    });
+    for (const r of rows) {
+      if (r.contactId && r.contact?.phoneWhatsapp) {
+        contactsToSend.push({
+          contactId: r.contactId,
+          name: r.contact.fullName ?? null,
+          identifier: r.contact.phoneWhatsapp,
+          platform: "TELEGRAM",
+        });
+      }
+    }
+  }
+
+  // De-duplicate by (contactId + platform) in case of multiple conversations
+  const seen = new Set<string>();
+  const unique = contactsToSend.filter((c) => {
+    const key = `${c.platform}:${c.contactId}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  if (!unique.length) {
+    return NextResponse.json({ ok: true, sent: 0, failed: 0, total: 0, results: [] });
+  }
+
+  // ── Send messages (sequential, throttled ~200ms apart) ──
+  const results: SendResult[] = [];
+  for (const contact of unique) {
+    const result =
+      contact.platform === "WHATSAPP"
+        ? await sendWhatsApp(contact.identifier, message.trim())
+        : await sendTelegram(contact.identifier, message.trim());
+
+    results.push({
+      contactId: contact.contactId,
+      name: contact.name,
+      identifier: contact.identifier,
+      platform: contact.platform,
+      ok: result.ok,
+      error: result.error,
+    });
+
+    // Small delay to avoid rate limit bursts
+    await new Promise((r) => setTimeout(r, 200));
+  }
+
+  const sent = results.filter((r) => r.ok).length;
+  const failed = results.filter((r) => !r.ok).length;
+
+  return NextResponse.json({ ok: true, sent, failed, total: unique.length, results });
+}
+
+// ── GET — return contact counts per platform ─────────────────
+
+export async function GET() {
+  try {
+    await requireAdmin();
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const [whatsappRows, telegramRows] = await Promise.all([
+    prisma.chatbotConversation.findMany({
+      where: { channel: "WHATSAPP", contact: { phoneWhatsapp: { not: null } } },
+      select: { contactId: true },
+      distinct: ["contactId"],
+    }),
+    prisma.chatbotConversation.findMany({
+      where: { channel: "TELEGRAM", contact: { phoneWhatsapp: { not: null } } },
+      select: { contactId: true },
+      distinct: ["contactId"],
+    }),
+  ]);
+
+  return NextResponse.json({
+    whatsapp: whatsappRows.filter((r) => r.contactId).length,
+    telegram: telegramRows.filter((r) => r.contactId).length,
+  });
+}

@@ -15,6 +15,8 @@ import {
   LineChart,
   LogOut,
   MessageSquare,
+  Megaphone,
+  MessagesSquare,
   Search,
   Settings,
   TrendingUp,
@@ -69,6 +71,18 @@ const navItems = [
     label: "AI Chatbot",
     pageTitle: "AI Chatbot Leads",
     icon: Bot,
+  },
+  {
+    href: "/spt/admin/chatbot-conversations",
+    label: "Conversations",
+    pageTitle: "Chatbot Conversations",
+    icon: MessagesSquare,
+  },
+  {
+    href: "/spt/admin/chatbot-broadcast",
+    label: "Broadcast",
+    pageTitle: "Broadcast Center",
+    icon: Megaphone,
   },
   {
     href: "/spt/admin/reminders",
