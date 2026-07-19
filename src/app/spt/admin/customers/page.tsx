@@ -195,7 +195,7 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
           <button className="rounded-md bg-navy-950 px-4 py-2 text-sm font-bold text-white">Filter</button>
         </form>
         <DataTable
-          columns={["Customer", "Email", "Services", "Platform", "Birthday", "Broker/Prop firm", "Balance", "Equity", "Status"]}
+          columns={["Customer", "Email", "Services", "Platform", "Birthday", "Broker/Prop firm", "Initial Capital", "Balance", "Status"]}
           rows={customers.map((item) => [
             item.fullName,
             item.email,
@@ -212,8 +212,8 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
             item.accountPlatform ? readableEnum(item.accountPlatform) : "-",
             item.dateOfBirth ? item.dateOfBirth.toLocaleDateString() : "-",
             item.brokerOrPropFirm ?? "-",
+            money(item.initialCapital),
             money(item.currentBalance),
-            money(item.currentEquity),
             <StatusBadge key={`s-${item.id}`} value={readableEnum(item.status)} />,
           ])}
         />
