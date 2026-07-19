@@ -46,20 +46,28 @@ async function createCustomer(formData: FormData) {
     profitShareTier: normalizeText(parsed.data.profitShareTier) ?? undefined,
     setupFeeStatus: normalizeText(parsed.data.setupFeeStatus) ?? undefined,
     notes: normalizeText(parsed.data.notes) ?? undefined,
-      activityLogs: {
-        create: {
-          type: "CUSTOMER_CREATED",
-          description: `Customer ${parsed.data.fullName} was created from the admin panel.`,
-          userId: session.userId
-        }
-      }
-    };
+  };
 
   const customer = await prisma.customer.upsert({
     where: { email: parsed.data.email.trim().toLowerCase() },
     create: { email: parsed.data.email.trim().toLowerCase(), ...data },
     update: data,
   });
+
+  // Log activity separately so any failure here doesn't roll back the customer save
+  try {
+    await prisma.activityLog.create({
+      data: {
+        type: "CUSTOMER_CREATED",
+        description: `Customer ${parsed.data.fullName} was created from the admin panel.`,
+        customerId: customer.id,
+        userId: session.userId,
+      },
+    });
+  } catch {
+    // Non-fatal — customer was saved, activity log is optional
+  }
+
   await syncRecordToGoogleSheets("Customer", customer, "UPSERT");
   revalidatePath("/spt/admin/customers");
 }
@@ -120,11 +128,9 @@ export default async function SPTAdminCustomersPage({ searchParams }: { searchPa
       orderBy: { createdAt: "desc" }
     });
   } catch (error) {
-    if (isSchemaMismatchError(error)) {
-      schemaNotice = getSchemaMismatchMessage("Customer management");
-    } else {
-      throw error;
-    }
+    schemaNotice = isSchemaMismatchError(error)
+      ? getSchemaMismatchMessage("Customer management")
+      : "There was a problem loading customer records. Try refreshing.";
   }
 
   return (
