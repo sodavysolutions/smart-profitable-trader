@@ -77,28 +77,60 @@ export function CopyTradingHero() {
       <div className="funnel-hero-shell py-8 sm:py-10">
         <div className="funnel-hero-panel">
           <div className="funnel-hero-grid">
+            {/* ── Left copy ── */}
             <div className="funnel-hero-copy hero-slide-left">
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-profit-600">Smart Profits Trader Copy Trading</p>
-              <h1 className="funnel-headline mt-5 text-4xl text-navy-950 sm:text-5xl lg:text-[4rem]">
-                Let Your Trading Account Follow a Smarter Algo-Powered System — Even If You Don’t Have Time to Trade Yourself
+              <span className="inline-flex items-center gap-2 rounded-full border border-profit-500/25 bg-profit-50 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-profit-600">
+                <span className="h-1.5 w-1.5 rounded-full bg-profit-500" />
+                Algo-Powered Copy Trading
+              </span>
+              <h1 className="mt-5 text-[2.1rem] font-bold leading-[1.1] tracking-tight text-navy-950 sm:text-[2.65rem] lg:text-[3.15rem]" style={{ textWrap: "balance" } as React.CSSProperties}>
+                Your Account Trades.<br />
+                <span className="text-profit-600">You Keep the Profits.</span>
               </h1>
-              <div className="mt-6 space-y-4 text-base leading-8 text-slate-600 sm:text-lg">
-                <p>
-                  Smart Profits Trader Copy Trading helps busy people participate in the forex and gold market by connecting their trading account to a structured trading system powered by the <strong>Smart Profit Algo</strong>.
-                </p>
-                <p>
-                  Instead of spending hours analyzing charts, chasing signals, or making emotional trading decisions, your account can follow selected trades from our risk-managed trading operation.
-                </p>
-              </div>
+              <p className="mt-4 text-base leading-7 text-slate-600 sm:text-[1.0625rem]">
+                Smart Profits Trader connects your personal trading account to our algo-supported system — structured forex and gold trading, without you having to do it yourself.
+              </p>
+              <ul className="mt-5 space-y-2.5">
+                {[
+                  "No charts, no emotional decisions, no guessing.",
+                  "Your account stays in your name — you keep full control.",
+                  "Weekly optimization keeps the system aligned with the market.",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5 text-sm text-slate-700">
+                    <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-profit-500" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <PrimaryCTA />
                 <WhatsAppCTA />
               </div>
-              <p className="mt-6 rounded-[18px] border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-                Trading involves risk, and results are not guaranteed. Our focus is structured execution, risk management, and continuous optimization.
+              <p className="mt-5 rounded-[14px] border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800">
+                Trading involves risk. Results are not guaranteed. Only participate with funds you can afford to risk.
               </p>
             </div>
+
+            {/* ── Right visual ── */}
             <div className="funnel-hero-visual hero-slide-right relative">
+              {/* Metric chips — fills the space above the card */}
+              <div className="mb-4 grid grid-cols-3 gap-2">
+                {[
+                  { value: "70 / 30", label: "Profit split" },
+                  { value: "Weekly", label: "Optimization" },
+                  { value: "Your name", label: "Your account" },
+                ].map(({ value, label }) => (
+                  <div
+                    key={label}
+                    className="flex flex-col items-center rounded-xl border border-slate-200/80 bg-white/80 px-2 py-3 text-center shadow-sm backdrop-blur-sm"
+                  >
+                    <span className="text-sm font-bold text-navy-950">{value}</span>
+                    <span className="mt-0.5 text-[10px] font-medium text-slate-500">{label}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Main card */}
               <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-[0_24px_70px_rgba(15,35,70,0.12)]">
                 <div className="rounded-[20px] bg-gradient-to-br from-slate-50 to-blue-50 p-5">
                   <div className="flex items-center justify-between">
@@ -115,7 +147,7 @@ export function CopyTradingHero() {
                       ["Account Connected", "Personal account transparency"],
                       ["Algo-Supported Execution", "Structured trading process"],
                       ["Weekly Optimization", "Market condition reviews"],
-                      ["Risk Monitoring", "Controlled exposure approach"]
+                      ["Risk Monitoring", "Controlled exposure approach"],
                     ].map(([title, text], index) => (
                       <div key={title} className="rounded-xl border border-white bg-white/85 p-4 shadow-sm">
                         <div className="flex items-center justify-between gap-4">
@@ -130,7 +162,9 @@ export function CopyTradingHero() {
                   </div>
                 </div>
               </div>
-              <div className="funnel-float pointer-events-none absolute -left-4 top-8 hidden rotate-[-7deg] rounded-2xl bg-white p-4 text-sm font-bold text-navy-950 shadow-xl md:block" style={{ "--float-rotate": "-7deg" } as React.CSSProperties}>
+
+              {/* Floating labels */}
+              <div className="funnel-float pointer-events-none absolute -left-4 top-28 hidden rotate-[-7deg] rounded-2xl bg-white p-4 text-sm font-bold text-navy-950 shadow-xl md:block" style={{ "--float-rotate": "-7deg" } as React.CSSProperties}>
                 Your account stays yours
               </div>
               <div className="funnel-float pointer-events-none absolute -right-5 bottom-10 hidden rotate-[6deg] rounded-2xl bg-white p-4 text-sm font-bold text-profit-600 shadow-xl md:block" style={{ "--float-rotate": "6deg" } as React.CSSProperties}>

@@ -190,9 +190,13 @@ export function VipSignalsHero() {
           <MarketBackdrop variant="gold" />
           <div className="funnel-hero-grid">
             <div className="funnel-hero-copy hero-slide-left">
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-profit-600">Smart Profits Trader VIP</p>
-              <h1 className="funnel-headline mt-5 text-4xl text-navy-950 sm:text-5xl lg:text-[4rem]">
-                Get High-Quality XAUUSD Trade Signals Without Spending All Day Analyzing the Market
+              <span className="inline-flex items-center gap-2 rounded-full border border-profit-500/25 bg-profit-50 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-profit-600">
+                <span className="h-1.5 w-1.5 rounded-full bg-profit-500" />
+                Smart Profits Trader VIP
+              </span>
+              <h1 className="mt-5 text-[2.1rem] font-bold leading-[1.1] tracking-tight text-navy-950 sm:text-[2.65rem] lg:text-[3.15rem]" style={{ textWrap: "balance" } as React.CSSProperties}>
+                Clear Gold Signals.<br />
+                <span className="text-profit-600">No Market Analysis Required.</span>
               </h1>
               <div className="mt-6 space-y-4 text-base leading-8 text-slate-600 sm:text-lg">
                 <p>

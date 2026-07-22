@@ -98,12 +98,12 @@ textarea {
 }
 
 .funnel-headline {
-  max-width: 15.75ch;
-  font-weight: 760;
-  line-height: 1.03;
-  letter-spacing: -0.022em;
+  max-width: 20ch;
+  font-weight: 720;
+  line-height: 1.1;
+  letter-spacing: -0.018em;
   text-wrap: balance;
-  font-size: clamp(2.55rem, 4.3vw, 4.65rem);
+  font-size: clamp(1.75rem, 2.8vw, 3rem);
 }
 
 .funnel-section-title {
