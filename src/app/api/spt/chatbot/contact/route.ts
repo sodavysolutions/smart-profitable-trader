@@ -27,6 +27,29 @@ function cleanField(value: string | undefined): string | undefined {
   return trimmed.startsWith("=") ? trimmed.slice(1).trim() : trimmed;
 }
 
+/**
+ * Strip internal AI agent tags from the bot reply before saving.
+ * The AI uses these tags for internal signalling (alerts, lead logging)
+ * that should never be shown to users or stored in the conversation log.
+ *
+ * Handles block tags:  [ALERT_SOLOMON]...[/ALERT_SOLOMON]
+ *                      [LOG_LEAD]...[/LOG_LEAD]
+ * And inline variants: [ALERT_SOLOMON:...] [LOG_LEAD:...]
+ */
+function stripBotTags(text: string): string {
+  return text
+    // Block tag pairs (including multiline content)
+    .replace(/\[ALERT_SOLOMON\][\s\S]*?\[\/ALERT_SOLOMON\]/gi, "")
+    .replace(/\[LOG_LEAD\][\s\S]*?\[\/LOG_LEAD\]/gi, "")
+    // Inline colon variants
+    .replace(/\[ALERT_SOLOMON:[^\]]*\]/gi, "")
+    .replace(/\[LOG_LEAD:[^\]]*\]/gi, "")
+    // Any remaining bare tags just in case
+    .replace(/\[ALERT_SOLOMON\]/gi, "")
+    .replace(/\[LOG_LEAD\]/gi, "")
+    .trim();
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -42,7 +65,7 @@ export async function POST(request: NextRequest) {
     const phoneNumber = cleanField(raw.phoneNumber);
     const displayName = cleanField(raw.displayName);
     const messageText = cleanField(raw.messageText);
-    const botReply    = cleanField(raw.botReply);
+    const botReply    = raw.botReply ? stripBotTags(cleanField(raw.botReply) ?? "") || undefined : undefined;
 
     const channel = (VALID_PLATFORMS.includes(platform as Platform)
       ? platform
