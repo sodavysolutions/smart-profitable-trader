@@ -3,7 +3,8 @@ const nextConfig = {
   experimental: {
     serverActions: {
       bodySizeLimit: "2mb"
-    }
+    },
+    after: true,
   },
   async redirects() {
     return [
