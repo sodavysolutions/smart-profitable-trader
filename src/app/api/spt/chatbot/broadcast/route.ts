@@ -21,6 +21,8 @@ export const maxDuration = 60;
 interface BroadcastBody {
   message: string;
   platforms: string[];
+  /** If set, send as a WhatsApp template message instead of free-form text */
+  templateName?: string;
 }
 
 interface SendResult {
@@ -53,6 +55,55 @@ async function sendWhatsApp(to: string, text: string): Promise<{ ok: boolean; er
         to: phone,
         type: "text",
         text: { body: text },
+      }),
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.text().catch(() => "unknown");
+    return { ok: false, error: `WA API ${res.status}: ${err.slice(0, 200)}` };
+  }
+  return { ok: true };
+}
+
+/**
+ * Send a WhatsApp message template — bypasses the 24-hour customer service window.
+ * The template must already be APPROVED in Meta Business Manager.
+ * firstName is injected as {{1}} in the template body.
+ */
+async function sendWhatsAppTemplate(
+  to: string,
+  templateName: string,
+  firstName: string
+): Promise<{ ok: boolean; error?: string }> {
+  const token = process.env.WHATSAPP_API_TOKEN;
+  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID ?? "1234231113102298";
+  if (!token) return { ok: false, error: "WHATSAPP_API_TOKEN not configured" };
+
+  const phone = to.replace(/^\+/, "").replace(/\s/g, "");
+
+  const res = await fetch(
+    `https://graph.facebook.com/v20.0/${phoneNumberId}/messages`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: phone,
+        type: "template",
+        template: {
+          name: templateName,
+          language: { code: "en_US" },
+          components: [
+            {
+              type: "body",
+              parameters: [{ type: "text", text: firstName }],
+            },
+          ],
+        },
       }),
     }
   );
@@ -98,9 +149,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { message, platforms } = body;
-  if (!message?.trim()) return NextResponse.json({ error: "Message is required" }, { status: 400 });
+  const { message, platforms, templateName } = body;
+  if (!message?.trim() && !templateName?.trim()) return NextResponse.json({ error: "Message or template is required" }, { status: 400 });
   if (!platforms?.length) return NextResponse.json({ error: "Select at least one platform" }, { status: 400 });
+
+  const usingTemplate = !!templateName?.trim();
 
   const wantsWhatsApp = platforms.includes("WHATSAPP");
   const wantsTelegram = platforms.includes("TELEGRAM");
@@ -173,10 +226,20 @@ export async function POST(req: NextRequest) {
   // ── Send messages (sequential, throttled ~200ms apart) ──
   const results: SendResult[] = [];
   for (const contact of unique) {
-    const result =
-      contact.platform === "WHATSAPP"
-        ? await sendWhatsApp(contact.identifier, message.trim())
-        : await sendTelegram(contact.identifier, message.trim());
+    // Extract first name from fullName for template personalisation
+    const firstName = contact.name
+      ? contact.name.split(/\s+/)[0].replace(/^=+/, "")
+      : "Friend";
+
+    let result: { ok: boolean; error?: string };
+    if (contact.platform === "WHATSAPP" && usingTemplate) {
+      result = await sendWhatsAppTemplate(contact.identifier, templateName!.trim(), firstName);
+    } else if (contact.platform === "WHATSAPP") {
+      result = await sendWhatsApp(contact.identifier, message.trim());
+    } else {
+      // Telegram: always free-form (no 24h restriction)
+      result = await sendTelegram(contact.identifier, (message ?? "").trim());
+    }
 
     results.push({
       contactId: contact.contactId,
@@ -184,7 +247,7 @@ export async function POST(req: NextRequest) {
       identifier: contact.identifier,
       platform: contact.platform,
       ok: result.ok,
-      error: result.error,
+      error: result.error ?? undefined,
     });
 
     // Small delay to avoid rate limit bursts

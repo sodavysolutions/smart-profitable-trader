@@ -6,14 +6,19 @@ import { Card } from "@/components/UI";
 import {
   AlertCircle,
   CheckCircle,
+  ChevronDown,
+  FileText,
   Loader2,
   MessageSquare,
+  Plus,
   Send,
   Users,
+  Zap,
 } from "lucide-react";
 
 // ── Types ────────────────────────────────────────────────────
 type Platform = "WHATSAPP" | "TELEGRAM";
+type MessageMode = "freeform" | "template";
 
 interface SendResult {
   contactId: string;
@@ -37,11 +42,27 @@ interface Counts {
   telegram: number;
 }
 
+interface WaTemplate {
+  id: string;
+  name: string;
+  status: "APPROVED" | "PENDING" | "REJECTED" | string;
+  category: string;
+  language: string;
+  bodyText: string;
+}
+
 // ── Page ─────────────────────────────────────────────────────
 export default function ChatbotBroadcastPage() {
   const [counts, setCounts] = useState<Counts | null>(null);
   const [platforms, setPlatforms] = useState<Platform[]>(["WHATSAPP", "TELEGRAM"]);
+  const [mode, setMode] = useState<MessageMode>("freeform");
   const [message, setMessage] = useState("");
+  const [templates, setTemplates] = useState<WaTemplate[] | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<WaTemplate | null>(null);
+  const [loadingTemplates, setLoadingTemplates] = useState(false);
+  const [submittingDefaults, setSubmittingDefaults] = useState(false);
+  const [defaultsResult, setDefaultsResult] = useState<string | null>(null);
+  const [templateDropOpen, setTemplateDropOpen] = useState(false);
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<BroadcastResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -55,6 +76,17 @@ export default function ChatbotBroadcastPage() {
       .then(setCounts)
       .catch(() => setCounts({ whatsapp: 0, telegram: 0 }));
   }, []);
+
+  // Fetch templates when switching to template mode
+  useEffect(() => {
+    if (mode !== "template" || templates !== null) return;
+    setLoadingTemplates(true);
+    fetch("/api/spt/chatbot/templates")
+      .then((r) => r.json())
+      .then((d) => setTemplates(d.templates ?? []))
+      .catch(() => setTemplates([]))
+      .finally(() => setLoadingTemplates(false));
+  }, [mode, templates]);
 
   function togglePlatform(p: Platform) {
     setPlatforms((prev) =>
@@ -70,12 +102,44 @@ export default function ChatbotBroadcastPage() {
     return n;
   }
 
+  async function handleSubmitDefaults() {
+    setSubmittingDefaults(true);
+    setDefaultsResult(null);
+    try {
+      const res = await fetch("/api/spt/chatbot/templates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ setupDefaults: true }),
+      });
+      const d = await res.json();
+      const ok = d.results?.filter((r: { ok: boolean }) => r.ok).length ?? 0;
+      const fail = d.results?.filter((r: { ok: boolean }) => !r.ok).length ?? 0;
+      setDefaultsResult(
+        fail === 0
+          ? `${ok} template${ok === 1 ? "" : "s"} submitted for Meta approval. Check back in a few minutes.`
+          : `${ok} submitted, ${fail} failed. Some may already exist — that is fine.`
+      );
+      // Refresh template list
+      setTemplates(null);
+    } catch {
+      setDefaultsResult("Error submitting templates — try again.");
+    } finally {
+      setSubmittingDefaults(false);
+    }
+  }
+
   async function handleSend() {
-    if (!message.trim()) return;
+    if (mode === "template" && !selectedTemplate) return;
+    if (mode === "freeform" && !message.trim()) return;
     if (!platforms.length) return;
 
+    const label =
+      mode === "template"
+        ? `template "${selectedTemplate!.name}"`
+        : "this message";
+
     const confirmed = confirm(
-      `Send to ${recipientCount()} contact${recipientCount() === 1 ? "" : "s"} across ${platforms.join(" + ")}?\n\nYou cannot undo this.`
+      `Send ${label} to ${recipientCount()} contact${recipientCount() === 1 ? "" : "s"}?\n\nYou cannot undo this.`
     );
     if (!confirmed) return;
 
@@ -85,10 +149,19 @@ export default function ChatbotBroadcastPage() {
     setShowResults(false);
 
     try {
+      const body: Record<string, unknown> = { platforms };
+      if (mode === "template") {
+        body.templateName = selectedTemplate!.name;
+        // Telegram gets a plain-text version of the template (no WA template API)
+        body.message = selectedTemplate!.bodyText.replace(/\{\{1\}\}/g, "Friend");
+      } else {
+        body.message = message.trim();
+      }
+
       const res = await fetch("/api/spt/chatbot/broadcast", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: message.trim(), platforms }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -104,7 +177,13 @@ export default function ChatbotBroadcastPage() {
     }
   }
 
-  const canSend = message.trim().length > 0 && platforms.length > 0 && !sending;
+  const approvedTemplates = (templates ?? []).filter((t) => t.status === "APPROVED");
+  const pendingTemplates = (templates ?? []).filter((t) => t.status === "PENDING");
+
+  const canSend =
+    !sending &&
+    platforms.length > 0 &&
+    (mode === "freeform" ? message.trim().length > 0 : selectedTemplate !== null);
 
   return (
     <SPTAdminShell title="Broadcast Center" role="SUPER_ADMIN">
@@ -114,8 +193,9 @@ export default function ChatbotBroadcastPage() {
         <div>
           <p className="font-semibold">WhatsApp 24-hour window</p>
           <p className="mt-0.5 text-amber-700">
-            WhatsApp only allows free-form messages to contacts who messaged you within the last 24 hours.
-            Messages to older contacts may be blocked. Telegram has no such restriction.
+            Free-form messages only reach contacts who messaged you in the last 24 hours.
+            Use <strong>Template mode</strong> to bypass this and reach everyone.
+            Telegram has no restriction.
           </p>
         </div>
       </div>
@@ -166,28 +246,173 @@ export default function ChatbotBroadcastPage() {
             </div>
           </Card>
 
-          {/* Message composer */}
+          {/* Message mode toggle */}
           <Card>
-            <p className="mb-3 text-sm font-bold text-[#0A1A3C]">Message</p>
-            <textarea
-              ref={textareaRef}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={8}
-              placeholder="Type your message here…&#10;&#10;Keep it clear and personal. For Telegram you can use basic HTML: <b>bold</b>, <i>italic</i>."
-              className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A1A3C]/20 resize-none"
-            />
-            <div className="mt-2 flex items-center justify-between">
-              <span className="text-xs text-slate-400">{message.length} characters</span>
-              {message.length > 1000 && (
-                <span className="text-xs font-semibold text-amber-600">
-                  Long messages may be truncated on WhatsApp
+            <p className="mb-3 text-sm font-bold text-[#0A1A3C]">Message type</p>
+            <div className="flex gap-2 rounded-xl bg-slate-100 p-1">
+              <button
+                type="button"
+                onClick={() => setMode("freeform")}
+                className={`flex-1 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all ${
+                  mode === "freeform"
+                    ? "bg-white text-[#0A1A3C] shadow-sm"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                <MessageSquare size={14} />
+                Free-form
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("template")}
+                className={`flex-1 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all ${
+                  mode === "template"
+                    ? "bg-white text-[#0A1A3C] shadow-sm"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                <Zap size={14} />
+                Template
+                <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">
+                  Bypasses 24h
                 </span>
-              )}
+              </button>
             </div>
+
+            {/* Free-form composer */}
+            {mode === "freeform" && (
+              <div className="mt-4">
+                <textarea
+                  ref={textareaRef}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={8}
+                  placeholder="Type your message here…&#10;&#10;Keep it clear and personal. For Telegram you can use basic HTML: <b>bold</b>, <i>italic</i>."
+                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A1A3C]/20 resize-none"
+                />
+                <div className="mt-2 flex items-center justify-between">
+                  <span className="text-xs text-slate-400">{message.length} characters</span>
+                  {message.length > 1000 && (
+                    <span className="text-xs font-semibold text-amber-600">
+                      Long messages may be truncated on WhatsApp
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Template picker */}
+            {mode === "template" && (
+              <div className="mt-4 space-y-4">
+                {loadingTemplates ? (
+                  <div className="flex items-center gap-2 text-sm text-slate-400 py-2">
+                    <Loader2 size={14} className="animate-spin" /> Loading templates…
+                  </div>
+                ) : templates !== null && approvedTemplates.length === 0 && pendingTemplates.length === 0 ? (
+                  /* No templates at all */
+                  <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-5 py-6 text-center">
+                    <FileText size={28} className="mx-auto mb-3 text-slate-300" />
+                    <p className="text-sm font-semibold text-slate-700 mb-1">No templates yet</p>
+                    <p className="text-xs text-slate-500 mb-4">
+                      Submit the default SPT templates to Meta for approval. Approval usually takes a few minutes to 24 hours.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleSubmitDefaults}
+                      disabled={submittingDefaults}
+                      className="inline-flex items-center gap-2 rounded-lg bg-[#0A1A3C] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#16A34A] disabled:opacity-50 transition-colors"
+                    >
+                      {submittingDefaults
+                        ? <><Loader2 size={13} className="animate-spin" /> Submitting…</>
+                        : <><Plus size={13} /> Submit Default Templates</>
+                      }
+                    </button>
+                    {defaultsResult && (
+                      <p className="mt-3 text-xs font-semibold text-green-700">{defaultsResult}</p>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    {/* Pending notice */}
+                    {pendingTemplates.length > 0 && approvedTemplates.length === 0 && (
+                      <div className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                        <AlertCircle size={14} className="mt-0.5 shrink-0" />
+                        <span>
+                          {pendingTemplates.length} template{pendingTemplates.length > 1 ? "s are" : " is"} pending Meta approval.
+                          Check back in a few minutes.
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Template dropdown */}
+                    {approvedTemplates.length > 0 && (
+                      <div className="relative">
+                        <button
+                          type="button"
+                          onClick={() => setTemplateDropOpen((v) => !v)}
+                          className="w-full flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-left hover:border-slate-300 transition-colors"
+                        >
+                          <span className={selectedTemplate ? "text-[#0A1A3C] font-semibold" : "text-slate-400"}>
+                            {selectedTemplate ? selectedTemplate.name : "Select a template…"}
+                          </span>
+                          <ChevronDown size={15} className={`text-slate-400 transition-transform ${templateDropOpen ? "rotate-180" : ""}`} />
+                        </button>
+                        {templateDropOpen && (
+                          <div className="absolute z-20 mt-1 w-full rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden">
+                            {approvedTemplates.map((t) => (
+                              <button
+                                key={t.id}
+                                type="button"
+                                onClick={() => { setSelectedTemplate(t); setTemplateDropOpen(false); }}
+                                className={`w-full text-left px-4 py-3 text-sm border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors ${
+                                  selectedTemplate?.id === t.id ? "bg-green-50 font-semibold text-green-800" : "text-[#0A1A3C]"
+                                }`}
+                              >
+                                <p className="font-semibold">{t.name}</p>
+                                <p className="text-xs text-slate-500 mt-0.5 truncate">{t.bodyText.slice(0, 80)}…</p>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Template preview */}
+                    {selectedTemplate && (
+                      <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-4">
+                        <p className="text-[11px] font-bold text-green-700 uppercase tracking-wider mb-2">Preview</p>
+                        <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
+                          {selectedTemplate.bodyText.replace(/\{\{1\}\}/g, "[Contact Name]")}
+                        </p>
+                        <p className="mt-3 text-[11px] text-slate-400">
+                          {"{{1}}"} is replaced with each contact&apos;s first name automatically.
+                          Telegram contacts receive the same text as free-form.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Re-submit link */}
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={handleSubmitDefaults}
+                        disabled={submittingDefaults}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#0A1A3C] transition-colors disabled:opacity-50"
+                      >
+                        {submittingDefaults ? <Loader2 size={11} className="animate-spin" /> : <Plus size={11} />}
+                        Re-submit default templates
+                      </button>
+                      {defaultsResult && (
+                        <span className="text-xs text-green-700 font-semibold">{defaultsResult}</span>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </Card>
 
-          {/* Send button + summary */}
+          {/* Send button */}
           <div className="flex items-center gap-4">
             <button
               type="button"
@@ -267,7 +492,7 @@ export default function ChatbotBroadcastPage() {
           )}
         </div>
 
-        {/* ── Right: sidebar tips ─────────────────────────── */}
+        {/* ── Right: sidebar ──────────────────────────────── */}
         <div className="space-y-4">
           <Card>
             <div className="flex items-center gap-2 mb-3">
@@ -298,6 +523,31 @@ export default function ChatbotBroadcastPage() {
 
           <Card>
             <div className="flex items-center gap-2 mb-3">
+              <Zap size={16} className="text-[#0A1A3C]" />
+              <p className="text-sm font-bold text-[#0A1A3C]">Templates vs Free-form</p>
+            </div>
+            <ul className="space-y-3 text-xs text-slate-600">
+              <li className="flex gap-2">
+                <span className="mt-0.5 shrink-0 font-bold text-green-600">✓</span>
+                <span><strong>Templates</strong> bypass the 24h window — reach all contacts any time.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-0.5 shrink-0 font-bold text-amber-500">!</span>
+                <span><strong>Free-form</strong> only reaches contacts who messaged you in the last 24 hours.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-0.5 shrink-0 font-bold text-sky-600">i</span>
+                <span>Templates must be approved by Meta first. Approval is usually within minutes to 24h.</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-0.5 shrink-0 font-bold text-[#0A1A3C]">→</span>
+                <span>Telegram always receives free-form text — no templates needed.</span>
+              </li>
+            </ul>
+          </Card>
+
+          <Card>
+            <div className="flex items-center gap-2 mb-3">
               <MessageSquare size={16} className="text-[#0A1A3C]" />
               <p className="text-sm font-bold text-[#0A1A3C]">Tips</p>
             </div>
@@ -308,15 +558,11 @@ export default function ChatbotBroadcastPage() {
               </li>
               <li className="flex gap-2">
                 <span className="mt-0.5 shrink-0 font-bold text-[#0A1A3C]">→</span>
-                <span>Always include a clear call to action — "Reply YES", "Click the link", etc.</span>
+                <span>Always include a call to action — "Reply YES", "Click the link", etc.</span>
               </li>
               <li className="flex gap-2">
                 <span className="mt-0.5 shrink-0 font-bold text-[#0A1A3C]">→</span>
                 <span>Telegram supports <code className="bg-slate-100 px-1 rounded">&lt;b&gt;</code>, <code className="bg-slate-100 px-1 rounded">&lt;i&gt;</code>, and <code className="bg-slate-100 px-1 rounded">&lt;a href=""&gt;</code> HTML tags.</span>
-              </li>
-              <li className="flex gap-2">
-                <span className="mt-0.5 shrink-0 font-bold text-[#0A1A3C]">→</span>
-                <span>WhatsApp messages can only be sent free-form within 24 hours of the last customer message.</span>
               </li>
             </ul>
           </Card>
