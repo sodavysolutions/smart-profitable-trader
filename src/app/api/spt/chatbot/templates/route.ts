@@ -13,7 +13,7 @@ const API = "https://graph.facebook.com/v20.0";
 
 // ── Default templates we submit on first setup ──────────────────────────────
 
-export const DEFAULT_TEMPLATES = [
+const DEFAULT_TEMPLATES = [
   {
     name: "spt_check_in",
     category: "MARKETING",
