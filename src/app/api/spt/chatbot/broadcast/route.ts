@@ -23,6 +23,8 @@ interface BroadcastBody {
   platforms: string[];
   /** If set, send as a WhatsApp template message instead of free-form text */
   templateName?: string;
+  /** Body text of the selected template — used to detect whether {{1}} variable exists */
+  templateBodyText?: string;
 }
 
 interface SendResult {
@@ -69,18 +71,31 @@ async function sendWhatsApp(to: string, text: string): Promise<{ ok: boolean; er
 /**
  * Send a WhatsApp message template — bypasses the 24-hour customer service window.
  * The template must already be APPROVED in Meta Business Manager.
- * firstName is injected as {{1}} in the template body.
+ * firstName is injected as {{1}} only if the template body actually contains that variable.
  */
 async function sendWhatsAppTemplate(
   to: string,
   templateName: string,
-  firstName: string
+  firstName: string,
+  templateBodyText: string
 ): Promise<{ ok: boolean; error?: string }> {
   const token = process.env.WHATSAPP_API_TOKEN;
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID ?? "1234231113102298";
   if (!token) return { ok: false, error: "WHATSAPP_API_TOKEN not configured" };
 
   const phone = to.replace(/^\+/, "").replace(/\s/g, "");
+
+  // Only include body parameters if the template body actually uses {{1}}
+  const hasNameVar = templateBodyText.includes("{{1}}");
+  const components = hasNameVar
+    ? [{ type: "body", parameters: [{ type: "text", text: firstName }] }]
+    : [];
+
+  const template: Record<string, unknown> = {
+    name: templateName,
+    language: { code: "en_US" },
+  };
+  if (components.length) template.components = components;
 
   const res = await fetch(
     `https://graph.facebook.com/v20.0/${phoneNumberId}/messages`,
@@ -94,16 +109,7 @@ async function sendWhatsAppTemplate(
         messaging_product: "whatsapp",
         to: phone,
         type: "template",
-        template: {
-          name: templateName,
-          language: { code: "en_US" },
-          components: [
-            {
-              type: "body",
-              parameters: [{ type: "text", text: firstName }],
-            },
-          ],
-        },
+        template,
       }),
     }
   );
@@ -149,7 +155,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { message, platforms, templateName } = body;
+  const { message, platforms, templateName, templateBodyText } = body;
   if (!message?.trim() && !templateName?.trim()) return NextResponse.json({ error: "Message or template is required" }, { status: 400 });
   if (!platforms?.length) return NextResponse.json({ error: "Select at least one platform" }, { status: 400 });
 
@@ -233,7 +239,7 @@ export async function POST(req: NextRequest) {
 
     let result: { ok: boolean; error?: string };
     if (contact.platform === "WHATSAPP" && usingTemplate) {
-      result = await sendWhatsAppTemplate(contact.identifier, templateName!.trim(), firstName);
+      result = await sendWhatsAppTemplate(contact.identifier, templateName!.trim(), firstName, templateBodyText ?? "");
     } else if (contact.platform === "WHATSAPP") {
       result = await sendWhatsApp(contact.identifier, message.trim());
     } else {

@@ -152,6 +152,7 @@ export default function ChatbotBroadcastPage() {
       const body: Record<string, unknown> = { platforms };
       if (mode === "template") {
         body.templateName = selectedTemplate!.name;
+        body.templateBodyText = selectedTemplate!.bodyText;
         // Telegram gets a plain-text version of the template (no WA template API)
         body.message = selectedTemplate!.bodyText.replace(/\{\{1\}\}/g, "Friend");
       } else {
