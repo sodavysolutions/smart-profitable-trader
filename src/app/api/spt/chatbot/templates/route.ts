@@ -15,35 +15,35 @@ const API = "https://graph.facebook.com/v20.0";
 
 const DEFAULT_TEMPLATES = [
   {
-    name: "spt_check_in",
-    category: "MARKETING",
+    name: "spt_account_checkin",
+    category: "UTILITY",
     language: "en_US",
     components: [
       {
         type: "BODY",
-        text: "Hey {{1}}, just checking in from Smart Profits Trader! 😊\n\nI hope everything is going well on your end. Feel free to reply if you have any questions about your trading setup, the algo, or anything else — I am right here!\n\n— Smart Profits Trader Team",
+        text: "Hi {{1}}, this is a message from Smart Profits Trader support.\n\nWe noticed you have not been in touch recently. If you need any assistance with your account setup, trading configuration, or have any questions, please reply to this message and our team will help you right away.",
       },
     ],
   },
   {
-    name: "spt_update",
-    category: "MARKETING",
+    name: "spt_account_update",
+    category: "UTILITY",
     language: "en_US",
     components: [
       {
         type: "BODY",
-        text: "Hi {{1}}, we have an update from Smart Profits Trader! 🚀\n\nPlease reply to this message or visit our website for more details. Our team is available 24/7 on WhatsApp and Telegram.\n\n— Smart Profits Trader Team",
+        text: "Hi {{1}}, you have a message from the Smart Profits Trader support team.\n\nPlease reply to this message or contact us if you need any assistance with your account or trading setup. We are available to help at any time.",
       },
     ],
   },
   {
-    name: "spt_welcome_back",
-    category: "MARKETING",
+    name: "spt_support_followup",
+    category: "UTILITY",
     language: "en_US",
     components: [
       {
         type: "BODY",
-        text: "Welcome back, {{1}}! 👋\n\nWe have missed you at Smart Profits Trader. If you are ready to get back on track with your trading journey, just reply to this message and we will pick up right where we left off.\n\n— Smart Profits Trader Team",
+        text: "Hi {{1}}, this is a follow-up from Smart Profits Trader.\n\nIf you have any questions about your account, your broker setup, or the automated trading service, please reply to this message and a member of our support team will assist you.",
       },
     ],
   },
