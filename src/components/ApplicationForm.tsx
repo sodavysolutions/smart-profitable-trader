@@ -166,12 +166,15 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
             required
             helper="Trading results are never guaranteed. This helps us set realistic expectations and recommend the right approach for you."
           />
-          <RadioGroup
-            name="hasExistingTradingAccount"
-            label="Do you currently have a live trading account?"
-            options={["Yes – I already have a broker account", "No – I need help setting one up", "I am not sure what I need"]}
-            required
-          />
+          {/* Hidden for copy-trading — we handle broker setup ourselves */}
+          {!(isServiceLocked && service.includes("Copy Trading")) && (
+            <RadioGroup
+              name="hasExistingTradingAccount"
+              label="Do you currently have a live trading account?"
+              options={["Yes – I already have a broker account", "No – I need help setting one up", "I am not sure what I need"]}
+              required
+            />
+          )}
           <RadioGroup
             name="riskStyle"
             label="How would you describe your approach to risk?"
@@ -251,12 +254,8 @@ function ServiceFields({ service }: { service: string }) {
   }
 
   if (service.includes("Copy Trading")) {
-    return (
-      <>
-        <SelectField name="preferredBroker" label="Preferred broker" options={brokerOptions} required />
-        <RadioGroup name="mtPlatform" label="Do you already have MT4 or MT5?" options={["MT4", "MT5", "I do not know", "I need help setting it up"]} />
-      </>
-    );
+    // Broker and MT4/MT5 questions removed — we guide clients through setup after approval
+    return null;
   }
 
   if (service.includes("Instant Funded")) {
