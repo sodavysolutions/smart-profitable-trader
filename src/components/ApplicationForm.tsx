@@ -13,7 +13,7 @@ type ServiceKey = "vip-signals" | "copy-trading" | "instant-funded" | "general";
 const serviceOptions: Option[] = [
   { value: "Smart Profits Trader VIP Signal Service", label: "VIP Signals — Daily algo signals on Gold" },
   { value: "Copy Trading", label: "Copy Trading — We trade on your behalf" },
-  { value: "Instant Funded Account (iFunds)", label: "Prop Trading — Get a funded account via iFunds or TenTrade (no challenge)" },
+  { value: "Instant Funded Account (iFunds)", label: "Instant Funded — Get a funded account via iFunds from $10,000 (no challenge)" },
   { value: "Not sure yet - I need guidance", label: "Not sure yet — Help me choose" }
 ];
 
@@ -25,11 +25,11 @@ const serviceMap: Record<ServiceKey | string, string> = {
   general: "Not sure yet - I need guidance"
 };
 
-const brokerOptions = ["XM", "Valetax", "I do not have a broker account yet", "I need guidance"];
-const instantFundedProviderOptions = ["iFunds", "TenTrade"];
-const generalInvestmentOptions = ["Below $100", "$100 - $299", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above", "I need guidance"];
-const copyInvestmentOptions = ["Below $300", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above"];
-const profitGoalOptions = ["5% – 8% per month (steady, low risk)", "10% – 15% per month (moderate growth)", "20% – 30% per month (ambitious)", "I need guidance on realistic expectations"];
+const brokerOptions = ["Valetax", "Vantage Markets", "XM", "I do not have a broker account yet", "I need guidance"];
+const instantFundedProviderOptions = ["iFunds"];
+const generalInvestmentOptions = ["Below $100", "$100 - $199", "$200 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above", "I need guidance"];
+const copyInvestmentOptions = ["$200 - $299", "$300 - $499", "$500 - $999", "$1,000 - $4,999", "$5,000 and above"];
+const profitGoalOptions = ["5% – 15% per month (steady compounding, conservative)", "20% – 50% per month (moderate, higher targets)", "50% – 100% per month (ambitious, higher risk)", "I need guidance on realistic expectations"];
 const riskStyleOptions = [
   "Conservative – Protect my capital first, grow slowly",
   "Moderate – Balanced growth with controlled drawdowns",
@@ -52,14 +52,14 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
   const derivedMainGoal = useMemo(() => {
     if (service.includes("VIP Signal")) return "Receive daily trading signals I can act on";
     if (service.includes("Copy Trading")) return "Have my trades copied automatically into my account";
-    if (service.includes("Instant Funded")) return "Get a funded prop trading account via iFunds or TenTrade";
+    if (service.includes("Instant Funded")) return "Get an instantly funded prop trading account via iFunds";
     return "I need guidance — help me choose the right path";
   }, [service]);
 
   const serviceSummary = useMemo(() => {
     if (service.includes("VIP Signal")) return "Tell us how you plan to use the signals and whether you already trade gold.";
     if (service.includes("Copy Trading")) return "We will confirm your broker, platform, and capital so we can start copying trades immediately.";
-    if (service.includes("Instant Funded")) return "No challenge required. Choose iFunds or TenTrade, pay the fee, get funded, and let us trade for you.";
+    if (service.includes("Instant Funded")) return "No challenge required. Get instantly funded via iFunds from $10,000. Pay the one-time fee and we trade the account for you.";
     return "Choose this if you want the team to recommend the best Smart Profits Trader path for your capital and goals.";
   }, [service]);
 
@@ -157,7 +157,7 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
             label="How much capital are you working with or willing to start with?"
             options={service.includes("Copy Trading") || service.includes("Personal Account") ? copyInvestmentOptions : generalInvestmentOptions}
             required
-            helper={service.includes("Copy Trading") || service.includes("Personal Account") ? "Minimum recommended starting capital for Copy Trading / Personal Account Management is $300." : "For Copy Trading and Personal Account Management, the recommended minimum is $300."}
+            helper={service.includes("Copy Trading") || service.includes("Personal Account") ? "Minimum starting capital for Copy Trading is $200 (Valetax broker recommended)." : "For Copy Trading, the minimum is $200. For Instant Funded (iFunds), from $700 for a $10,000 account."}
           />
           <SelectField
             name="expectedMonthlyProfitGoal"
@@ -191,7 +191,7 @@ export function ApplicationForm({ initialService = "general", thankYouPath = "/t
               options={[
                 "Receive daily trading signals I can act on",
                 "Have my trades copied automatically into my account",
-                "Get an instantly funded trading account via iFunds",
+                "Get an instantly funded trading account via iFunds (from $10,000)",
                 "I need guidance – help me choose the right path"
               ]}
               required
@@ -261,7 +261,7 @@ function ServiceFields({ service }: { service: string }) {
   if (service.includes("Instant Funded")) {
     return (
       <>
-        <SelectField name="instantFundedProvider" label="Which prop trading provider?" options={instantFundedProviderOptions} required />
+        <SelectField name="instantFundedProvider" label="Instant funded provider" options={instantFundedProviderOptions} required helper="We work exclusively with iFunds for instant funded accounts — no evaluation required." />
         <SelectField name="instantFundedAccountSize" label="Which account size are you interested in?" options={["$10,000 ($700)", "$25,000 ($1,600)", "$50,000 ($3,000)", "$85,000 ($5,000)", "$150,000 ($8,500)", "$250,000 ($15,000)", "$500,000 ($30,000)", "Not sure yet"]} />
         <RadioGroup name="readyToPaySetupFee" label="Are you ready to pay the account fee?" options={["Yes – I am ready", "Not yet – I need more details", "I need guidance on the fee"]} required />
       </>

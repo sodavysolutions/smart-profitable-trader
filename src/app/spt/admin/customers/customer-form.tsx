@@ -6,8 +6,8 @@ import { CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 
 export type CustomerActionState = { ok: boolean; message: string } | null;
 
-const COPY_BROKERS = ["Valatex", "XM"] as const;
-const INSTANT_FIRMS = ["iFunds", "TenTrade"] as const;
+const COPY_BROKERS = ["Valetax", "Vantage Markets", "XM"] as const;
+const INSTANT_FIRMS = ["iFunds"] as const;
 const PLATFORMS = ["MT4", "MT5", "TRADELOCKER", "OTHER"] as const;
 
 const CUSTOMER_TYPES: { value: CustomerType; label: string }[] = [

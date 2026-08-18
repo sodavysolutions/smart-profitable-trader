@@ -8,8 +8,7 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-const BLUEPRINT_URL =
-  "https://docs.google.com/document/d/1xcId6yW0WU41skGRcoS630kB7sxHKmdd/export?format=pdf";
+const BLUEPRINT_URL = "/SmartMoneyBlueprint.pdf";
 
 export default function ThankYouPage() {
   return (

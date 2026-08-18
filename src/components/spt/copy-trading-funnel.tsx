@@ -96,7 +96,7 @@ export function CopyTradingHero() {
                 {[
                   "No experience needed — we guide you through everything from scratch.",
                   "Your money stays in YOUR account at all times. We never collect or hold your funds.",
-                  "Start from as little as $300 — we help you open a broker account.",
+                  "Start from as little as $200 — we help you open a Valetax broker account.",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2.5 text-sm text-slate-700">
                     <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-profit-500" />
@@ -119,7 +119,7 @@ export function CopyTradingHero() {
                 {[
                   { value: "You Keep 70%", label: "Of your profits" },
                   { value: "Weekly", label: "Optimization" },
-                  { value: "From $300", label: "To start" },
+                  { value: "From $200", label: "To start" },
                 ].map(({ value, label }) => (
                   <div
                     key={label}
@@ -270,7 +270,7 @@ export function CopyTradingRequirementsSection() {
             {
               number: "01",
               title: "Starting Capital",
-              desc: "Minimum $300 in your broker account. We recommend $500 for better results. This money is always yours — it stays in your account.",
+              desc: "Minimum $200 in your broker account. We recommend $300–$500 for better results. We will help you open a Valetax account if you do not have one yet.",
             },
             {
               number: "02",
@@ -454,7 +454,7 @@ export function CopyTradingFAQ() {
     },
     {
       q: "How much do I need to start?",
-      a: "The minimum starting capital is $300. We recommend $500 or above for better results. Remember — this money stays in your own broker account, not with us.",
+      a: "The minimum starting capital is $200. We recommend $300–$500 or above for better results. This money always stays in your own broker account — never with us.",
     },
     {
       q: "How do profits work?",
